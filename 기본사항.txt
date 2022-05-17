@@ -1,0 +1,46 @@
+추가 설치
+ npm i react-native-modal
+ npm install react-native-simple-modal --save
+  npm install --save react react-dom
+npm install node
+  yarn init
+yarn add react react-dom
+npm i react-native-table-component
+
+항상 import 해야 할 것 
+import React from 'react';
+import type {Node} from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
+
+
+div > view 로 내용 중에서 가장 큰 틀 닫기 
+text 모든 글자는 <text> 컴포넌트 안에 들어가야 함 
+(view는 text를 감싼 상태에서 해야하는 것 text로 무조건 감싸야함!)
+
+
+
+
+usestate 안 쓰고  this.state= {:}
+
+
+
+
+
+css
+<view style = {}> ; 바로 넣기 
+스타일이름은 웹이랑 다를 수 있음 
+
+
+const styles = StyleSheet.create({
+// 이건 하나의 객체임 
+
+
+}); ; 따로 빼기 ( 스타일 줄 때 자동완성 기능 제공 )
