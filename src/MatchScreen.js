@@ -1,7 +1,8 @@
 import React, { useState,useEffect } from "react";
-import RadioGroup from 'react-native-radio-buttons-group';
-import { ActivityIndicator, FlatList, SafeAreaView, TextInput, isSelectedBar, CheckBox, StyleSheet, Text,TouchableOpacity,View,ScrollView } from "react-native";
+import {Button,ActivityIndicator, FlatList, SafeAreaView, TextInput, isSelectedBar, StyleSheet, Text,TouchableOpacity,View,ScrollView } from "react-native";
+import CheckBox from '@react-native-community/checkbox';
 import MyButton from "../components/MyButton";
+import CheckboxList from 'rn-checkbox-list';
 
 
 
@@ -9,64 +10,61 @@ import MyButton from "../components/MyButton";
 const MatchScreen = () => {
 
   const [selectedId, setSelectedId] = useState(null);
-  
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
+
   //db접속
   const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+  const [fa_hobby, sethobbyData] = useState([]);
+  const [fa_food, setfoodData] = useState([]);
 
-  const getMovies = async () => {
+  const getcategory = async () => {
      try {
-      const response = await fetch('http://jhk.n-e.kr:8080/test.php');
-      const json = await response.json();
-      setData(json.results);
+      const response_food = await fetch('http://jhk.n-e.kr:8080/test.php?table=favor_ca&co_code=fa_food');
+      const response_hobby = await fetch('http://jhk.n-e.kr:8080/test.php?table=favor_ca&co_code=fa_hobby');
+      const json_food = await response_food.json();
+      const json_hobby = await response_hobby.json();
+      sethobbyData(json_hobby.results);
+      setfoodData(json_food.results);
+      
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
   }
-
-  useEffect(() => {
-    getMovies();
-  }, []);
   //db접속끝
+  
+  useEffect(() => {
+    getcategory();
+  }, []);
 
 
   //취미
   const Item_hobby = ({ item, onPress, backgroundColor, textColor }) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item_hobby, backgroundColor]}>
-      <Text style={[styles.title, textColor]}>{item.title}</Text>
-    </TouchableOpacity>
+    <View style={[styles.hobby_checkbox]}>
+      <Text>{item.favor_ca_name}</Text>
+      <CheckBox
+        id = {item.favor_ca_code}
+        disabled={false}
+        value={toggleCheckBox}
+        onValueChange={(newValue) => setToggleCheckBox(newValue)}
+      />
+    </View>
   );
 
   const renderItem_hobby = ({ item }) => {
-    var backgroundColor = "";
-    var color = "";
+    var backgroundColor = "white";
+    var color = "black";
 
-    if(item.id == selectedId){
-      if(item.isSelected == "false"){
-        backgroundColor = "green";
-        color="white";
-        item.isSelected = "true";
-      }else if(item.isSelected == "true"){
+    if(item.favor_ca_code == selectedId){
         backgroundColor = "white";
         color="black";
-        item.isSelected = "false";
-      }
-    }else{
-      if(item.isSelected == "false"){
-        backgroundColor = "white";
-        color = "black";
-      }else if(item.isSelected == "true"){
-        backgroundColor = "green";
-        color = "white";
-      }
-    }
+    } 
 
     return (
       <Item_hobby
         item={item}
-        onPress={() => setSelectedId(item.id)}
+        onPress={() => setSelectedId(item.favor_ca_code)}
         backgroundColor={{ backgroundColor }}
         textColor={{ color }}
       />
@@ -75,9 +73,15 @@ const MatchScreen = () => {
 
   //음식
   const Item_food = ({ item, onPress, backgroundColor, textColor }) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item_food, backgroundColor]}>
-      <Text style={[styles.title, textColor]}>{item.title}</Text>
-    </TouchableOpacity>
+    <View style={[styles.hobby_checkbox]}>
+      <Text>{item.favor_ca_name}</Text>
+      <CheckBox
+        id = {item.favor_ca_code}
+        disabled={false}
+        value={toggleCheckBox}
+        onValueChange={(newValue) => setToggleCheckBox(newValue)}
+      />
+    </View>
   );
 
   const renderItem_food = ({ item }) => {
@@ -118,16 +122,26 @@ const MatchScreen = () => {
         </View>
         <View style = {styles.selector_hobby_food}>
           <SafeAreaView style={styles.container_hobby}>
-            <FlatList
+            <View style={{ flex: 1, padding: 24 }}>
+              {isLoading ? <ActivityIndicator/> : (
+              <FlatList
+                data={fa_hobby}
+                renderItem={renderItem_hobby}
+                keyExtractor={(item) => item.favor_ca_code}
+                extraData={selectedId}
+              />
+              )}
+          </View>
+            {/* <FlatList
               data={DATA_hobby}
               renderItem={renderItem_hobby}
               keyExtractor={(item) => item.id}
               extraData={selectedId}
-            />
+            /> */}
           </SafeAreaView>
           <SafeAreaView style={styles.container_food}>   
             <FlatList
-              data={DATA_food}
+              data={fa_food}
               renderItem={renderItem_food}
               keyExtractor={(item) => item.id}
               extraData={selectedId}
@@ -148,8 +162,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  item_hobby: {
-    padding: 20,
+  hobby_checkbox: {
+    flexDirection:'row',
   },
   item_food: {
     width:20,
@@ -183,26 +197,6 @@ const styles = StyleSheet.create({
 });
 
 
-const DATA_hobby = [
-  {
-    id: "1",
-    title: "First Item",
-    isSelected: "false",
-  },
-  {
-    id: "2",
-    title: "Second Item",
-    isSelected: "false",
-  },
-  {
-    id: "3",
-    title: "Third Item",
-    isSelected: "false",
-  },
-];
-
-
-
 const DATA_food = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -220,6 +214,4 @@ const DATA_food = [
     isSelected: "false",
   },
 ];
-
-
 export default MatchScreen;
