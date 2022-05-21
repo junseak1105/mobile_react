@@ -2,23 +2,7 @@
     error_reporting(E_ALL);
     ini_set('display_errors', '1');
     
-    $conn = mysqli_connect(
-        'jhk.n-e.kr', // IP
-        'dsu_mobile_prj', // 아이디
-        'mobile_prj_jhk', // 비밀번호
-        'mobile_classprj' // 데이터베이스
-        
-    );
-    // $conn = mysqli_connect(
-    //     'localhost',
-    //     'root',
-    //     '',
-    //     'dgnr'
-    // );
-    // 한글깨짐 현상 관련
-    mysqli_query($conn, "set session character_set_connection=utf8;");
-    mysqli_query($conn, "set session character_set_results=utf8;");
-    mysqli_query($conn, "set session character_set_client=utf8;");
+    include('db.php');
 
     $userID = $_GET['userID'];
     $select_time = $_GET['selected_time'];
@@ -43,10 +27,10 @@
 	$data = $conn->query($query)->fetch_array();
     
     if($data['result'] == 'true'){ //정확한 매치
-        $query = "select idx from match_table $sqlwhere limit 1";
+        $query = "select count(*) as count,ifnull(idx,0) as idx ,ifnull(userID,'none') as userID from match_table $sqlwhere limit 1";
         $data = $conn->query($query)->fetch_array();
     }else{ //차선책(선택사항 중 하나라도 맞을 시)
-        $sqlwhere = "where ( select_favor_sex = '$select_sex' and";
+        $sqlwhere = "where select_favor_sex = '$select_sex' and ( ";
         for($i=0;$i<$select_list_count;$i++){
             $sqlwhere = $sqlwhere."select_favor_list like '%".$select_list_arr[$i]."%' "; //select_list explode()된 값 like 조건문 삽입
             if($i!=($select_list_count-1)){
@@ -56,8 +40,8 @@
             }
         }
         $sqlwhere = $sqlwhere." and userID != '$userID'";
-        $query = "select idx,userID,select_favor_list from match_table $sqlwhere ORDER BY RAND() LIMIT 0, 1"; //최상단 1명 검색(랜덤x)
-        echo $query;
+        $query = "select count(*) as count,ifnull(idx,0) as idx ,ifnull(userID,'none') as userID,ifnull(select_favor_list,'none') as select_favor_list from match_table $sqlwhere ORDER BY RAND() LIMIT 0, 1"; //최상단 1명 검색(랜덤x)
+        //echo $query;
         $data = $conn->query($query)->fetch_array();
     }
     
