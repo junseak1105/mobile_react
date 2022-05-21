@@ -76,11 +76,11 @@ const MatchScreen = () => {
 
     try {
       const response_match = await fetch(
-        'http://jhk.n-e.kr:80/match.php?userID='+userID +'&selected_time='+selected_time +'&selected_sex=' +selected_sex +'&selected_food='+selected_food+'&selected_hobby='+selected_hobby
+        'http://jhk.n-e.kr:80/set_match.php?userID='+userID +'&selected_time='+selected_time +'&selected_sex=' +selected_sex +'&selected_food='+selected_food+'&selected_hobby='+selected_hobby
       ); //1 CURL로 연결(phselected_foodp)
       const json_match = await response_match.json(); //2 json 받아온거 저장
       setmatchresult(json_match.results); //3 const배열에다가 저장
-      match_complete(match_result);
+      setModalVisible(true);
     } catch (error) {
       console.error(error);
     } finally {
@@ -103,7 +103,7 @@ const MatchScreen = () => {
       <Text>{modalinfo}</Text>
       <Pressable
         style={[styles.button, styles.buttonClose]}
-        onPress={() => setModalVisible(!modalVisible)}
+        onPress={() => setmatch(match_result)}
       >
         <Text style={styles.textStyle}>매칭 동의</Text>
       </Pressable>
@@ -116,11 +116,22 @@ const MatchScreen = () => {
       </View>
     );
   };
-
-  //매칭 완료 후 팝업창
-  const match_complete = (results) =>{
-    setModalVisible(true);
-  }
+  
+  const setmatch = async(result) =>{
+    try {
+      const response_match = await fetch(
+        'http://jhk.n-e.kr:80/match_set.php?userID='+userID +'&selected_time='+selected_time +'&selected_sex=' +selected_sex +'&selected_food='+selected_food+'&selected_hobby='+selected_hobby
+      ); //1 CURL로 연결(phselected_foodp)
+      const json_match = await response_match.json(); //2 json 받아온거 저장
+      setmatchresult(json_match.results); //3 const배열에다가 저장
+      setModalVisible(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+    setModalVisible(!modalVisible)
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -164,7 +175,7 @@ const MatchScreen = () => {
               borderRadius: 8,
             }}
             onPress={() => set_match()}>
-            <Text style={{fontSize: 10, color: 'white'}}>My Button</Text>
+            <Text style={{fontSize: 10, color: 'black'}}>매칭</Text>
           </TouchableOpacity>
         </View>
       </View>
