@@ -1,12 +1,19 @@
 import {title} from 'process';
 import React, {useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
+import {
+  Table,
+  TableWrapper,
+  Col,
+  Cols,
+  Cell,
+} from 'react-native-table-component';
 
 const ExampleFive = props => {
   const elementButton = value => (
     <TouchableOpacity onPress={() => _alertIndex(value)}>
       <View style={styles.btn}>
-        <Text style={styles.btnText2}>공강</Text>
+        <Text style={styles.btnText}>공강</Text>
       </View>
     </TouchableOpacity>
   );
@@ -144,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#c8e1ff',
     borderRadius: 2,
   },
-  btnText2: {textAlign: 'center'},
+  btnText: {textAlign: 'center'},
 });
 
 export default ExampleFive;
