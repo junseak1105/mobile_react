@@ -3,34 +3,22 @@
     ini_set('display_errors', '1');
     
     include("db.php");
+    $arr = array();
 
-    $userName = $_POST["userName"];
-    $userID = $_POST["userID"];
-    $userPassword = $_POST["userPassword"];
-    $userEmail = $_POST["userEmail"];
+    $userID = $_GET["userid"];
+    $userName = $_GET["username"];
+    $userPassword = $_GET["password"];
+    $userschool = $_GET["school"];
+    $sex = $_GET["sex"];
 
-
-    //$statement = mysqli_prepare($con, "INSERT INTO member(userName,userID,userPassword,userEmail) VALUES (?,?,?,?)");
-    //mysqli_stmt_bind_param($statement, "ssss", $userName, $userID, $userPassword, $userEmail);
-    //mysqli_stmt_execute($statement);
-
-    $storedProc = 'call Register(?,?,?,?)';
-    $statement = mysqli_prepare($conn,$storedProc);
-    mysqli_stmt_bind_param($statement,'ssss',$userName,$userID,$userPassword,$userEmail);
-    mysqli_stmt_execute($statement);
-    mysqli_stmt_bind_result($statement,$returnMsg);
-
-    $response = array();
-    $response["success"] = false;
-
-    while(mysqli_stmt_fetch($statement)) {
-        $response["success"] = true;
-        $response["returnMsg"] = $returnMsg;
+    $sql = "call Register('$userName','$userID','$userPassword','$userschool','$sex')";
+    //echo $sql;
+    $result_set = mysqli_query($conn, $sql);
+    while ($result = mysqli_fetch_assoc($result_set)) {
+        array_push($arr, $result);
     }
-
-    mysqli_close($conn);
-    echo json_encode($response);
-   
+    $responseJson = json_encode(array('results' => $arr),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    echo $responseJson;
     
 
 ?>
