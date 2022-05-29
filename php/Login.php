@@ -1,31 +1,21 @@
 <?php
     error_reporting(E_ALL);
     ini_set('display_errors', '1');
-
+    
     include("db.php");
+    $arr = array();
 
-    $userID = $_POST["userID"];
-    $userPassword = $_POST["userPassword"];
+    $userID = $_GET["userid"];
+    $userPassword = $_GET["password"];
 
-    $statement = mysqli_prepare($conn, "SELECT userID,userPassword FROM member WHERE userID = ? AND userPassword = ?");
-    mysqli_stmt_bind_param($statement, "ss", $userID, $userPassword);
-    mysqli_stmt_execute($statement);
-
-    mysqli_stmt_store_result($statement);
-    mysqli_stmt_bind_result($statement, $userID, $userPassword);
-
-    $response = array();
-    $response["success"] = false;
-
-    while(mysqli_stmt_fetch($statement)) {
-        $response["success"] = true;
-        $response["userID"] = $userID;
-        $response["userPassword"] = $userPassword;
-        $response["token"] = $token;
+    $sql = "SELECT IF( EXISTS(select userPW from member where userID = '$userID' and userPW = '$userPassword'), 'success', 'fail') as returnMsg, userPW as token from member where userID = '$userID' and userPw = '$userPassword';";
+    //echo $sql;
+    $result_set = mysqli_query($conn, $sql);
+    while ($result = mysqli_fetch_assoc($result_set)) {
+        array_push($arr, $result);
     }
-    mysqli_close($conn);
-    echo json_encode($response);
-
-
+    $responseJson = json_encode(array('results' => $arr),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    echo $responseJson;
+    
 
 ?>

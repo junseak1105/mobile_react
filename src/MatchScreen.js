@@ -19,10 +19,16 @@ import MyButton from '../components/MyButton';
 import CheckboxList from 'rn-checkbox-list';
 
 const MatchScreen = () => {
+
+  //navigation data
+  const param_hour = '1'; //route.params.param_hour;
+  const param_day = 'Mon'; //route.params.param_day;
+  const param_status = '0'; //route.params.param_status;
+  const userID = 'test';
   //팝업창
   const [modalVisible, setModalVisible] = useState(false);
-  const [modaltext,setmodaltext] = useState();
-  const [modalinfo,setmodalinfo] = useState();
+  const [modaltext, setmodaltext] = useState();
+  const [modalinfo, setmodalinfo] = useState();
   //match 성공 여부 저장
   const [match_result, setmatchresult] = useState([]);
   //카테고리 받아오기 시작
@@ -67,16 +73,28 @@ const MatchScreen = () => {
   //카테고리 받아오기 끝
 
   //매칭 버튼 클릭 시
-  const set_match = async () => {
+  const find_match = async () => {
     let selected_sex = selectedSex.toString();
     let selected_food = selectedFood.toString();
     let selected_hobby = selectedHobby.toString();
-    let userID = 'test';
-    let selected_time = 'mon1';
+   
 
     try {
       const response_match = await fetch(
-        'http://jhk.n-e.kr:80/set_match.php?userID='+userID +'&selected_time='+selected_time +'&selected_sex=' +selected_sex +'&selected_food='+selected_food+'&selected_hobby='+selected_hobby
+        'http://jhk.n-e.kr:80/find_match.php?userID=' +
+          userID +
+          '&selected_hour=' +
+          param_hour +
+          '&selected_day=' +
+          param_day +
+          '&selected_status=' +
+          param_status +
+          '&selected_sex=' +
+          selected_sex +
+          '&selected_food=' +
+          selected_food +
+          '&selected_hobby=' +
+          selected_hobby,
       ); //1 CURL로 연결(phselected_foodp)
       const json_match = await response_match.json(); //2 json 받아온거 저장
       setmatchresult(json_match.results); //3 const배열에다가 저장
@@ -90,47 +108,54 @@ const MatchScreen = () => {
 
   //팝업창 컴포넌트
   const Modal_view = props => {
-    if(match_result.count == 0){
-      setmodaltext("매칭가능 대상이 없습니다. 대기합니다");
-    }else{
-      setmodaltext("매칭성공 이분과 만나보시겠습니까?");
-      setmodalinfo("닉네임"+match_result.userID+"체크된 문항"+match_result.select_favor_list);
+    if (match_result.count == 0) {
+      setmodaltext('매칭가능 대상이 없습니다. 대기합니다');
+    } else {
+      setmodaltext('매칭성공 이분과 만나보시겠습니까?');
+      setmodalinfo(
+        '닉네임' +
+          match_result.userID +
+          '체크된 문항' +
+          match_result.select_favor_list,
+      );
     }
-  
+
     return (
-      <View style={{backgroundColor:"grey"}}>
-      <Text>{modaltext}</Text>
-      <Text>{modalinfo}</Text>
-      <Pressable
-        style={[styles.button, styles.buttonClose]}
-        onPress={() => setmatch(match_result)}
-      >
-        <Text style={styles.textStyle}>매칭 동의</Text>
-      </Pressable>
-      <Pressable
-        style={[styles.button, styles.buttonClose]}
-        onPress={() => setModalVisible(!modalVisible)}
-      >
-        <Text style={styles.textStyle}>취소</Text>
-      </Pressable>
+      <View style={{backgroundColor: 'grey'}}>
+        <Text>{modaltext}</Text>
+        <Text>{modalinfo}</Text>
+        <Pressable
+          style={[styles.button, styles.buttonClose]}
+          onPress={() => setmatch()}>
+          <Text style={styles.textStyle}>매칭 동의</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.button, styles.buttonClose]}
+          onPress={() => setModalVisible(!modalVisible)}>
+          <Text style={styles.textStyle}>취소</Text>
+        </Pressable>
       </View>
     );
   };
-  
-  const setmatch = async(result) =>{
+
+  const setmatch = async() => {
     try {
       const response_match = await fetch(
-        'http://jhk.n-e.kr:80/match_set.php?userID='+userID +'&selected_time='+selected_time +'&selected_sex=' +selected_sex +'&selected_food='+selected_food+'&selected_hobby='+selected_hobby
+        'http://jhk.n-e.kr:80/set_match.php?userID=' +
+          userID +
+          '&selected_hour=' +
+          param_hour +
+          '&selected_day=' +
+          param_day,
       ); //1 CURL로 연결(phselected_foodp)
       const json_match = await response_match.json(); //2 json 받아온거 저장
       setmatchresult(json_match.results); //3 const배열에다가 저장
-      setModalVisible(true);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
-    setModalVisible(!modalVisible)
+    setModalVisible(!modalVisible);
   };
 
   return (
@@ -166,7 +191,7 @@ const MatchScreen = () => {
             />
           </SafeAreaView>
         </View>
-        <View style={styles.set_match}>
+        <View style={styles.find_match}>
           <TouchableOpacity
             style={{
               backgroundColor: '#4B778D',
@@ -174,7 +199,7 @@ const MatchScreen = () => {
               margin: 10,
               borderRadius: 8,
             }}
-            onPress={() => set_match()}>
+            onPress={() => find_match()}>
             <Text style={{fontSize: 10, color: 'black'}}>매칭</Text>
           </TouchableOpacity>
         </View>
@@ -190,9 +215,7 @@ const MatchScreen = () => {
             setModalVisible(!modalVisible);
           }}>
           <View style={styles.centeredView}>
-            <Modal_view
-            
-            />
+            <Modal_view />
           </View>
         </Modal>
       </View>
@@ -219,45 +242,45 @@ const styles = StyleSheet.create({
   container_hobby: {
     flex: 1,
   },
-  set_match: {
+  find_match: {
     width: 100,
     flex: 1,
   },
   //modal css start
   centeredView: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   button: {
     borderRadius: 20,
     padding: 10,
-    elevation: 2
+    elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: '#F194FF',
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: '#2196F3',
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
+    textAlign: 'center',
   },
   //modal css end
 });

@@ -1,1 +1,3 @@
-testtest
+<?php
+echo "mobile prj";
+?>

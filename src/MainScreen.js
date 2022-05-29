@@ -1,275 +1,172 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Button, StyleSheet} from 'react-native';
+import {View, Text, Button, StyleSheet, Modal,Pressable} from 'react-native';
 import {DataTable} from 'react-native-paper';
 
-const MainScreen = props => {
-  // const [Timetable, SetTimetable] = useState([
-  //   {
-  //     hour: '9',
-  //     Mon: {
-  //       time: 'Mon1',
-  //       class: '',
-  //     },
-  //     Tue: {
-  //       time: 'Tue1',
-  //       class: 'test',
-  //     },
-  //     Wed: {
-  //       time: 'Wed1',
-  //       class: 'test',
-  //     },
-  //     Thu: {
-  //       time: 'Thu1',
-  //       class: '',
-  //     },
-  //     Fri: {
-  //       time: 'Fri1',
-  //       class: '',
-  //     },
-  //   },
-  //   {
-  //     hour: '10',
-  //     Mon: {
-  //       time: 'Mon2',
-  //       class: '',
-  //     },
-  //     Tue: {
-  //       time: 'Tue2',
-  //       class: '',
-  //     },
-  //     Wed: {
-  //       time: 'Wed2',
-  //       class: '',
-  //     },
-  //     Thu: {
-  //       time: 'Thu2',
-  //       class: 'test',
-  //     },
-  //     Fri: {
-  //       time: 'Fri2',
-  //       class: 'test',
-  //     },
-  //   },
-  //   {
-  //     hour: '11',
-  //     Mon: {
-  //       time: 'Mon3',
-  //       class: '',
-  //     },
-  //     Tue: {
-  //       time: 'Tue3',
-  //       class: '',
-  //     },
-  //     Wed: {
-  //       time: 'Wed3',
-  //       class: '',
-  //     },
-  //     Thu: {
-  //       time: 'Thu3',
-  //       class: 'test',
-  //     },
-  //     Fri: {
-  //       time: 'Fri3',
-  //       class: 'test',
-  //     },
-  //   },
-  //   {
-  //     hour: '12',
-  //     Mon: {
-  //       time: 'Mon4',
-  //       class: '',
-  //     },
-  //     Tue: {
-  //       time: 'Tue4',
-  //       class: '',
-  //     },
-  //     Wed: {
-  //       time: 'Wed4',
-  //       class: '',
-  //     },
-  //     Thu: {
-  //       time: 'Thu4',
-  //       class: 'test',
-  //     },
-  //     Fri: {
-  //       time: 'Fri4',
-  //       class: 'test',
-  //     },
-  //   },
-  //   {
-  //     hour: '1',
-  //     Mon: {
-  //       time: 'Mon5',
-  //       class: '',
-  //     },
-  //     Tue: {
-  //       time: 'Tue5',
-  //       class: '',
-  //     },
-  //     Wed: {
-  //       time: 'Wed5',
-  //       class: '',
-  //     },
-  //     Thu: {
-  //       time: 'Thu5',
-  //       class: 'test',
-  //     },
-  //     Fri: {
-  //       time: 'Fri5',
-  //       class: 'test',
-  //     },
-  //   },
-  //   {
-  //     hour: '2',
-  //     Mon: {
-  //       time: 'Mon6',
-  //       class: '',
-  //     },
-  //     Tue: {
-  //       time: 'Tue6',
-  //       class: '',
-  //     },
-  //     Wed: {
-  //       time: 'Wed6',
-  //       class: '',
-  //     },
-  //     Thu: {
-  //       time: 'Thu6',
-  //       class: 'test',
-  //     },
-  //     Fri: {
-  //       time: 'Fri6',
-  //       class: 'test',
-  //     },
-  //   },
-  //   {
-  //     hour: '3',
-  //     Mon: {
-  //       time: 'Mon7',
-  //       class: '',
-  //     },
-  //     Tue: {
-  //       time: 'Tue7',
-  //       class: '',
-  //     },
-  //     Wed: {
-  //       time: 'Wed7',
-  //       class: '',
-  //     },
-  //     Thu: {
-  //       time: 'Thu7',
-  //       class: 'test',
-  //     },
-  //     Fri: {
-  //       time: 'Fri7',
-  //       class: 'test',
-  //     },
-  //   },
-  //   {
-  //     hour: '4',
-  //     Mon: {
-  //       time: 'Mon8',
-  //       class: '',
-  //     },
-  //     Tue: {
-  //       time: 'Tue8',
-  //       class: '',
-  //     },
-  //     Wed: {
-  //       time: 'Wed8',
-  //       class: '',
-  //     },
-  //     Thu: {
-  //       time: 'Thu8',
-  //       class: 'test',
-  //     },
-  //     Fri: {
-  //       time: 'Fri8',
-  //       class: 'test',
-  //     },
-  //   },
-  // ]);
-//db접속
-// const gettimetable = async () => {
-//   try {
-//     const response_table = await fetch(
-//       'http://jhk.n-e.kr:80/get_timetable.php?userID=test2',
-//     ); //1 CURL로 연결(php)
-//     const json_table = await response_table.json(); //2 json 받아온거 저장
-//     SetTimetable(json_table.results); //3 const배열에다가 저장
-//   } catch (error) {
-//     console.error(error);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-// //db접속끝
+//import AsyncStorage from '@react-native-community/async-storage';
 
-// useEffect(() => {
-//   gettimetable(); //받아오는 함수 실행
-// }, []);
+const MainScreen = props => {
+  // 유저 닉네임 불러오기
+  // AsyncStorage.getItem('token', (err, result) => {
+  //   alert(result); // User1 출력
+  // });
+
+  //timetable 저장 state
+  const [Timetable, SetTimetable] = useState([]);
+
+  //팝업창
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modaltext,setmodaltext] = useState();
+  const [modalhour,setmodalhour] = useState();
+  const [modalstatus,setmodalstatus] = useState();
+  const [modalday,setmodalday] = useState();
+
+  //팝업창 open 기능
+  const setModal = (hour,status,day) =>{
+    setmodalhour(hour);
+    setmodalstatus(status);
+    setmodalday(day);
+    if(status==0) setmodaltext('매칭 신청 or 수업 입력');
+    if(status==1) setmodaltext('매칭 상태 확인');
+    setModalVisible(!modalVisible);
+  }
+
+  const Modal_view = props => {
+    if(modalstatus==0){
+      return (
+        <View style={{backgroundColor:"grey"}}>
+        <Text>{modaltext}</Text>
+        <Pressable
+          style={[styles.button, styles.buttonClose]}
+          onPress={() => setModalVisible(!modalVisible)}
+        >
+        <Text>매칭 신청</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.button, styles.buttonClose]}
+          onPress={() => to_match()}
+        >
+        <Text>수업 입력</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.button, styles.buttonClose]}
+          onPress={() => setModalVisible(!modalVisible)}
+        >
+        <Text style={styles.textStyle}>취소</Text>
+        </Pressable>
+        </View>
+      );
+    }else if(modalstatus==1){
+      return (
+        <View style={{backgroundColor:"grey"}}>
+        <Text>{modaltext}</Text>
+        <Pressable
+          style={[styles.button, styles.buttonClose]}
+          onPress={() => setModalVisible(!modalVisible)}
+        >
+          <Text style={styles.textStyle}>취소</Text>
+        </Pressable>
+        </View>
+      );
+    }
+  };
+
+  const to_match = ({navigation}) =>{
+    navigation.navigate('MatchScreen',{param_hour:modalhour,param_day:modalday,param_status:modalstatus})
+  }
+
+  //db접속
+  const gettimetable = async () => {
+    try {
+      const response_table = await fetch('http://jhk.n-e.kr:80/get_timetable.php'); //1 CURL로 연결(php)
+      const json_table = await response_table.json(); //2 json 받아온거 저장
+      SetTimetable(json_table.results); //3 const배열에다가 저장
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  //db접속끝
+
+  useEffect(() => {
+    gettimetable(); //받아오는 함수 실행
+  }, []);
 
   return (
-    
     <View style={styles.screen}>
-    <Text>Screen 1</Text>
-    <Button
-      onPress={() => props.navigation.navigate('match')}
-      title="Go to match"
-    />
+      <DataTable>
+        <DataTable.Header>
+          <DataTable.Title></DataTable.Title>
+          <DataTable.Title>Mon</DataTable.Title>
+          <DataTable.Title>Tue</DataTable.Title>
+          <DataTable.Title>Wed</DataTable.Title>
+          <DataTable.Title>Thu</DataTable.Title>
+          <DataTable.Title>Fri</DataTable.Title>
+        </DataTable.Header>
+        {Timetable.map(data => {
+          return (
+            <DataTable.Row>
+              <DataTable.Cell>{data.hour}</DataTable.Cell>
+              <DataTable.Cell>
+                <Button
+                  onPress={() => setModal(data.Mon.hour,data.Mon.status,'Mon')}
+                  title={data.Mon.class}
+                />
+              </DataTable.Cell>
+              <DataTable.Cell>
+                <Button
+                  onPress={() => setModal(data.Mon.hour,data.Mon.status,'Tue')}
+                  title={data.Tue.class}
+                />
+              </DataTable.Cell>
+              <DataTable.Cell>
+                <Button
+                  onPress={() => setModal(data.Mon.hour,data.Mon.status,'Wed')}
+                  title={data.Wed.class}
+                />
+              </DataTable.Cell>
+              <DataTable.Cell>
+                <Button
+                  onPress={() => setModal(data.Mon.hour,data.Mon.status,'Thu')}
+                  title={data.Thu.class}
+                />
+              </DataTable.Cell>
+              <DataTable.Cell>
+                <Button
+                  onPress={() => setModal(data.Mon.hour,data.Mon.status,'Fri')}
+                  title={data.Fri.class}
+                />
+              </DataTable.Cell>
+            </DataTable.Row>
+          );
+        })}
+      </DataTable>
+      <Text>Screen 1</Text>
+      <Button
+        onPress={() => props.navigation.navigate('MatchScreen')}
+        title="Go to match"
+      />
+      <Button
+        onPress={() => props.navigation.navigate('LoginScreen')}
+        title="Go to Login"
+      />
+      <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <Modal_view
+            
+            />
+          </View>
+        </Modal>
+      </View>
     </View>
-
-    // <View style={styles.container}>
-    //   {/* <DataTable>
-    //     <DataTable.Header>
-    //       <DataTable.Title></DataTable.Title>
-    //       <DataTable.Title>Mon</DataTable.Title>
-    //       <DataTable.Title>Tue</DataTable.Title>
-    //       <DataTable.Title>Wed</DataTable.Title>
-    //       <DataTable.Title>Thu</DataTable.Title>
-    //       <DataTable.Title>Fri</DataTable.Title>
-    //     </DataTable.Header>
-    //     {Timetable.map(data => {
-    //       return (
-    //         <DataTable.Row>
-    //           <DataTable.Cell>{data.hour}</DataTable.Cell>
-    //           <DataTable.Cell>
-    //             <Button
-    //               onPress={() => Alert.alert("clicked!")}
-    //               title = {data.Mon.class}
-    //             />
-    //           </DataTable.Cell>
-    //           <DataTable.Cell>
-    //           <Button
-    //               onPress={() => Alert.alert("clicked!")}
-    //               title = {data.Tue.class}
-    //             />
-    //           </DataTable.Cell>
-    //           <DataTable.Cell>
-    //             <Button
-    //               onPress={() => Alert.alert("clicked!")}
-    //               title = {data.Wed.class}
-    //             />
-    //           </DataTable.Cell>
-    //           <DataTable.Cell>
-    //             <Button
-    //               onPress={() => Alert.alert("clicked!")}
-    //               title = {data.Thu.class}
-    //             />
-    //           </DataTable.Cell>
-    //           <DataTable.Cell>
-    //             <Button
-    //               onPress={() => Alert.alert("clicked!")}
-    //               title = {data.Fri.class}
-    //             />
-    //           </DataTable.Cell>
-    //         </DataTable.Row>
-    //       );
-    //     })}
-    //   </DataTable> */}
-
-
-    // </View>
   );
 };
 
@@ -279,6 +176,43 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  //modal css start
+  centeredView: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  },
+  //modal css end
 });
 
 export default MainScreen;
