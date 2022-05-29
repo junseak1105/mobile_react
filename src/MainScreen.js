@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const MainScreen = props => {
   //userid token
   const [token, settoken] = useState("");
-
   //timetable 저장 state
   const [Timetable, SetTimetable] = useState([]);
 
@@ -148,7 +147,7 @@ const MainScreen = props => {
   const gettimetable = async () => {
     try {
       const response_table = await fetch(
-        'http://jhk.n-e.kr:80/get_timetable.php',
+        'http://jhk.n-e.kr:80/get_timetable.php?userid='+token,
       ); //1 CURL로 연결(php)
       const json_table = await response_table.json(); //2 json 받아온거 저장
       SetTimetable(json_table.results); //3 const배열에다가 저장
@@ -198,7 +197,7 @@ const MainScreen = props => {
               <DataTable.Cell>
                 <Button
                   onPress={() =>
-                    setModal(data.hour, data.Thu.status, 'Wed')
+                    setModal(data.hour, data.Wed.status, 'Wed')
                   }
                   title={data.Wed.class}
                 />
@@ -206,7 +205,7 @@ const MainScreen = props => {
               <DataTable.Cell>
                 <Button
                   onPress={() =>
-                    setModal(data.hour, data.Fri.status, 'Thu')
+                    setModal(data.hour, data.Thu.status, 'Thu')
                   }
                   title={data.Thu.class}
                 />
@@ -214,7 +213,7 @@ const MainScreen = props => {
               <DataTable.Cell>
                 <Button
                   onPress={() =>
-                    setModal(data.hour, data.Mon.status, 'Fri')
+                    setModal(data.hour, data.Fri.status, 'Fri')
                   }
                   title={data.Fri.class}
                 />
