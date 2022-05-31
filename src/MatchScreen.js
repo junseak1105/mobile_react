@@ -17,6 +17,8 @@ import {
 import CheckBox from '@react-native-community/checkbox';
 import MyButton from '../components/MyButton';
 import CheckboxList from 'rn-checkbox-list';
+import { get } from 'express/lib/response';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MatchScreen = () => {
 
@@ -24,7 +26,10 @@ const MatchScreen = () => {
   const param_hour = '1'; //route.params.param_hour;
   const param_day = 'Mon'; //route.params.param_day;
   const param_status = '0'; //route.params.param_status;
-  const userID = 'test';
+  
+  //userid token
+  const [token,settoken] = useState();
+
   //팝업창
   const [modalVisible, setModalVisible] = useState(false);
   const [modaltext, setmodaltext] = useState();
@@ -41,6 +46,12 @@ const MatchScreen = () => {
   const [fa_hobby, sethobbyData] = useState([]);
   const [fa_food, setfoodData] = useState([]);
   const [fa_sex, setsexData] = useState([]);
+
+  //localstorage userid getdata
+  AsyncStorage.getItem('token', (err,result)=>{
+    settoken(result);
+  });
+  
   //db접속
   const getcategory = async () => {
     try {
@@ -82,7 +93,7 @@ const MatchScreen = () => {
     try {
       const response_match = await fetch(
         'http://jhk.n-e.kr:80/find_match.php?userID=' +
-          userID +
+          token +
           '&selected_hour=' +
           param_hour +
           '&selected_day=' +
@@ -123,7 +134,6 @@ const MatchScreen = () => {
     return (
       <View style={{backgroundColor: 'grey'}}>
         <Text>{modaltext}</Text>
-        <Text>{modalinfo}</Text>
         <Pressable
           style={[styles.button, styles.buttonClose]}
           onPress={() => setmatch()}>
@@ -131,7 +141,7 @@ const MatchScreen = () => {
         </Pressable>
         <Pressable
           style={[styles.button, styles.buttonClose]}
-          onPress={() => setModalVisible(!modalVisible)}>
+          onPress={() => cancelmatch()}>
           <Text style={styles.textStyle}>취소</Text>
         </Pressable>
       </View>
@@ -142,7 +152,27 @@ const MatchScreen = () => {
     try {
       const response_match = await fetch(
         'http://jhk.n-e.kr:80/set_match.php?userID=' +
-          userID +
+          token +
+          '&selected_hour=' +
+          param_hour +
+          '&selected_day=' +
+          param_day,
+      ); //1 CURL로 연결(phselected_foodp)
+      const json_match = await response_match.json(); //2 json 받아온거 저장
+      setmatchresult(json_match.results); //3 const배열에다가 저장
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+    setModalVisible(!modalVisible);
+  };
+
+  const cancelmatch = async() => {
+    try {
+      const response_match = await fetch(
+        'http://jhk.n-e.kr:80/cancel_match.php?userID=' +
+          token +
           '&selected_hour=' +
           param_hour +
           '&selected_day=' +
