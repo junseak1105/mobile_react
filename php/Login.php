@@ -8,7 +8,7 @@
     $userID = $_GET["userid"];
     $userPassword = $_GET["password"];
 
-    $sql = "SELECT IF( EXISTS(select userPW from member where userID = '$userID' and userPW = '$userPassword'), 'success', 'fail') as returnMsg, userPW as token from member where userID = '$userID' and userPw = '$userPassword';";
+    $sql = "SELECT IF( EXISTS(select userPW from member where userID = '$userID' and userPW = md5('$userPassword')), 'success', 'fail') as returnMsg;";
     //echo $sql;
     $result_set = mysqli_query($conn, $sql);
     while ($result = mysqli_fetch_assoc($result_set)) {
