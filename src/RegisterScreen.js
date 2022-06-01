@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, Button, StyleSheet, TextInput} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { executeNativeBackPress } from 'react-native-screens';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const RegisterScreen = props => {
   const [returnMsg, setreturnMsg] = useState([]);
@@ -34,10 +35,11 @@ const RegisterScreen = props => {
     }
   };
   //db접속끝
-
+  
+  const isFocused = useIsFocused();
   useEffect(() => {
     getschool(); //받아오는 함수 실행
-  }, []);
+  }, [isFocused]);
   //카테고리 받아오기 끝
 
 

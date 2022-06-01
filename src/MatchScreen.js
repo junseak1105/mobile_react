@@ -19,6 +19,7 @@ import MyButton from '../components/MyButton';
 import CheckboxList from 'rn-checkbox-list';
 import { get } from 'express/lib/response';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const MatchScreen = () => {
 
@@ -47,10 +48,7 @@ const MatchScreen = () => {
   const [fa_food, setfoodData] = useState([]);
   const [fa_sex, setsexData] = useState([]);
 
-  //localstorage userid getdata
-  AsyncStorage.getItem('token', (err,result)=>{
-    settoken(result);
-  });
+  
   
   //db접속
   const getcategory = async () => {
@@ -77,10 +75,14 @@ const MatchScreen = () => {
     }
   };
   //db접속끝
-
+  const isFocused = useIsFocused();
   useEffect(() => {
+    //localstorage userid getdata
+    AsyncStorage.getItem('token', (err,result)=>{
+      settoken(result);
+    });
     getcategory(); //받아오는 함수 실행
-  }, []);
+  }, [isFocused]);
   //카테고리 받아오기 끝
 
   //매칭 버튼 클릭 시
@@ -118,9 +120,24 @@ const MatchScreen = () => {
   };
 
   //팝업창 컴포넌트
-  const Modal_view = props => {
+  const Modal_view = () => {
     if (match_result.count == 0) {
       setmodaltext('매칭가능 대상이 없습니다. 대기합니다');
+      return (
+        <View style={{backgroundColor: 'grey'}}>
+          <Text>{modaltext}</Text>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => setmatch('nomatch')}>
+            <Text style={styles.textStyle}>매칭 동의</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => cancelmatch()}>
+            <Text style={styles.textStyle}>취소</Text>
+          </Pressable>
+        </View>
+      );
     } else {
       setmodaltext('매칭성공 이분과 만나보시겠습니까?');
       setmodalinfo(
@@ -129,26 +146,64 @@ const MatchScreen = () => {
           '체크된 문항' +
           match_result.select_favor_list,
       );
+      return (
+        <View style={{backgroundColor: 'grey'}}>
+          <Text>{modaltext}</Text>
+          <Text>{modalinfo}</Text>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => setmatch('matched')}>
+            <Text style={styles.textStyle}>매칭 동의</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => cancelmatch()}>
+            <Text style={styles.textStyle}>취소</Text>
+          </Pressable>
+        </View>
+      );
     }
 
-    return (
-      <View style={{backgroundColor: 'grey'}}>
-        <Text>{modaltext}</Text>
-        <Pressable
-          style={[styles.button, styles.buttonClose]}
-          onPress={() => setmatch()}>
-          <Text style={styles.textStyle}>매칭 동의</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.button, styles.buttonClose]}
-          onPress={() => cancelmatch()}>
-          <Text style={styles.textStyle}>취소</Text>
-        </Pressable>
-      </View>
-    );
+    
   };
 
-  const setmatch = async() => {
+  //매칭대상 없이 대기
+  const setmatch = async(param) => {
+    try {
+      alert('http://jhk.n-e.kr:80/set_match.php?userID=' +
+      token +
+      '&selected_hour=' +
+      param_hour +
+      '&selected_day=' +
+      param_day +
+      '&matched=' +
+      param +
+      '&match_userid=' +
+      match_result.userID,);
+      const response_match = await fetch(
+        'http://jhk.n-e.kr:80/set_match.php?userID=' +
+          token +
+          '&selected_hour=' +
+          param_hour +
+          '&selected_day=' +
+          param_day +
+          '&matched=' +
+          param +
+          '&match_userid=' +
+          match_result.userID,
+      ); //1 CURL로 연결(phselected_foodp)
+      const json_match = await response_match.json(); //2 json 받아온거 저장
+      setmatchresult(json_match.results); //3 const배열에다가 저장
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+    setModalVisible(!modalVisible);
+  };
+
+  //매칭대상 없이 대기
+  const sendmatch = async() => {
     try {
       const response_match = await fetch(
         'http://jhk.n-e.kr:80/set_match.php?userID=' +
@@ -167,6 +222,7 @@ const MatchScreen = () => {
     }
     setModalVisible(!modalVisible);
   };
+
 
   const cancelmatch = async() => {
     try {

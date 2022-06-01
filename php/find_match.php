@@ -25,7 +25,7 @@
     mysqli_stmt_execute($statement);
     
     //매칭 일치 사례 판별
-    $sqlwhere = "where select_favor_list = '$select_list' and userID != '$userID'";
+    $sqlwhere = "where select_favor_list = '$select_list' and userID != '$userID' and pending !='N' ";
     $query = "SELECT (IF(EXISTS(SELECT * FROM match_table $sqlwhere),'true', 'false')) as result";
 	$data = $conn->query($query)->fetch_array();
     
@@ -43,7 +43,7 @@
             }
         }
         $sqlwhere = $sqlwhere." and userID != '$userID'";
-        $query = "select count(*) as count,ifnull(idx,0) as idx ,ifnull(userID,'none') as userID,ifnull(select_favor_list,'none') as select_favor_list from match_table $sqlwhere ORDER BY RAND() LIMIT 0, 1"; //최상단 1명 검색(랜덤x)
+        $query = "select count(*) as count,ifnull(idx,0) as idx ,ifnull(userID,'none') as userID,ifnull(select_favor_list,'none') as select_favor_list,ifnull(select_time,'none') as select_time from match_table $sqlwhere ORDER BY RAND() LIMIT 0, 1"; //최상단 1명 검색(랜덤x)
         //echo $query;
         $data = $conn->query($query)->fetch_array();
     }

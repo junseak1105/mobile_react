@@ -1,14 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, Button, StyleSheet, TextInput} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const LoginScreen = props => {
+  const isFocused = useIsFocused();
   useEffect(() => {
     //localstorage userid getdata
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
     });
-  }, []);
+  }, [isFocused]);
 
   //userid token
   const [token, settoken] = useState('');
@@ -36,6 +38,7 @@ const LoginScreen = props => {
             });
             AsyncStorage.getItem('token', (err, result) => {
               settoken(result);
+              alert(token);
             });
             alert('로그인 성공');
             props.navigation.navigate('MainScreen');
