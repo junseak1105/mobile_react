@@ -82,6 +82,7 @@ const RegisterScreen = props => {
         style={styles.input}
         placeholder="UserID"
         autoCapitalize="none"
+        defaultValue={userid} 
         placeholderTextColor="white"
         onChangeText={val => setUserid(val)}
       />
@@ -89,6 +90,7 @@ const RegisterScreen = props => {
         style={styles.input}
         placeholder="Username"
         autoCapitalize="none"
+        defaultValue={username} 
         placeholderTextColor="white"
         onChangeText={val => setUsername(val)}
       />
@@ -96,6 +98,7 @@ const RegisterScreen = props => {
         style={styles.input}
         placeholder="Password"
         secureTextEntry={true}
+        defaultValue={password} 
         autoCapitalize="none"
         placeholderTextColor="white"
         onChangeText={val => setPasswd(val)}

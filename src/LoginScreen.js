@@ -3,14 +3,19 @@ import {View, Text, Button, StyleSheet, TextInput} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = props => {
+  useEffect(() => {
+    //localstorage userid getdata
+    AsyncStorage.getItem('token', (err, result) => {
+      settoken(result);
+    });
+  }, []);
 
   //userid token
   const [token, settoken] = useState('');
 
-  const [returnMsg, setreturnMsg] = useState([]);
+  //const [returnMsg, setreturnMsg] = useState();
   const [userid, setUserid] = useState('');
   const [password, setPasswd] = useState('');
-
 
   //db접속
   const Login = async () => {
@@ -22,18 +27,22 @@ const LoginScreen = props => {
           password,
       ); //1 CURL로 연결(php)
       const json_table = await response_table.json(); //2 json 받아온거 저장
-      setreturnMsg(json_table.results); //3 const배열에다가 저장
-      if (returnMsg[0].returnMsg == 'success') {
-        AsyncStorage.setItem('token',userid, () =>{
-          console.log("닉네임 저장");
+      //setreturnMsg(json_table.results); //3 const배열에다가 저장
+      {
+        json_table.results.map(data => {
+          if (data.returnMsg == 'success') {
+            AsyncStorage.setItem('token', userid, () => {
+              console.log('닉네임 저장');
+            });
+            AsyncStorage.getItem('token', (err, result) => {
+              settoken(result);
+            });
+            alert('로그인 성공');
+            props.navigation.navigate('MainScreen');
+          } else {
+            alert('로그인 실패');
+          }
         });
-        AsyncStorage.getItem('token', (err,result)=>{
-          settoken(result);
-        });
-        alert('로그인 성공');
-        props.navigation.navigate('MainScreen');
-      } else {
-        alert('로그인 실패');
       }
     } catch (error) {
       console.error(error);

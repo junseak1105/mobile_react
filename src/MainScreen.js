@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, Button, StyleSheet, Modal, Pressable,Alert} from 'react-native';
 import {DataTable, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const MainScreen = props => {
   //userid token
@@ -28,6 +29,7 @@ const MainScreen = props => {
     settoken(result);
   });
 
+  
   //팝업창 open 기능
   const setModal = (hour, status, day) => {
     setmodalhour(hour);
@@ -77,14 +79,17 @@ const MainScreen = props => {
   const Modal_view_class = props => {
     return(
       <View>
-        <Text>수업명</Text>
+        <Text>{classname}</Text>
+        <SafeAreaView>
         <TextInput
         style={styles.classinput}
-        placeholder="수업명 입력"
+        placeholder={"수업명 입력"}
+        defaultValue={classname} 
         autoCapitalize="none"
         placeholderTextColor="black"
         onChangeText={val => setclassname(val)}
         />
+        </SafeAreaView>
         <Pressable
             style={[styles.button, styles.buttonClose]}
             onPress={() => insert_class_db()}>
@@ -106,6 +111,14 @@ const MainScreen = props => {
   //수업 입력
   const insert_class_db = async () =>{
     try {
+      // alert('http://jhk.n-e.kr:80/insert_class.php?userID='+
+      // token+
+      // '&selected_hour='+
+      // modalhour+
+      // '&selected_day='+
+      // modalday+
+      // '&classname='+
+      // classname);
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/insert_class.php?userID='+
         token+
@@ -118,14 +131,6 @@ const MainScreen = props => {
       ); //1 CURL로 연결(php)
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setclassresult(json_match.results); //3 const배열에다가 저장
-      alert('http://jhk.n-e.kr:80/insert_class.php?userID='+
-      token+
-      '&selected_hour='+
-      modalhour+
-      '&selected_day='+
-      modalday+
-      '&classname='+
-      classname);
       setModalclassVisible(!modalclassVisible);
       gettimetable();
     } catch (error) {
@@ -158,6 +163,15 @@ const MainScreen = props => {
     }
   };
   //db접속끝
+  const logout = () =>{
+    AsyncStorage.setItem('token','', () =>{
+      console.log("로그아웃");
+    });
+    AsyncStorage.getItem('token', (err,result)=>{
+      settoken(result);
+    });
+    gettimetable();
+  }
 
   useEffect(() => {
     gettimetable(); //받아오는 함수 실행
@@ -230,6 +244,10 @@ const MainScreen = props => {
       <Button
         onPress={() => props.navigation.navigate('LoginScreen')}
         title="Go to Login"
+      />
+      <Button
+        onPress={()=> logout()}
+        title="Logout"
       />
       <View style={styles.centeredView}>
         <Modal
