@@ -7,8 +7,8 @@ include('db.php');
 $arr = array();
 //json output array
 $data = array();
-
-$sql = "SELECT * from test where userId = 'test';";
+$userID = $_GET['userid'];
+$sql = "SELECT * from user_timetable where userID = '$userID';";
 
 $result_set = mysqli_query($conn, $sql);
 

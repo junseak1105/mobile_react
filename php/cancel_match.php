@@ -10,7 +10,7 @@
     $selected_day = $_GET['selected_day'];
     $select_time = $selected_day.$selected_hour;
 
-    $sql = "update user_timetable set Mon='Wait,1' where userID = '$userID' and hour = '$selected_hour'";
+    $sql = "delete from match_table where userID = '$userID' and select_time = '$select_time'";
 
     mysqli_query($conn,$sql);
     echo json_encode(array('results' => $arr),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
