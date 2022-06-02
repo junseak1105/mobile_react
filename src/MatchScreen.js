@@ -24,9 +24,9 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 const MatchScreen = () => {
 
   //navigation data
-  const param_hour = '1'; //route.params.param_hour;
-  const param_day = 'Mon'; //route.params.param_day;
-  const param_status = '0'; //route.params.param_status;
+  const param_hour = route.params.param_hour;
+  const param_day = route.params.param_day;
+  const param_status = route.params.param_status;
   
   //userid token
   const [token,settoken] = useState();

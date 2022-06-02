@@ -38,11 +38,13 @@ const MainScreen = props => {
     setmodalstatus(status);
     setmodalday(day);
     if (status == 0) setmodaltext('매칭 신청 or 수업 입력');
-    if (status == 1) setmodaltext('매칭 상태 확인');
+    if (status == 1) setmodaltext('매칭 대기 중');
+    if (status == 2) setmodaltext('매칭 수락, 신청대기');
+    if (status == 3) setmodaltext('매칭 성공');
     setModalVisible(!modalVisible);
   };
 
-  const Modal_view = props => {
+  const Modal_view = () => {
     if (modalstatus == 0) {
       //기본 상태
       return (
@@ -50,7 +52,13 @@ const MainScreen = props => {
           {/* <Text>{modaltext}</Text> */}
           <Pressable
             style={[styles.button, styles.buttonClose]}
-            onPress={() => setModalVisible(!modalVisible)}>
+            onPress={() =>
+              props.navigation.navigate('MatchScreen', {
+                param_hour: modalhour,
+                param_day: modalday,
+                param_status: modalstatus,
+              })
+            }>
             <Text>매칭 신청</Text>
           </Pressable>
           <Pressable
@@ -61,7 +69,7 @@ const MainScreen = props => {
           <Pressable
             style={[styles.button, styles.buttonClose]}
             onPress={() => setModalVisible(!modalVisible)}>
-            <Text style={styles.textStyle}>취소</Text>
+            <Text style={styles.textStyle}>닫기</Text>
           </Pressable>
         </View>
       );
@@ -72,8 +80,13 @@ const MainScreen = props => {
           <Text>{modaltext}</Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
+            onPress={() => cancel_findmatch()}>
+            <Text>매칭 취소</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
             onPress={() => setModalVisible(!modalVisible)}>
-            <Text style={styles.textStyle}>취소</Text>
+            <Text style={styles.textStyle}>닫기</Text>
           </Pressable>
         </View>
       );
@@ -84,8 +97,13 @@ const MainScreen = props => {
           <Text>{modaltext}</Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
+            onPress={() => cancel_match()}>
+            <Text style={styles.textStyle}>거절</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
             onPress={() => setModalVisible(!modalVisible)}>
-            <Text style={styles.textStyle}>취소</Text>
+            <Text style={styles.textStyle}>닫기</Text>
           </Pressable>
         </View>
       );
@@ -103,7 +121,7 @@ const MainScreen = props => {
       );
     }
   };
-
+  //수업 입력 창
   const Modal_view_class = props => {
     return (
       <View>
@@ -167,13 +185,63 @@ const MainScreen = props => {
       setLoading(false);
     }
   };
-
-  const to_match = ({navigation}) => {
-    navigation.navigate('MatchScreen', {
-      param_hour: modalhour,
-      param_day: modalday,
-      param_status: modalstatus,
-    });
+  //매칭 취소(매칭전)
+  const cancel_findmatch = async () => {
+    try {
+      // alert('http://jhk.n-e.kr:80/insert_class.php?userID='+
+      // token+
+      // '&selected_hour='+
+      // modalhour+
+      // '&selected_day='+
+      // modalday+
+      // '&classname='+
+      // classname);
+      const response_table = await fetch(
+        'http://jhk.n-e.kr:80/cancle_match.php?userID=' +
+          token +
+          '&selected_hour=' +
+          modalhour +
+          '&selected_day=' +
+          modalday,
+      ); //1 CURL로 연결(php)
+      const json_match = await response_table.json(); //2 json 받아온거 저장
+      setclassresult(json_match.results); //3 const배열에다가 저장
+      setModalclassVisible(!modalclassVisible);
+      gettimetable();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  //매칭 취소(매칭전)
+  const cancel_match = async () => {
+    try {
+      // alert('http://jhk.n-e.kr:80/insert_class.php?userID='+
+      // token+
+      // '&selected_hour='+
+      // modalhour+
+      // '&selected_day='+
+      // modalday+
+      // '&classname='+
+      // classname);
+      const response_table = await fetch(
+        'http://jhk.n-e.kr:80/cancle_match.php?userID=' +
+          token +
+          '&selected_hour=' +
+          modalhour +
+          '&selected_day=' +
+          modalday,
+      ); //1 CURL로 연결(php)
+      const json_match = await response_table.json(); //2 json 받아온거 저장
+      setclassresult(json_match.results); //3 const배열에다가 저장
+      setModalclassVisible(!modalclassVisible);
+      gettimetable();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   //db접속
@@ -200,14 +268,14 @@ const MainScreen = props => {
     });
     gettimetable();
   };
-  
+
   const isFocused = useIsFocused();
 
   useEffect(() => {
     //localstorage userid getdata
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
-      alert(token);
+      //alert(token);
     });
     gettimetable(); //받아오는 함수 실행
   }, [isFocused]);
