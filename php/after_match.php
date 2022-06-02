@@ -57,7 +57,7 @@
         mysqli_close($conn);
 
     }else if($match_param == "match_accept"){//요청 수락
-        $sql = "update match_pending set user2_chk='Y', complete ='Y'";
+        $sql = "update match_pending set user2_chk='Y', complete ='Y' where userID = '$userID' and select_time = $select_time";
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
@@ -67,7 +67,7 @@
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         //피신청자측 테이블 설정
-        $sql = "update user_timetable set $selected_day = 'comp,4' where userID = (select user2_id from match_pending where user1_id = '$userID' and select_time = "$select_time") and hour = '$selected_hour';";
+        $sql = "update user_timetable set $selected_day = 'comp,4' where userID = (select user1_id from match_pending where user2_id = '$userID' and select_time = "$select_time") and hour = '$selected_hour';";
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);

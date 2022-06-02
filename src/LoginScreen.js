@@ -38,7 +38,7 @@ const LoginScreen = props => {
             });
             AsyncStorage.getItem('token', (err, result) => {
               settoken(result);
-              alert(token);
+              //alert(token);
             });
             alert('로그인 성공');
             props.navigation.navigate('MainScreen');

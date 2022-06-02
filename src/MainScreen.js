@@ -250,7 +250,8 @@ const MainScreen = props => {
 
   //매칭 취소(매칭전)
   const after_match = async (param) => {
-    setModalVisible(!modalVisible)
+    setModalVisible(false);
+    setModalclassVisible(false);
     try {
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/cancel_match.php?userID=' +
@@ -264,7 +265,6 @@ const MainScreen = props => {
       ); //1 CURL로 연결(php)
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setclassresult(json_match.results); //3 const배열에다가 저장
-      setModalclassVisible(!modalclassVisible);
       gettimetable();
     } catch (error) {
       console.error(error);
@@ -323,11 +323,6 @@ const MainScreen = props => {
           );
         })}
       </DataTable>
-      <Text>Screen 1</Text>
-      <Button
-        onPress={() => props.navigation.navigate('MatchScreen')}
-        title="Go to match"
-      />
       <Button
         onPress={() => props.navigation.navigate('LoginScreen')}
         title="Go to Login"
