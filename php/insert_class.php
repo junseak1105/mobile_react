@@ -11,7 +11,7 @@
     $select_time = $selected_day.$selected_hour;
     $classname=$_GET['classname'];
 
-    $sql = "update test set $selected_day='$classname,0' where userID = '$userID' and hour = '$selected_hour'";
+    $sql = "update user_timetable set $selected_day='$classname,0' where userID = '$userID' and hour = '$selected_hour'";
 
     mysqli_query($conn,$sql);
     echo json_encode(array('results' => $arr),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
