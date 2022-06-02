@@ -17,20 +17,19 @@ import {
 import CheckBox from '@react-native-community/checkbox';
 import MyButton from '../components/MyButton';
 import CheckboxList from 'rn-checkbox-list';
-import { get } from 'express/lib/response';
+import {get} from 'express/lib/response';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 
-const MatchScreen = () => {
-
+const MatchScreen = ({route, navigation}) => {
+  //새로고침 함수
+  const isFocused = useIsFocused();
   //navigation data
   const param_hour = route.params.param_hour;
   const param_day = route.params.param_day;
   const param_status = route.params.param_status;
-  
   //userid token
-  const [token,settoken] = useState();
-
+  const [token, settoken] = useState();
   //팝업창
   const [modalVisible, setModalVisible] = useState(false);
   const [modaltext, setmodaltext] = useState();
@@ -48,9 +47,16 @@ const MatchScreen = () => {
   const [fa_food, setfoodData] = useState([]);
   const [fa_sex, setsexData] = useState([]);
 
-  
-  
-  //db접속
+  //페이지 로딩 함수
+  useEffect(() => {
+    //localstorage userid getdata
+    AsyncStorage.getItem('token', (err, result) => {
+      settoken(result);
+    });
+    getcategory(); //받아오는 함수 실행
+  }, [isFocused]);
+
+  //카테고리 가져오기
   const getcategory = async () => {
     try {
       const response_food = await fetch(
@@ -74,51 +80,8 @@ const MatchScreen = () => {
       setLoading(false);
     }
   };
-  //db접속끝
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    //localstorage userid getdata
-    AsyncStorage.getItem('token', (err,result)=>{
-      settoken(result);
-    });
-    getcategory(); //받아오는 함수 실행
-  }, [isFocused]);
-  //카테고리 받아오기 끝
 
-  //매칭 버튼 클릭 시
-  const find_match = async () => {
-    let selected_sex = selectedSex.toString();
-    let selected_food = selectedFood.toString();
-    let selected_hobby = selectedHobby.toString();
-   
-
-    try {
-      const response_match = await fetch(
-        'http://jhk.n-e.kr:80/find_match.php?userID=' +
-          token +
-          '&selected_hour=' +
-          param_hour +
-          '&selected_day=' +
-          param_day +
-          '&selected_status=' +
-          param_status +
-          '&selected_sex=' +
-          selected_sex +
-          '&selected_food=' +
-          selected_food +
-          '&selected_hobby=' +
-          selected_hobby,
-      ); //1 CURL로 연결(phselected_foodp)
-      const json_match = await response_match.json(); //2 json 받아온거 저장
-      setmatchresult(json_match.results); //3 const배열에다가 저장
-      setModalVisible(true);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  //=========================컴포넌트 모음 시작===============================
   //팝업창 컴포넌트
   const Modal_view = () => {
     if (match_result.count == 0) {
@@ -163,23 +126,45 @@ const MatchScreen = () => {
         </View>
       );
     }
+  };
+  //=========================컴포넌트 모음 시작===============================
 
-    
+  //매칭 버튼 클릭 시 검색
+  const find_match = async () => {
+    let selected_sex = selectedSex.toString();
+    let selected_food = selectedFood.toString();
+    let selected_hobby = selectedHobby.toString();
+
+    try {
+      const response_match = await fetch(
+        'http://jhk.n-e.kr:80/find_match.php?userID=' +
+          token +
+          '&selected_hour=' +
+          param_hour +
+          '&selected_day=' +
+          param_day +
+          '&selected_status=' +
+          param_status +
+          '&selected_sex=' +
+          selected_sex +
+          '&selected_food=' +
+          selected_food +
+          '&selected_hobby=' +
+          selected_hobby,
+      ); //1 CURL로 연결(phselected_foodp)
+      const json_match = await response_match.json(); //2 json 받아온거 저장
+      setmatchresult(json_match.results); //3 const배열에다가 저장
+      setModalVisible(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  //매칭대상 없이 대기
-  const setmatch = async(param) => {
+  //매칭 설정, 대상없을 시 matched = nomatch, 있을 시 matched= matched
+  const setmatch = async param => {
     try {
-      alert('http://jhk.n-e.kr:80/set_match.php?userID=' +
-      token +
-      '&selected_hour=' +
-      param_hour +
-      '&selected_day=' +
-      param_day +
-      '&matched=' +
-      param +
-      '&match_userid=' +
-      match_result.userID,);
       const response_match = await fetch(
         'http://jhk.n-e.kr:80/set_match.php?userID=' +
           token +
@@ -194,6 +179,7 @@ const MatchScreen = () => {
       ); //1 CURL로 연결(phselected_foodp)
       const json_match = await response_match.json(); //2 json 받아온거 저장
       setmatchresult(json_match.results); //3 const배열에다가 저장
+      navigation.navigate('MainScreen');
     } catch (error) {
       console.error(error);
     } finally {
@@ -202,29 +188,8 @@ const MatchScreen = () => {
     setModalVisible(!modalVisible);
   };
 
-  //매칭대상 없이 대기
-  const sendmatch = async() => {
-    try {
-      const response_match = await fetch(
-        'http://jhk.n-e.kr:80/set_match.php?userID=' +
-          token +
-          '&selected_hour=' +
-          param_hour +
-          '&selected_day=' +
-          param_day,
-      ); //1 CURL로 연결(phselected_foodp)
-      const json_match = await response_match.json(); //2 json 받아온거 저장
-      setmatchresult(json_match.results); //3 const배열에다가 저장
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-    setModalVisible(!modalVisible);
-  };
-
-
-  const cancelmatch = async() => {
+  //매칭 클릭 이후 취소 시 매칭 데이터 삭제
+  const cancelmatch = async () => {
     try {
       const response_match = await fetch(
         'http://jhk.n-e.kr:80/cancel_match.php?userID=' +

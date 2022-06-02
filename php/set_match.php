@@ -14,12 +14,22 @@
     
     if($matched_param == "nomatch"){ //매치 없을 시 
         $sql = "update user_timetable set $selected_day='Wait,1' where userID = '$userID' and hour = '$selected_hour';"; //단순 대기
+        mysqli_query($conn,$sql);
+        mysqli_close($conn);
     }else if($matched_param == "matched"){//매치 있을 시, 신청/수락대기 상태로 변경
-        $sql = "update user_timetable set $selected_day='Pend,2' where (userID = '$userID' or userID = '$match_userid') and hour = '$selected_hour';"; //유저 테이블 매칭수락or수락대기로 설정
+        $sql = "update user_timetable set $selected_day='Pend,2' where (userID = '$userID' or userID = '$match_userid') and hour = '$selected_hour';"; //신청자 유저 테이블 신청보냄으로 설정
+        mysqli_query($conn,$sql);
+        mysqli_close($conn);
+        include("db.php");
+        $sql = "update user_timetable set $selected_day='Pend,3' where (userID = '$userID' or userID = '$match_userid') and hour = '$selected_hour';"; //대상자 유저 테이블 수락대기로 설정
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         include("db.php");
         $sql = "update match_table set pending='Y' where (userID = '$userID' or userID = '$match_userid') and select_time = '$select_time';"; //매칭용테이블 pending y로 설정: 중복 매칭 방지
+        mysqli_query($conn,$sql);
+        mysqli_close($conn);
+        include("db.php");
+        $sql = "insert into match_pending(complete,user1_id,user1_chk,user2_id,user2_chk,select_time) values('N','$userID','Y','$match_userid','N','$select_time')"; //매칭 진행 테이블 등록
         mysqli_query($conn,$sql);
         mysqli_close($conn);
     }
