@@ -254,7 +254,7 @@ const MainScreen = props => {
     setModalclassVisible(false);
     try {
       const response_table = await fetch(
-        'http://jhk.n-e.kr:80/cancel_match.php?userID=' +
+        'http://jhk.n-e.kr:80/after_match.php?userID=' +
           token +
           '&selected_hour=' +
           modalhour +
