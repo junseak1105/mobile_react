@@ -250,6 +250,7 @@ const MainScreen = props => {
 
   //매칭 취소(매칭전)
   const after_match = async (param) => {
+    setModalVisible(!modalVisible)
     try {
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/cancel_match.php?userID=' +
