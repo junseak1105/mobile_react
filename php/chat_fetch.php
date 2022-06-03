@@ -7,13 +7,16 @@ include('db.php');
 $arr = array();
 //json output array
 $data = array();
-$userID = $_GET['userid'];
+
+$userID = $_GET['userID'];
+$user1_id = $_GET['user1_id'];
+$user2_id = $_GET['user2_id'];
 $selected_hour = $_GET['selected_hour'];
 $selected_day = $_GET['selected_day'];
 $select_time = $selected_day.$selected_hour;
-
-$sql = "SELECT * from chat where userID = '$userID' and select_time = '$select_time' order by chat_idx;";
-
+//echo $select_hour;
+$sql = "SELECT * from chat_data where (userID = '$user1_id' or userID = '$user2_id') and select_time = '$select_time' order by chat_idx desc;";
+//echo $sql;
 $result_set = mysqli_query($conn, $sql);
 
 while ($result = mysqli_fetch_array($result_set)) {

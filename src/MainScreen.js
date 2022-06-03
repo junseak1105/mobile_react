@@ -26,6 +26,11 @@ const MainScreen = props => {
   const [modalhour, setmodalhour] = useState();
   const [modalstatus, setmodalstatus] = useState();
   const [modalday, setmodalday] = useState();
+
+  //매칭된 두 아이디 식별용
+  const [user1_id,setuser1_id] =useState();
+  const [user2_id,setuser2_id] =useState();
+  
   //팝업창 수업 넣기
   const [modalclassVisible, setModalclassVisible] = useState(false);
   const [classname, setclassname] = useState();
@@ -40,6 +45,7 @@ const MainScreen = props => {
       //alert(token);
     });
     gettimetable(); //받아오는 함수 실행
+    
   }, [isFocused]);
 
   //타임테이블 가져오기
@@ -207,16 +213,22 @@ const MainScreen = props => {
         </View>
       );
     } else if (modalstatus == 4) {
+      get_matchID();
       //매칭 성공 상태(서로 상대방 표시)
       return (
         <View style={{backgroundColor: 'grey'}}>
           <Text>{modaltext}</Text>
+          <Text>{user1_id}</Text>
+          <Text>{user2_id}</Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
             onPress={() =>
               props.navigation.navigate('ChatScreen', {
                 param_hour: modalhour,
                 param_day: modalday,
+                user1_id: user1_id,
+                user2_id: user2_id,
+                token : token,
               })
             }>
             <Text>채팅하기</Text>
@@ -280,6 +292,27 @@ const MainScreen = props => {
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setclassresult(json_match.results); //3 const배열에다가 저장
       gettimetable();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  //매칭 대상자 가져오기
+  const get_matchID = async () => {
+    
+    try {
+      const response_table = await fetch(
+        'http://jhk.n-e.kr:80/get_matchID.php?userID=' +
+          token +
+          '&selected_hour=' +
+          modalhour +
+          '&selected_day=' +
+          modalday,
+      ); //1 CURL로 연결(php)
+      const json_match = await response_table.json(); //2 json 받아온거 저장
+      setuser1_id(json_match.results[0].user1_id);
+      setuser2_id(json_match.results[0].user2_id);
     } catch (error) {
       console.error(error);
     } finally {
