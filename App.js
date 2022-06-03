@@ -9,6 +9,7 @@ import MainScreen from "./src/MainScreen";
 import MatchScreen from "./src/MatchScreen";
 import LoginScreen from "./src/LoginScreen";
 import RegisterScreen from "./src/RegisterScreen";
+import ChatScreen from "./src/ChatScreen";
 
 // create a "stack"
 const MyStack = createNativeStackNavigator();
@@ -21,6 +22,7 @@ const App = () => {
         <MyStack.Screen name="MatchScreen" component={MatchScreen} />
         <MyStack.Screen name="LoginScreen" component={LoginScreen} />
         <MyStack.Screen name="RegisterScreen" component={RegisterScreen} />
+        <MyStack.Screen name="ChatScreen" component={ChatScreen} />
       </MyStack.Navigator>
     </NavigationContainer>
   );

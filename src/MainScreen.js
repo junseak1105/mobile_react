@@ -112,7 +112,7 @@ const MainScreen = props => {
   //====================수업  기능 끝=========================
 
   //=====================컴포넌트 모음 시작======================
-  
+
   /*
   modalstatus에 따라 분기
   0: 빈칸
@@ -120,9 +120,10 @@ const MainScreen = props => {
   2: 매칭 신청자 신청 보냄 상태
   3: 매칭 피신청자 신청 받음 상태
   4: 매칭완료(상호표기)
-  */ 
+  */
   const Modal_view = () => {
-    if (modalstatus == 0) { //빈칸 상태
+    if (modalstatus == 0) {
+      //빈칸 상태
       return (
         <View style={{backgroundColor: 'grey'}}>
           {/* <Text>{modaltext}</Text> */}
@@ -149,13 +150,14 @@ const MainScreen = props => {
           </Pressable>
         </View>
       );
-    } else if (modalstatus == 1) { //매칭 대기
+    } else if (modalstatus == 1) {
+      //매칭 대기
       return (
         <View style={{backgroundColor: 'grey'}}>
           <Text>{modaltext}</Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
-            onPress={() => after_match("match_cancel_nomatch")}>
+            onPress={() => after_match('match_cancel_nomatch')}>
             <Text>매칭 취소</Text>
           </Pressable>
           <Pressable
@@ -165,13 +167,14 @@ const MainScreen = props => {
           </Pressable>
         </View>
       );
-    } else if (modalstatus == 2) {//매칭 수락 대기중(신청자)
+    } else if (modalstatus == 2) {
+      //매칭 수락 대기중(신청자)
       return (
         <View style={{backgroundColor: 'grey'}}>
           <Text>{modaltext}</Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
-            onPress={() => after_match("match_cancel")}>
+            onPress={() => after_match('match_cancel')}>
             <Text style={styles.textStyle}>매칭 취소</Text>
           </Pressable>
           <Pressable
@@ -181,18 +184,19 @@ const MainScreen = props => {
           </Pressable>
         </View>
       );
-    } else if (modalstatus == 3) {//매칭 수락 대기 중(피신청자)
+    } else if (modalstatus == 3) {
+      //매칭 수락 대기 중(피신청자)
       return (
         <View style={{backgroundColor: 'grey'}}>
           <Text>{modaltext}</Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
-            onPress={() => after_match("match_accept")}>
+            onPress={() => after_match('match_accept')}>
             <Text style={styles.textStyle}>수락</Text>
           </Pressable>
           <Pressable
             style={[styles.button, styles.buttonClose]}
-            onPress={() => after_match("match_refuse")}>
+            onPress={() => after_match('match_refuse')}>
             <Text style={styles.textStyle}>거절</Text>
           </Pressable>
           <Pressable
@@ -209,8 +213,18 @@ const MainScreen = props => {
           <Text>{modaltext}</Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
+            onPress={() =>
+              props.navigation.navigate('ChatScreen', {
+                param_hour: modalhour,
+                param_day: modalday,
+              })
+            }>
+            <Text>채팅하기</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
             onPress={() => setModalVisible(!modalVisible)}>
-            <Text style={styles.textStyle}>취소</Text>
+            <Text style={styles.textStyle}>닫기</Text>
           </Pressable>
         </View>
       );
@@ -249,7 +263,7 @@ const MainScreen = props => {
   //=======================매칭 기능 시작========================
 
   //매칭 취소(매칭전)
-  const after_match = async (param) => {
+  const after_match = async param => {
     setModalVisible(false);
     setModalclassVisible(false);
     try {
