@@ -48,8 +48,8 @@ const MatchScreen = ({route, navigation}) => {
   const [selectedFood, setselectedFood] = useState([]);
   const [selectedHobby, setselectedHobby] = useState([]);
   // const [selectedSex, setselectedSex] = useState([]);
-  const [selectedSex, setselectedSex] = useState('');
-  const [selectedman, setselectedman] = useState(false);
+  const [selectedSex, setselectedSex] = useState('Female');
+  const [selectedman, setselectedman] = useState(true);
   const [selectedwoman, setselectedwoman] = useState(false);
   //카테고리 받아온 값 저장
   const [isLoading, setLoading] = useState(true);
@@ -218,16 +218,25 @@ const MatchScreen = ({route, navigation}) => {
     }
     setModalVisible(!modalVisible);
   };
-  const value = () => {
-    selectedwoman ? [setselectedSex('Female')] : '';
-    selectedman ? [setselectedSex('Male')] : '';
-    console.log('선택값' + selectedSex);
+  const value = (sex) => {
+    console.log(sex);
+    if(sex == 'Male'){
+      setselectedman(!selectedman);
+      setselectedwoman(!selectedwoman);
+    }else{
+      setselectedwoman(!selectedwoman);
+      setselectedman(!selectedman);
+    }
+    setselectedSex(sex);
+    // selectedwoman ? [setselectedSex('Female')] : '';
+    // selectedman ? [setselectedSex('Male')] : '';
+    // console.log('선택값:' + selectedSex);
   };
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.container}>
         <View style={styles.container_sex}>
-          <Pressable onPress={() => [setselectedman(!selectedman), value()]}>
+          <Pressable onPress={() => [value('Male')]}>
             {selectedman ? (
               <Image style={styles.selectedimg} source={boy} />
             ) : (
@@ -235,17 +244,13 @@ const MatchScreen = ({route, navigation}) => {
             )}
           </Pressable>
           <Pressable
-            onPress={() => [setselectedwoman(!selectedwoman), value()]}>
+            onPress={() => [value('Female')]}>
             {selectedwoman ? (
               <Image style={styles.selectedimg} source={girl} />
             ) : (
               <Image style={styles.img} source={girl} />
             )}
           </Pressable>
-          {console.log('---------------new--')}
-          {console.log('여성' + selectedwoman)}
-          {console.log('남성' + selectedman)}
-          {console.log('나온나' + selectedSex)}
           {/* <CheckboxList
             headerName="전체"
             headerStyle={styles.headertext}
