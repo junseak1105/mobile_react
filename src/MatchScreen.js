@@ -220,10 +220,10 @@ const MatchScreen = ({route, navigation}) => {
   };
   const value = (sex) => {
     console.log(sex);
-    if(sex == 'Male'){
+    if(sex == 'Male' && sex !=selectedSex){
       setselectedman(!selectedman);
       setselectedwoman(!selectedwoman);
-    }else{
+    }else if(sex == 'Female' && sex !=selectedSex){
       setselectedwoman(!selectedwoman);
       setselectedman(!selectedman);
     }
