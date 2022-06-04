@@ -13,6 +13,8 @@ import {
   ScrollView,
   Modal,
   Pressable,
+  Image,
+  // CheckBox,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import MyButton from '../components/MyButton';
@@ -20,6 +22,11 @@ import CheckboxList from 'rn-checkbox-list';
 import {get} from 'express/lib/response';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+
+// 이미지
+import girl from './images/girl.png';
+import boy from './images/boy.png';
+import match from './images/friend2.png';
 
 const MatchScreen = ({route, navigation}) => {
   //새로고침 함수
@@ -40,7 +47,10 @@ const MatchScreen = ({route, navigation}) => {
   //선택된 값 저장
   const [selectedFood, setselectedFood] = useState([]);
   const [selectedHobby, setselectedHobby] = useState([]);
-  const [selectedSex, setselectedSex] = useState([]);
+  // const [selectedSex, setselectedSex] = useState([]);
+  const [selectedSex, setselectedSex] = useState('');
+  const [selectedman, setselectedman] = useState(false);
+  const [selectedwoman, setselectedwoman] = useState(false);
   //카테고리 받아온 값 저장
   const [isLoading, setLoading] = useState(true);
   const [fa_hobby, sethobbyData] = useState([]);
@@ -208,24 +218,55 @@ const MatchScreen = ({route, navigation}) => {
     }
     setModalVisible(!modalVisible);
   };
-
+  const value = () => {
+    selectedwoman ? [setselectedSex('Female')] : '';
+    selectedman ? [setselectedSex('Male')] : '';
+    console.log('선택값' + selectedSex);
+  };
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.screen}>
       <View style={styles.container}>
         <View style={styles.container_sex}>
-          <CheckboxList
+          <Pressable onPress={() => [setselectedman(!selectedman), value()]}>
+            {selectedman ? (
+              <Image style={styles.selectedimg} source={boy} />
+            ) : (
+              <Image style={styles.img} source={boy} />
+            )}
+          </Pressable>
+          <Pressable
+            onPress={() => [setselectedwoman(!selectedwoman), value()]}>
+            {selectedwoman ? (
+              <Image style={styles.selectedimg} source={girl} />
+            ) : (
+              <Image style={styles.img} source={girl} />
+            )}
+          </Pressable>
+          {console.log('---------------new--')}
+          {console.log('여성' + selectedwoman)}
+          {console.log('남성' + selectedman)}
+          {console.log('나온나' + selectedSex)}
+          {/* <CheckboxList
             headerName="전체"
+            headerStyle={styles.headertext}
             style={styles.chkbox_sex}
-            listItems={fa_sex}
+            listItems={fa_sex} // 리스트 array
             selectedListItems={selectedSex}
-            listItemStyle={{borderBottomColor: 'black', borderBottomWidth: 1}}
+            listItemStyle={{
+              // 선 스타일
+              borderBottomColor: 'black',
+              borderBottomWidth: 0,
+              flexDirection: 'row',
+            }}
+            theme="black"
             onChange={({ids, items}) => setselectedSex(ids)}
-          />
+          /> */}
         </View>
         <View style={styles.selector_hobby_food}>
           <SafeAreaView style={styles.container_hobby}>
             <CheckboxList
               headerName="전체"
+              headerStyle={styles.headertext}
               listItems={fa_hobby}
               selectedListItems={selectedHobby}
               listItemStyle={{borderBottomColor: 'black', borderBottomWidth: 1}}
@@ -235,6 +276,7 @@ const MatchScreen = ({route, navigation}) => {
           <SafeAreaView style={styles.container_food}>
             <CheckboxList
               headerName="전체"
+              headerStyle={styles.headertext}
               listItems={fa_food}
               selectedListItems={selectedFood}
               listItemStyle={{borderBottomColor: 'black', borderBottomWidth: 1}}
@@ -245,13 +287,13 @@ const MatchScreen = ({route, navigation}) => {
         <View style={styles.find_match}>
           <TouchableOpacity
             style={{
-              backgroundColor: '#4B778D',
+              backgroundColor: 'black',
               padding: 16,
               margin: 10,
               borderRadius: 8,
             }}
             onPress={() => find_match()}>
-            <Text style={{fontSize: 10, color: 'black'}}>매칭</Text>
+            <Text style={styles.textStyle}>신청</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -277,26 +319,9 @@ const MatchScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FAFFFC',
   },
-  container_sex: {
-    flexDirection: 'row',
-  },
-  selector_hobby_food: {
-    margin: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flex: 6,
-  },
-  container_food: {
-    flex: 1,
-  },
-  container_hobby: {
-    flex: 1,
-  },
-  find_match: {
-    width: 100,
-    flex: 1,
-  },
+
   //modal css start
   centeredView: {
     justifyContent: 'center',
@@ -334,6 +359,73 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   //modal css end
+
+  // 추가
+  screen: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+
+  container_sex: {
+    flexDirection: 'row',
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 20,
+  },
+  container_food: {
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 20,
+  },
+  container_hobby: {
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 20,
+  },
+
+  chkbox_sex: {},
+
+  selector_hobby_food: {
+    margin: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flex: 6,
+  },
+
+  find_match: {
+    width: 100,
+    flex: 1,
+  },
+
+  headertext: {
+    backgroundColor: '#97C9F7',
+    text: {
+      color: 'white',
+    },
+  },
+  textStyle: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 15,
+    // resizeMode: 'contain',
+  },
+  img: {
+    width: 80,
+    height: 80,
+    // resizeMode: 'contain',
+    // flex: 1,
+    // tintColor: '#e6e6e6',
+  },
+  selectedimg: {
+    width: 80,
+    height: 80,
+    tintColor: '#e6e6e6',
+  },
+  checkbox: {
+    alignSelf: 'center',
+  },
 });
 
 export default MatchScreen;

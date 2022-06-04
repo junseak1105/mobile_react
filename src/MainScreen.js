@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+
 import {
   View,
   Text,
@@ -12,8 +13,11 @@ import {DataTable, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+// import {useTailwind, tailwind} from 'tailwind-rn';
+import {style as tw} from 'tailwind-react-native-classnames';
 
 const MainScreen = props => {
+  // const tailwind = useTailwind(); 안됨
   //새로고침 함수
   const isFocused = useIsFocused();
   //userid token
@@ -28,9 +32,9 @@ const MainScreen = props => {
   const [modalday, setmodalday] = useState();
 
   //매칭된 두 아이디 식별용
-  const [user1_id,setuser1_id] =useState();
-  const [user2_id,setuser2_id] =useState();
-  
+  const [user1_id, setuser1_id] = useState();
+  const [user2_id, setuser2_id] = useState();
+
   //팝업창 수업 넣기
   const [modalclassVisible, setModalclassVisible] = useState(false);
   const [classname, setclassname] = useState();
@@ -45,7 +49,6 @@ const MainScreen = props => {
       //alert(token);
     });
     gettimetable(); //받아오는 함수 실행
-    
   }, [isFocused]);
 
   //타임테이블 가져오기
@@ -131,10 +134,10 @@ const MainScreen = props => {
     if (modalstatus == 0) {
       //빈칸 상태
       return (
-        <View style={{backgroundColor: 'grey'}}>
+        <View style={styles.modalsmall}>
           {/* <Text>{modaltext}</Text> */}
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpenTop]}
             onPress={() =>
               props.navigation.navigate('MatchScreen', {
                 param_hour: modalhour,
@@ -142,12 +145,12 @@ const MainScreen = props => {
                 param_status: modalstatus,
               })
             }>
-            <Text>매칭 신청</Text>
+            <Text style={styles.textStyle}>매칭 신청</Text>
           </Pressable>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpen]}
             onPress={() => insert_class()}>
-            <Text>수업 입력</Text>
+            <Text style={styles.textStyle}>수업 등록</Text>
           </Pressable>
           <Pressable
             style={[styles.button, styles.buttonClose]}
@@ -216,25 +219,31 @@ const MainScreen = props => {
       get_matchID();
       //매칭 성공 상태(서로 상대방 표시)
       return (
-        <View style={{backgroundColor: 'grey'}}>
-          <Text>{modaltext}</Text>
-          <Text>{user1_id}</Text>
-          <Text>{user2_id}</Text>
+        <View style={styles.modalmedium}>
+          <Text style={[styles.textStyleblack, styles.textTop]}>
+            {user2_id}님과
+          </Text>
+          <Text style={[styles.textStyleblack]}>{modaltext}하였습니다!</Text>
+          {/* <Text>{user1_id}</Text> */}
+          {/* <Text>{user2_id}</Text> */}
+          <Text style={[styles.textStyleblack, styles.mt7, styles.mb]}>
+            상대방과 채팅 가능합니다
+          </Text>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.buttonOpen, styles.button]}
             onPress={() =>
               props.navigation.navigate('ChatScreen', {
                 param_hour: modalhour,
                 param_day: modalday,
                 user1_id: user1_id,
                 user2_id: user2_id,
-                token : token,
+                token: token,
               })
             }>
-            <Text>채팅하기</Text>
+            <Text style={styles.textStyle}>채팅 시작</Text>
           </Pressable>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonClosemt]}
             onPress={() => setModalVisible(!modalVisible)}>
             <Text style={styles.textStyle}>닫기</Text>
           </Pressable>
@@ -300,7 +309,6 @@ const MainScreen = props => {
   };
   //매칭 대상자 가져오기
   const get_matchID = async () => {
-    
     try {
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/get_matchID.php?userID=' +
@@ -323,6 +331,7 @@ const MainScreen = props => {
 
   return (
     <View style={styles.screen}>
+      <Text style={styles.title}>My Schedule</Text>
       <DataTable>
         <DataTable.Header>
           <DataTable.Title></DataTable.Title>
@@ -340,41 +349,52 @@ const MainScreen = props => {
                 <Button
                   onPress={() => setModal(data.hour, data.Mon.status, 'Mon')}
                   title={data.Mon.class}
+                  color={data.Mon.class == '공강' ? '#052F66' : 'black'}
                 />
               </DataTable.Cell>
               <DataTable.Cell>
                 <Button
                   onPress={() => setModal(data.hour, data.Tue.status, 'Tue')}
                   title={data.Tue.class}
+                  color={data.Tue.class == '공강' ? '#052F66' : 'black'}
                 />
               </DataTable.Cell>
               <DataTable.Cell>
                 <Button
                   onPress={() => setModal(data.hour, data.Wed.status, 'Wed')}
                   title={data.Wed.class}
+                  color={data.Wed.class == '공강' ? '#052F66' : 'black'}
                 />
               </DataTable.Cell>
               <DataTable.Cell>
                 <Button
                   onPress={() => setModal(data.hour, data.Thu.status, 'Thu')}
                   title={data.Thu.class}
+                  color={data.Thu.class == '공강' ? '#052F66' : 'black'}
                 />
               </DataTable.Cell>
               <DataTable.Cell>
                 <Button
                   onPress={() => setModal(data.hour, data.Fri.status, 'Fri')}
                   title={data.Fri.class}
+                  color={data.Fri.class == '공강' ? '#052F66' : 'black'}
                 />
               </DataTable.Cell>
             </DataTable.Row>
           );
         })}
       </DataTable>
-      <Button
-        onPress={() => props.navigation.navigate('LoginScreen')}
-        title="Go to Login"
-      />
-      <Button onPress={() => logout()} title="Logout" />
+      <View style={[styles.ml, styles.mt15, styles.alignend]}>
+        {token == '' ? (
+          <Button
+            onPress={() => props.navigation.navigate('LoginScreen')}
+            title="로그인"
+            color="black"
+          />
+        ) : (
+          <Button onPress={() => [logout()]} title="로그아웃" color="black" />
+        )}
+      </View>
       <View style={styles.centeredView}>
         <Modal
           animationType="slide"
@@ -410,6 +430,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#97C9F7',
   },
   //modal css start
   centeredView: {
@@ -432,26 +453,155 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+
+  // button
   button: {
     borderRadius: 20,
     padding: 10,
     elevation: 2,
   },
+  longbutton: {
+    borderRadius: 20,
+    padding: 40,
+    elevation: 0,
+    width: 500,
+  },
+  buttonOpenTop: {
+    backgroundColor: 'black',
+    marginTop: 20,
+    width: 100,
+  },
+  textTop: {
+    marginTop: 20,
+    width: 100,
+  },
+
   buttonOpen: {
-    backgroundColor: '#F194FF',
+    backgroundColor: 'black',
+    marginTop: 10,
+    width: 100,
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: 'black',
+    marginTop: 30,
+    marginRight: 15,
+    alignSelf: 'flex-end',
+    width: 50,
   },
+  buttonClosemt: {
+    backgroundColor: 'black',
+    marginTop: 20,
+    marginRight: 15,
+    alignSelf: 'flex-end',
+    width: 50,
+  },
+  buttonCloselong: {
+    backgroundColor: 'black',
+    marginTop: 30,
+    marginRight: 15,
+    alignSelf: 'flex-end',
+    width: 80,
+  },
+
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
   },
   classinput: {
     width: 200,
-    height: 200,
+    height: 30,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
   },
-  //modal css end
+
+  // 추가
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  mr: {
+    marginRight: 5,
+  },
+  alignend: {
+    alignSelf: 'flex-end',
+    marginRight: 35,
+  },
+  ml: {
+    marginLeft: 5,
+  },
+  mt5: {
+    marginTop: 5,
+  },
+  mt7: {
+    marginTop: 7,
+  },
+  mt10: {
+    marginTop: 10,
+  },
+  mt15: {
+    marginTop: 15,
+  },
+  mb: {
+    marginBottom: 5,
+  },
+
+  modal: {
+    backgroundColor: 'white',
+    marginTop: 50,
+    marginbuttom: 50,
+    marginLeft: 10,
+    width: 250,
+    alignItems: 'center',
+    height: 10,
+  },
+
+  modalsmall: {
+    backgroundColor: 'white',
+    marginTop: 65,
+    marginbuttom: 50,
+    marginLeft: 10,
+    width: 200,
+    height: 200,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+  },
+  modalmedium: {
+    backgroundColor: 'white',
+    marginTop: 60,
+    marginbuttom: 50,
+    marginLeft: 10,
+    width: 200,
+    height: 215,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+  },
+  textStyle: {
+    textAlign: 'center',
+    color: 'white',
+  },
+  textStyleblack: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 14,
+    fontFamily: '',
+    fontWeight: 20,
+  },
+  title: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#FAFFFC',
+    fontStyle: 'italic',
+  },
+
+  weektitle: {
+    fontSize: 2,
+    textAlign: 'center',
+  },
+  smalltitle: {textAlign: 'center', fontsize: 20, color: 'black'},
 });
 
 export default MainScreen;
