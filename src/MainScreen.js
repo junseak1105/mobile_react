@@ -42,17 +42,15 @@ const MainScreen = props => {
     //localstorage userid getdata
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
-      //alert(token);
-    });
-    gettimetable(); //받아오는 함수 실행
-    
+      gettimetable(result); 
+    });//받아오는 함수 실행
   }, [isFocused]);
 
   //타임테이블 가져오기
-  const gettimetable = async () => {
+  const gettimetable = async (userid) => {
     try {
       const response_table = await fetch(
-        'http://jhk.n-e.kr:80/get_timetable.php?userid=' + token,
+        'http://jhk.n-e.kr:80/get_timetable.php?userid=' + userid,
       ); //1 CURL로 연결(php)
       const json_table = await response_table.json(); //2 json 받아온거 저장
       SetTimetable(json_table.results); //3 const배열에다가 저장
