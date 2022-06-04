@@ -95,12 +95,14 @@ const MatchScreen = ({route, navigation}) => {
   //팝업창 컴포넌트
   const Modal_view = () => {
     if (match_result.count == 0) {
-      setmodaltext('매칭가능 대상이 없습니다. 대기합니다');
+      setmodaltext('현재 매칭 가능한 대상이 없습니다.\n 대기하실래요?');
       return (
-        <View style={{backgroundColor: 'grey'}}>
-          <Text>{modaltext}</Text>
+        <View style={styles.modalmedium}>
+          <Text style={[styles.textStyleblack, styles.textTop]}>
+            {modaltext}
+          </Text>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpenTop]}
             onPress={() => setmatch('nomatch')}>
             <Text style={styles.textStyle}>매칭 동의</Text>
           </Pressable>
@@ -112,7 +114,7 @@ const MatchScreen = ({route, navigation}) => {
         </View>
       );
     } else {
-      setmodaltext('매칭성공 이분과 만나보시겠습니까?');
+      setmodaltext('매칭 성공! \n상대와 즐거운 공강 시간을 보내실래요?');
       setmodalinfo(
         '닉네임' +
           match_result.userID +
@@ -120,11 +122,11 @@ const MatchScreen = ({route, navigation}) => {
           match_result.select_favor_list,
       );
       return (
-        <View style={{backgroundColor: 'grey'}}>
+        <View style={styles.modalmedium}>
           <Text>{modaltext}</Text>
           <Text>{modalinfo}</Text>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpenTop]}
             onPress={() => setmatch('matched')}>
             <Text style={styles.textStyle}>매칭 동의</Text>
           </Pressable>
@@ -218,12 +220,12 @@ const MatchScreen = ({route, navigation}) => {
     }
     setModalVisible(!modalVisible);
   };
-  const value = (sex) => {
+  const value = sex => {
     console.log(sex);
-    if(sex == 'Male' && sex !=selectedSex){
+    if (sex == 'Male' && sex != selectedSex) {
       setselectedman(!selectedman);
       setselectedwoman(!selectedwoman);
-    }else if(sex == 'Female' && sex !=selectedSex){
+    } else if (sex == 'Female' && sex != selectedSex) {
       setselectedwoman(!selectedwoman);
       setselectedman(!selectedman);
     }
@@ -243,8 +245,7 @@ const MatchScreen = ({route, navigation}) => {
               <Image style={styles.img} source={boy} />
             )}
           </Pressable>
-          <Pressable
-            onPress={() => [value('Female')]}>
+          <Pressable onPress={() => [value('Female')]}>
             {selectedwoman ? (
               <Image style={styles.selectedimg} source={girl} />
             ) : (
@@ -270,22 +271,32 @@ const MatchScreen = ({route, navigation}) => {
         <View style={styles.selector_hobby_food}>
           <SafeAreaView style={styles.container_hobby}>
             <CheckboxList
-              headerName="전체"
-              headerStyle={styles.headertext}
+              headerName="모두 선택"
+              // headerStyle={styles.headertext}
               listItems={fa_hobby}
               selectedListItems={selectedHobby}
-              listItemStyle={{borderBottomColor: 'black', borderBottomWidth: 1}}
+              listItemStyle={{
+                marginTop: 8,
+                // borderWidth: 5,
+                // borderColor: '#97C9F7',
+              }}
               onChange={({ids, items}) => setselectedHobby(ids)}
+              theme="black"
             />
           </SafeAreaView>
           <SafeAreaView style={styles.container_food}>
             <CheckboxList
-              headerName="전체"
-              headerStyle={styles.headertext}
+              headerName="모두 선택"
+              // headerStyle={styles.headertext}
               listItems={fa_food}
               selectedListItems={selectedFood}
-              listItemStyle={{borderBottomColor: 'black', borderBottomWidth: 1}}
+              listItemStyle={{
+                marginTop: 8,
+                // borderWidth: 5,
+                // borderColor: '#97C9F7',
+              }}
               onChange={({ids, items}) => setselectedFood(ids)}
+              theme="black"
             />
           </SafeAreaView>
         </View>
@@ -354,10 +365,21 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: '#F194FF',
+    backgroundColor: 'black',
+    marginTop: 10,
+    width: 100,
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: 'black',
+    marginTop: 30,
+    marginRight: 15,
+    alignSelf: 'flex-end',
+    width: 50,
+  },
+  buttonOpenTop: {
+    backgroundColor: 'black',
+    marginTop: 20,
+    width: 100,
   },
   modalText: {
     marginBottom: 15,
@@ -370,12 +392,36 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  modalsmall: {
+    backgroundColor: 'white',
+    marginTop: 65,
+    marginbuttom: 50,
+    marginLeft: 10,
+    width: 200,
+    height: 200,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+  },
+  modalmedium: {
+    backgroundColor: 'white',
+    marginTop: 60,
+    marginbuttom: 50,
+    marginLeft: 10,
+    width: 200,
+    height: 215,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+  },
 
   container_sex: {
     flexDirection: 'row',
-    marginLeft: 30,
-    marginRight: 30,
-    marginTop: 20,
+    justifyContent: 'space-between',
+    marginLeft: 60,
+    marginRight: 60,
+    marginTop: 30,
+    marginBottom: 20,
   },
   container_food: {
     flex: 1,
@@ -393,39 +439,54 @@ const styles = StyleSheet.create({
   chkbox_sex: {},
 
   selector_hobby_food: {
-    margin: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     flex: 6,
+    marginRight: 20,
+    marginLeft: 20,
   },
 
   find_match: {
     width: 100,
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginLeft: 290,
   },
 
-  headertext: {
-    backgroundColor: '#97C9F7',
-    text: {
-      color: 'white',
-    },
-  },
+  // headertext: {
+  //   backgroundColor: '#97C9F7',
+  //   text: {
+  //     color: 'white',
+  //   },
+  // },
   textStyle: {
     textAlign: 'center',
     color: 'white',
     fontSize: 15,
     // resizeMode: 'contain',
   },
+  textTop: {
+    marginTop: 20,
+    width: 100,
+  },
+  textStyleblack: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 14,
+    fontFamily: '',
+    // fontWeight: 100,
+  },
   img: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     // resizeMode: 'contain',
     // flex: 1,
     // tintColor: '#e6e6e6',
   },
   selectedimg: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     tintColor: '#e6e6e6',
   },
   checkbox: {

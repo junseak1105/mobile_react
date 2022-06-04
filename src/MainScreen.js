@@ -46,16 +46,15 @@ const MainScreen = props => {
     //localstorage userid getdata
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
-      //alert(token);
-    });
-    gettimetable(); //받아오는 함수 실행
+      gettimetable(result);
+    }); //받아오는 함수 실행
   }, [isFocused]);
 
   //타임테이블 가져오기
-  const gettimetable = async () => {
+  const gettimetable = async userid => {
     try {
       const response_table = await fetch(
-        'http://jhk.n-e.kr:80/get_timetable.php?userid=' + token,
+        'http://jhk.n-e.kr:80/get_timetable.php?userid=' + userid,
       ); //1 CURL로 연결(php)
       const json_table = await response_table.json(); //2 json 받아온거 저장
       SetTimetable(json_table.results); //3 const배열에다가 저장
@@ -254,8 +253,8 @@ const MainScreen = props => {
   //수업 입력 창
   const Modal_view_class = props => {
     return (
-      <View>
-        <Text>{classname}</Text>
+      <View style={styles.modalbig}>
+        <Text style={styles.textTopbuttom}>{classname}</Text>
         <SafeAreaView>
           <TextInput
             style={styles.classinput}
@@ -266,16 +265,18 @@ const MainScreen = props => {
             onChangeText={val => setclassname(val)}
           />
         </SafeAreaView>
-        <Pressable
-          style={[styles.button, styles.buttonClose]}
-          onPress={() => insert_class_db()}>
-          <Text style={styles.textStyle}>수업입력</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.button, styles.buttonClose]}
-          onPress={() => setModalclassVisible(!modalclassVisible)}>
-          <Text style={styles.textStyle}>취소</Text>
-        </Pressable>
+        <View style={styles.rowend}>
+          <Pressable
+            style={[styles.button, styles.buttonClosemrsmall]}
+            onPress={() => insert_class_db()}>
+            <Text style={styles.textStyle}>등록</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonClosemrsmall]}
+            onPress={() => setModalclassVisible(!modalclassVisible)}>
+            <Text style={styles.textStyle}>취소</Text>
+          </Pressable>
+        </View>
       </View>
     );
   };
@@ -475,6 +476,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 100,
   },
+  textTopbuttom: {
+    marginTop: 20,
+    marginBottom: 20,
+    width: 100,
+  },
 
   buttonOpen: {
     backgroundColor: 'black',
@@ -485,6 +491,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     marginTop: 30,
     marginRight: 15,
+    alignSelf: 'flex-end',
+    width: 50,
+  },
+  buttonClosemrsmall: {
+    backgroundColor: 'black',
+    marginTop: 20,
+    marginRight: 5,
     alignSelf: 'flex-end',
     width: 50,
   },
@@ -509,8 +522,8 @@ const styles = StyleSheet.create({
   },
   classinput: {
     width: 200,
-    height: 30,
-    paddingVertical: 20,
+    height: 20,
+    paddingVertical: 10,
     paddingHorizontal: 10,
   },
 
@@ -520,6 +533,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 15,
     marginBottom: 10,
+  },
+
+  rowend: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 15,
+    marginBottom: 10,
+    marginLeft: 100,
   },
   mr: {
     marginRight: 5,
@@ -574,6 +595,17 @@ const styles = StyleSheet.create({
     marginbuttom: 50,
     marginLeft: 10,
     width: 200,
+    height: 215,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+  },
+  modalbig: {
+    backgroundColor: 'white',
+    marginTop: 60,
+    marginbuttom: 50,
+    marginLeft: 10,
+    width: 250,
     height: 215,
     alignItems: 'center',
     borderColor: 'black',
