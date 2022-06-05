@@ -476,10 +476,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 100,
   },
-  textTopbuttom: {
+  textTop: {
     marginTop: 20,
     marginBottom: 20,
     width: 100,
+  },
+  textTopbuttom: {
+    marginTop: 5,
+    marginButtom: 5,
   },
 
   buttonOpen: {
@@ -503,7 +507,7 @@ const styles = StyleSheet.create({
   },
   buttonClosemt: {
     backgroundColor: 'black',
-    marginTop: 20,
+    marginTop: 5,
     marginRight: 15,
     alignSelf: 'flex-end',
     width: 50,
@@ -576,6 +580,7 @@ const styles = StyleSheet.create({
     width: 250,
     alignItems: 'center',
     height: 10,
+    borderWidth: 3,
   },
 
   modalsmall: {
@@ -588,17 +593,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
+    borderWidth: 3,
   },
   modalmedium: {
     backgroundColor: 'white',
     marginTop: 60,
     marginbuttom: 50,
     marginLeft: 10,
-    width: 200,
-    height: 215,
+    width: 230,
+    height: 220,
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
+    borderWidth: 3,
   },
   modalbig: {
     backgroundColor: 'white',
@@ -606,10 +613,11 @@ const styles = StyleSheet.create({
     marginbuttom: 50,
     marginLeft: 10,
     width: 250,
-    height: 215,
+    height: 160,
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
+    borderWidth: 3,
   },
   textStyle: {
     textAlign: 'center',
@@ -620,7 +628,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 14,
     fontFamily: '',
-    fontWeight: 20,
+    // fontWeight: 20,
   },
   title: {
     fontSize: 25,

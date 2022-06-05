@@ -95,10 +95,10 @@ const MatchScreen = ({route, navigation}) => {
   //팝업창 컴포넌트
   const Modal_view = () => {
     if (match_result.count == 0) {
-      setmodaltext('현재 매칭 가능한 대상이 없습니다.\n 대기하실래요?');
+      setmodaltext('현재 매칭 가능한\n대상이 없습니다.\n\n 대기하실래요?');
       return (
         <View style={styles.modalmedium}>
-          <Text style={[styles.textStyleblack, styles.textTop]}>
+          <Text style={[styles.textStyleblack, styles.textTop2]}>
             {modaltext}
           </Text>
           <Pressable
@@ -114,24 +114,30 @@ const MatchScreen = ({route, navigation}) => {
         </View>
       );
     } else {
-      setmodaltext('매칭 성공! \n상대와 즐거운 공강 시간을 보내실래요?');
+      setmodaltext('매칭 성공! \n\n상대와 즐거운 공강 시간을\n보내실래요?\n');
       setmodalinfo(
-        '닉네임' +
+        '매칭 상대 정보\n\n매칭 상대는 ' +
           match_result.userID +
-          '체크된 문항' +
-          match_result.select_favor_list,
+          ' 입니다' +
+          '\n\n상대의 체크 문항은 \n' +
+          match_result.select_favor_list +
+          '\n입니다',
       );
       return (
-        <View style={styles.modalmedium}>
-          <Text>{modaltext}</Text>
-          <Text>{modalinfo}</Text>
+        <View style={styles.modalbig}>
+          <Text style={[styles.textStyleblack, styles.textToplong]}>
+            {modaltext}
+          </Text>
+          <View style={styles.minibox}>
+            <Text style={styles.boxtext}>{modalinfo}</Text>
+          </View>
           <Pressable
-            style={[styles.button, styles.buttonOpenTop]}
+            style={[styles.button, styles.buttonOpenTop2]}
             onPress={() => setmatch('matched')}>
             <Text style={styles.textStyle}>매칭 동의</Text>
           </Pressable>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonClose2]}
             onPress={() => cancelmatch()}>
             <Text style={styles.textStyle}>취소</Text>
           </Pressable>
@@ -305,7 +311,7 @@ const MatchScreen = ({route, navigation}) => {
             style={{
               backgroundColor: 'black',
               padding: 16,
-              margin: 10,
+              margin: 5,
               borderRadius: 8,
             }}
             onPress={() => find_match()}>
@@ -358,9 +364,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    borderWidth: 3,
   },
   button: {
     borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttoncl: {
+    borderRadius: 0,
     padding: 10,
     elevation: 2,
   },
@@ -371,14 +383,25 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: 'black',
-    marginTop: 30,
+    marginTop: 10,
+    marginRight: 15,
+    alignSelf: 'flex-end',
+    width: 50,
+  },
+  buttonClose2: {
+    backgroundColor: 'black',
+    marginTop: 0,
     marginRight: 15,
     alignSelf: 'flex-end',
     width: 50,
   },
   buttonOpenTop: {
     backgroundColor: 'black',
-    marginTop: 20,
+    marginTop: 30,
+    width: 100,
+  },
+  buttonOpenTop2: {
+    backgroundColor: 'black',
     width: 100,
   },
   modalText: {
@@ -402,17 +425,49 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
+    borderWidth: 3,
   },
   modalmedium: {
     backgroundColor: 'white',
     marginTop: 60,
     marginbuttom: 50,
     marginLeft: 10,
-    width: 200,
-    height: 215,
+    width: 240,
+    height: 250,
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
+    borderWidth: 3,
+  },
+  modalbig: {
+    backgroundColor: 'white',
+    marginTop: 60,
+    marginbuttom: 50,
+    marginLeft: 10,
+    width: 300,
+    height: 420,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+    borderWidth: 3,
+  },
+  minibox: {
+    // marginLeft: 10,
+    width: 250,
+    height: 180,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderWidth: 3,
+    marginBottom: 17,
+    borderStyle: 'dashed',
+  },
+  boxtext: {
+    // textAlign: 'center',
+    color: 'black',
+    fontSize: 14,
+    // fontFamily: '',
+    // fontWeight: 100,
+    margin: 10,
   },
 
   container_sex: {
@@ -470,13 +525,22 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 100,
   },
+  textTop2: {
+    marginTop: 20,
+    width: 150,
+  },
+  textToplong: {
+    marginTop: 20,
+    width: 180,
+  },
   textStyleblack: {
     textAlign: 'center',
     color: 'black',
-    fontSize: 14,
-    fontFamily: '',
+    fontSize: 15,
+    // fontFamily: '',
     // fontWeight: 100,
   },
+
   img: {
     width: 100,
     height: 100,

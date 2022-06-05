@@ -57,28 +57,37 @@ const LoginScreen = props => {
 
   return (
     <View style={styles.screen}>
-      <Text>Login</Text>
+      {/* <Text style={styles.textStyleblack}>로그인</Text> */}
       <TextInput
         style={styles.input}
-        placeholder="UserID"
+        placeholder="아이디"
         autoCapitalize="none"
         placeholderTextColor="white"
         onChangeText={val => setUserid(val)}
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="비밀번호"
         secureTextEntry={true}
         autoCapitalize="none"
         placeholderTextColor="white"
         onChangeText={val => setPasswd(val)}
       />
-      <Button title="Login" onPress={() => Login()} />
-      <Text>Register</Text>
-      <Button
-        onPress={() => props.navigation.navigate('RegisterScreen')}
-        title="Go to RegisterScreen"
-      />
+      <View style={styles.alignend}>
+        <Button title="로그인" onPress={() => Login()} color="black" />
+      </View>
+      <View style={styles.mt15}></View>
+      <View style={styles.aligncenter}>
+        <Text style={styles.textStyleblackend}>
+          저희와 함께 의미있는 공강 시간을 보내실래요?
+        </Text>
+
+        <Button
+          onPress={() => props.navigation.navigate('RegisterScreen')}
+          color="black"
+          title="회원가입"
+        />
+      </View>
     </View>
   );
 };
@@ -90,15 +99,61 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    width: 350,
+    width: 300,
     height: 55,
-    backgroundColor: '#42A5F5',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#97C9F7',
     margin: 10,
     padding: 8,
     color: 'white',
-    borderRadius: 14,
+    borderRadius: 0,
     fontSize: 18,
-    fontWeight: '500',
+    // fontWeight: '500',
+  },
+  textStyleblack: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 15,
+    fontFamily: '',
+    // fontWeight: 20,
+  },
+  textStyleblackend: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 15,
+    fontFamily: '',
+    // fontWeight: 20,
+    textAlign: 'center',
+    marginBottom: 3,
+  },
+  ml: {
+    marginLeft: 5,
+  },
+  mt5: {
+    marginTop: 5,
+  },
+  mt7: {
+    marginTop: 7,
+  },
+  mt10: {
+    marginTop: 10,
+  },
+  mt15: {
+    marginTop: 15,
+  },
+  mb: {
+    marginBottom: 5,
+  },
+  aligncenter: {
+    alignSelf: 'center',
+    // marginRight: 35,
+    marginTop: 33,
+  },
+  alignend: {
+    alignSelf: 'flex-end',
+    marginRight: 58,
+    marginTop: 10,
   },
 });
 
