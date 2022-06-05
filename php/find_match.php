@@ -18,14 +18,14 @@
     $match_idx = ""; //매칭된 idx 저장용
 
     //매칭 신청 내용 등록
-    $query = "INSERT INTO match_table(userID,select_time,select_favor_sex,select_favor_list)
-    select '$userID','$select_time','$select_sex','$select_list' from dual 
+    $query = "INSERT INTO match_table(userID,select_time,select_favor_sex,select_favor_list,userSex)
+    select '$userID','$select_time','$select_sex','$select_list',(select sex from member where userID = '$userID') from dual 
     WHERE NOT EXISTS(SELECT userID,select_time FROM match_table WHERE userID='$userID' and select_time = '$select_time')";
     $statement = mysqli_prepare($conn, $query);
     mysqli_stmt_execute($statement);
     
     //매칭 일치 사례 판별
-    $sqlwhere = "where select_favor_list = '$select_list' and userID != '$userID' and pending !='N' ";
+    $sqlwhere = "where select_favor_list = '$select_list' and userSex = '$select_sex' and select_favor_sex = (select sex from member where userID = '$userID') and userID != '$userID' and pending !='N' ";
     $query = "SELECT (IF(EXISTS(SELECT * FROM match_table $sqlwhere),'true', 'false')) as result";
 	$data = $conn->query($query)->fetch_array();
     
@@ -33,7 +33,7 @@
         $query = "select count(*) as count,ifnull(idx,0) as idx ,ifnull(userID,'none') as userID from match_table $sqlwhere limit 1";
         $data = $conn->query($query)->fetch_array();
     }else{ //차선책(선택사항 중 하나라도 맞을 시)
-        $sqlwhere = "where select_favor_sex = '$select_sex' and ( ";
+        $sqlwhere = "where userSex = '$select_sex' and select_favor_sex = (select sex from member where userID = '$userID') and ( ";
         for($i=0;$i<$select_list_count;$i++){
             $sqlwhere = $sqlwhere."select_favor_list like '%".$select_list_arr[$i]."%' "; //select_list explode()된 값 like 조건문 삽입
             if($i!=($select_list_count-1)){
