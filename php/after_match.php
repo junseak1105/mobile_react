@@ -25,7 +25,7 @@
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
-        $sql = "delete from match_table where userID = '$userID' and hour = '$selected_hour';"; //매치테이블에서 삭제
+        $sql = "delete from match_table where userID = '$userID' and select_time = '$select_time';"; //매치테이블에서 삭제
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
@@ -37,7 +37,7 @@
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         //신청자 측 데이터 돌리기
-        $sql = "delete from match_table where userID = '$userID' and hour = '$selected_hour';"; //매칭 데이터 삭제
+        $sql = "delete from match_table where userID = '$userID' and select_time = '$select_time';"; //매칭 데이터 삭제
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
@@ -77,23 +77,23 @@
         mysqli_close($conn);
     }else if($match_param == "match_refuse"){//요청 거절(피신청자)
         //echo "test4";
-        //신청자 유저 테이블 매칭대기로 설정
+        //피신청자 유저 테이블 매칭대기로 설정
         $sql = "update user_timetable set $selected_day='Wait,1' where userID = '$userID' and hour = '$selected_hour';"; 
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
-        //피신청자 유저 테이블 매칭대기로 설정
-        $sql = "update user_timetable set $selected_day='Wait,1' where userID = (select user2_id from match_pending where user1_id = '$userID' and select_time = '$select_time') and hour = '$selected_hour';"; 
+        //신청자 유저 테이블 매칭대기로 설정
+        $sql = "update user_timetable set $selected_day='Wait,1' where userID = (select user1_id from match_pending where user2_id = '$userID' and select_time = '$select_time') and hour = '$selected_hour';"; 
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         //매칭테이블 pending = "N"로 설정
-        $sql = "update match_table set pending = 'N' where select_time='$select_time' where (userID = '$userID' or userID = (select user2_id from match_pending where user1_id = '$userID' and select_time = '$select_time')) and select_time = '$select_time';"; 
+        $sql = "update match_table set pending = 'N' where select_time='$select_time' and (userID = '$userID' or userID = (select user1_id from match_pending where user2_id = '$userID' and select_time = '$select_time')) and select_time = '$select_time';"; 
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         //match_pending 테이블에서 삭제
-        $sql = "delete from match_pending where user1_id = '$userID' and select_time = '$select_time'";
+        $sql = "delete from match_pending where user2_id = '$userID' and select_time = '$select_time'";
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
