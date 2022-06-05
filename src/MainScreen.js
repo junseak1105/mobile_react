@@ -372,10 +372,6 @@ const MainScreen = props => {
         onPress={() => props.navigation.navigate('LoginScreen')}
         title="Go to Login"
       />
-      <Button
-        onPress={() => gettimetable()}
-        title="리로드"
-      />
       <Button onPress={() => logout()} title="Logout" />
       <View style={styles.centeredView}>
         <Modal

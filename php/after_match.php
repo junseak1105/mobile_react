@@ -20,7 +20,7 @@
     */
     
     if($match_param == "match_cancel_nomatch"){ //대기상태 취소
-        echo "test1";
+        //echo "test1";
         $sql = "update user_timetable set $selected_day='공강,0' where userID = '$userID' and hour = '$selected_hour';"; //테이블 공강으로 돌리기
         include("db.php");
         mysqli_query($conn,$sql);
@@ -30,7 +30,7 @@
         mysqli_query($conn,$sql);
         mysqli_close($conn);
     }else if($match_param == "match_cancel"){//요청 상태 취소(신청자)
-        echo "test2";
+        //echo "test2";
         //신청자 측 데이터 돌리기
         $sql = "update user_timetable set $selected_day='공강,0' where userID = '$userID' and hour = '$selected_hour';"; //테이블 공강으로 돌리기
         include("db.php");
@@ -59,24 +59,24 @@
 
     }else if($match_param == "match_accept"){//요청 수락
         $sql = "update match_pending set user2_chk='Y', complete ='Y' where user2_id = '$userID' and select_time = '$select_time';";
-        echo $sql;
+        //echo $sql;
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         //피신청자측 테이블 설정
         $sql = "update user_timetable set $selected_day = 'comp,4' where userID = '$userID' and hour = '$selected_hour';";
-        echo $sql;
+        //echo $sql;
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         //신청자측 테이블 설정
         $sql = "update user_timetable set $selected_day = 'comp,4' where userID = (select user1_id from match_pending where user2_id = '$userID' and select_time = '$select_time') and hour = '$selected_hour';";
-        echo $sql;
+        //echo $sql;
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
     }else if($match_param == "match_refuse"){//요청 거절(피신청자)
-        echo "test4";
+        //echo "test4";
         //신청자 유저 테이블 매칭대기로 설정
         $sql = "update user_timetable set $selected_day='Wait,1' where userID = '$userID' and hour = '$selected_hour';"; 
         include("db.php");
