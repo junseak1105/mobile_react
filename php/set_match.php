@@ -13,7 +13,7 @@
     $select_time = $selected_day.$selected_hour;
     
     if($matched_param == "nomatch"){ //매치 없을 시 
-        $sql = "update user_timetable set $selected_day='Wait,1' where userID = '$userID' and hour = '$selected_hour';"; //단순 대기
+        $sql = "update user_timetable set $selected_day='대기,1' where userID = '$userID' and hour = '$selected_hour';"; //단순 대기
         mysqli_query($conn,$sql);
         mysqli_close($conn);
     }else if($matched_param == "matched"){//매치 있을 시, 신청/수락대기 상태로 변경

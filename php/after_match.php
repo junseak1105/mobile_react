@@ -43,7 +43,7 @@
         mysqli_close($conn);
 
         //피신청자 측 데이터 돌리기
-        $sql = "update user_timetable set $selected_day='Wait,1' where userID = (select user2_id from match_pending where user1_id = '$userID' and select_time = '$select_time') and hour = '$selected_hour';"; //테이블 공강으로 돌리기
+        $sql = "update user_timetable set $selected_day='대기,1' where userID = (select user2_id from match_pending where user1_id = '$userID' and select_time = '$select_time') and hour = '$selected_hour';"; //테이블 공강으로 돌리기
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
@@ -64,13 +64,13 @@
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         //피신청자측 테이블 설정
-        $sql = "update user_timetable set $selected_day = 'comp,4' where userID = '$userID' and hour = '$selected_hour';";
+        $sql = "update user_timetable set $selected_day = '완료,4' where userID = '$userID' and hour = '$selected_hour';";
         echo $sql;
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         //신청자측 테이블 설정
-        $sql = "update user_timetable set $selected_day = 'comp,4' where userID = (select user1_id from match_pending where user2_id = '$userID' and select_time = '$select_time') and hour = '$selected_hour';";
+        $sql = "update user_timetable set $selected_day = '완료,4' where userID = (select user1_id from match_pending where user2_id = '$userID' and select_time = '$select_time') and hour = '$selected_hour';";
         echo $sql;
         include("db.php");
         mysqli_query($conn,$sql);
@@ -78,12 +78,12 @@
     }else if($match_param == "match_refuse"){//요청 거절(피신청자)
         echo "test4";
         //신청자 유저 테이블 매칭대기로 설정
-        $sql = "update user_timetable set $selected_day='Wait,1' where userID = '$userID' and hour = '$selected_hour';"; 
+        $sql = "update user_timetable set $selected_day='대기,1' where userID = '$userID' and hour = '$selected_hour';"; 
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         //피신청자 유저 테이블 매칭대기로 설정
-        $sql = "update user_timetable set $selected_day='Wait,1' where userID = (select user2_id from match_pending where user1_id = '$userID' and select_time = '$select_time') and hour = '$selected_hour';"; 
+        $sql = "update user_timetable set $selected_day='대기,1' where userID = (select user2_id from match_pending where user1_id = '$userID' and select_time = '$select_time') and hour = '$selected_hour';"; 
         include("db.php");
         mysqli_query($conn,$sql);
         mysqli_close($conn);
