@@ -13,6 +13,8 @@ import {
   ScrollView,
   Modal,
   Pressable,
+  Image,
+  // CheckBox,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import MyButton from '../components/MyButton';
@@ -20,6 +22,11 @@ import CheckboxList from 'rn-checkbox-list';
 import {get} from 'express/lib/response';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+
+// 이미지
+import girl from './images/girl.png';
+import boy from './images/boy.png';
+import match from './images/friend2.png';
 
 const MatchScreen = ({route, navigation}) => {
   //새로고침 함수
@@ -40,7 +47,10 @@ const MatchScreen = ({route, navigation}) => {
   //선택된 값 저장
   const [selectedFood, setselectedFood] = useState([]);
   const [selectedHobby, setselectedHobby] = useState([]);
-  const [selectedSex, setselectedSex] = useState([]);
+  // const [selectedSex, setselectedSex] = useState([]);
+  const [selectedSex, setselectedSex] = useState('Female');
+  const [selectedman, setselectedman] = useState(true);
+  const [selectedwoman, setselectedwoman] = useState(false);
   //카테고리 받아온 값 저장
   const [isLoading, setLoading] = useState(true);
   const [fa_hobby, sethobbyData] = useState([]);
@@ -85,12 +95,14 @@ const MatchScreen = ({route, navigation}) => {
   //팝업창 컴포넌트
   const Modal_view = () => {
     if (match_result.count == 0) {
-      setmodaltext('매칭가능 대상이 없습니다. 대기합니다');
+      setmodaltext('현재 매칭 가능한\n대상이 없습니다.\n\n 대기하실래요?');
       return (
-        <View style={{backgroundColor: 'grey'}}>
-          <Text>{modaltext}</Text>
+        <View style={styles.modalmedium}>
+          <Text style={[styles.textStyleblack, styles.textTop2]}>
+            {modaltext}
+          </Text>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpenTop]}
             onPress={() => setmatch('nomatch')}>
             <Text style={styles.textStyle}>매칭 동의</Text>
           </Pressable>
@@ -102,24 +114,30 @@ const MatchScreen = ({route, navigation}) => {
         </View>
       );
     } else {
-      setmodaltext('매칭성공 이분과 만나보시겠습니까?');
+      setmodaltext('매칭 성공! \n\n상대와 즐거운 공강 시간을\n보내실래요?\n');
       setmodalinfo(
-        '닉네임' +
+        '매칭 상대 정보\n\n매칭 상대는 ' +
           match_result.userID +
-          '체크된 문항' +
-          match_result.select_favor_list,
+          ' 입니다' +
+          '\n\n상대의 체크 문항은 \n' +
+          match_result.select_favor_list +
+          '\n입니다',
       );
       return (
-        <View style={{backgroundColor: 'grey'}}>
-          <Text>{modaltext}</Text>
-          <Text>{modalinfo}</Text>
+        <View style={styles.modalbig}>
+          <Text style={[styles.textStyleblack, styles.textToplong]}>
+            {modaltext}
+          </Text>
+          <View style={styles.minibox}>
+            <Text style={styles.boxtext}>{modalinfo}</Text>
+          </View>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpenTop2]}
             onPress={() => setmatch('matched')}>
             <Text style={styles.textStyle}>매칭 동의</Text>
           </Pressable>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonClose2]}
             onPress={() => cancelmatch()}>
             <Text style={styles.textStyle}>취소</Text>
           </Pressable>
@@ -208,50 +226,96 @@ const MatchScreen = ({route, navigation}) => {
     }
     setModalVisible(!modalVisible);
   };
-
+  const value = sex => {
+    console.log(sex);
+    if (sex == 'Male' && sex != selectedSex) {
+      setselectedman(!selectedman);
+      setselectedwoman(!selectedwoman);
+    } else if (sex == 'Female' && sex != selectedSex) {
+      setselectedwoman(!selectedwoman);
+      setselectedman(!selectedman);
+    }
+    setselectedSex(sex);
+    // selectedwoman ? [setselectedSex('Female')] : '';
+    // selectedman ? [setselectedSex('Male')] : '';
+    // console.log('선택값:' + selectedSex);
+  };
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.screen}>
       <View style={styles.container}>
         <View style={styles.container_sex}>
-          <CheckboxList
+          <Pressable onPress={() => [value('Male')]}>
+            {selectedman ? (
+              <Image style={styles.selectedimg} source={boy} />
+            ) : (
+              <Image style={styles.img} source={boy} />
+            )}
+          </Pressable>
+          <Pressable onPress={() => [value('Female')]}>
+            {selectedwoman ? (
+              <Image style={styles.selectedimg} source={girl} />
+            ) : (
+              <Image style={styles.img} source={girl} />
+            )}
+          </Pressable>
+          {/* <CheckboxList
             headerName="전체"
+            headerStyle={styles.headertext}
             style={styles.chkbox_sex}
-            listItems={fa_sex}
+            listItems={fa_sex} // 리스트 array
             selectedListItems={selectedSex}
-            listItemStyle={{borderBottomColor: 'black', borderBottomWidth: 1}}
+            listItemStyle={{
+              // 선 스타일
+              borderBottomColor: 'black',
+              borderBottomWidth: 0,
+              flexDirection: 'row',
+            }}
+            theme="black"
             onChange={({ids, items}) => setselectedSex(ids)}
-          />
+          /> */}
         </View>
         <View style={styles.selector_hobby_food}>
           <SafeAreaView style={styles.container_hobby}>
             <CheckboxList
-              headerName="전체"
+              headerName="모두 선택"
+              // headerStyle={styles.headertext}
               listItems={fa_hobby}
               selectedListItems={selectedHobby}
-              listItemStyle={{borderBottomColor: 'black', borderBottomWidth: 1}}
+              listItemStyle={{
+                marginTop: 8,
+                // borderWidth: 5,
+                // borderColor: '#97C9F7',
+              }}
               onChange={({ids, items}) => setselectedHobby(ids)}
+              theme="black"
             />
           </SafeAreaView>
           <SafeAreaView style={styles.container_food}>
             <CheckboxList
-              headerName="전체"
+              headerName="모두 선택"
+              // headerStyle={styles.headertext}
               listItems={fa_food}
               selectedListItems={selectedFood}
-              listItemStyle={{borderBottomColor: 'black', borderBottomWidth: 1}}
+              listItemStyle={{
+                marginTop: 8,
+                // borderWidth: 5,
+                // borderColor: '#97C9F7',
+              }}
               onChange={({ids, items}) => setselectedFood(ids)}
+              theme="black"
             />
           </SafeAreaView>
         </View>
         <View style={styles.find_match}>
           <TouchableOpacity
             style={{
-              backgroundColor: '#4B778D',
+              backgroundColor: 'black',
               padding: 16,
-              margin: 10,
+              margin: 5,
               borderRadius: 8,
             }}
             onPress={() => find_match()}>
-            <Text style={{fontSize: 10, color: 'black'}}>매칭</Text>
+            <Text style={styles.textStyle}>신청</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -277,26 +341,9 @@ const MatchScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FAFFFC',
   },
-  container_sex: {
-    flexDirection: 'row',
-  },
-  selector_hobby_food: {
-    margin: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flex: 6,
-  },
-  container_food: {
-    flex: 1,
-  },
-  container_hobby: {
-    flex: 1,
-  },
-  find_match: {
-    width: 100,
-    flex: 1,
-  },
+
   //modal css start
   centeredView: {
     justifyContent: 'center',
@@ -317,23 +364,198 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    borderWidth: 3,
   },
   button: {
     borderRadius: 20,
     padding: 10,
     elevation: 2,
   },
+  buttoncl: {
+    borderRadius: 0,
+    padding: 10,
+    elevation: 2,
+  },
   buttonOpen: {
-    backgroundColor: '#F194FF',
+    backgroundColor: 'black',
+    marginTop: 10,
+    width: 100,
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: 'black',
+    marginTop: 10,
+    marginRight: 15,
+    alignSelf: 'flex-end',
+    width: 50,
+  },
+  buttonClose2: {
+    backgroundColor: 'black',
+    marginTop: 0,
+    marginRight: 15,
+    alignSelf: 'flex-end',
+    width: 50,
+  },
+  buttonOpenTop: {
+    backgroundColor: 'black',
+    marginTop: 30,
+    width: 100,
+  },
+  buttonOpenTop2: {
+    backgroundColor: 'black',
+    width: 100,
   },
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
   },
   //modal css end
+
+  // 추가
+  screen: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  modalsmall: {
+    backgroundColor: 'white',
+    marginTop: 65,
+    marginbuttom: 50,
+    marginLeft: 10,
+    width: 200,
+    height: 200,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+    borderWidth: 3,
+  },
+  modalmedium: {
+    backgroundColor: 'white',
+    marginTop: 60,
+    marginbuttom: 50,
+    marginLeft: 10,
+    width: 240,
+    height: 250,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+    borderWidth: 3,
+  },
+  modalbig: {
+    backgroundColor: 'white',
+    marginTop: 60,
+    marginbuttom: 50,
+    marginLeft: 10,
+    width: 300,
+    height: 420,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+    borderWidth: 3,
+  },
+  minibox: {
+    // marginLeft: 10,
+    width: 250,
+    height: 180,
+    alignItems: 'center',
+    borderColor: 'black',
+    borderWidth: 3,
+    marginBottom: 17,
+    borderStyle: 'dashed',
+  },
+  boxtext: {
+    // textAlign: 'center',
+    color: 'black',
+    fontSize: 14,
+    // fontFamily: '',
+    // fontWeight: 100,
+    margin: 10,
+  },
+
+  container_sex: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 60,
+    marginRight: 60,
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  container_food: {
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 20,
+  },
+  container_hobby: {
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 20,
+  },
+
+  chkbox_sex: {},
+
+  selector_hobby_food: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flex: 6,
+    marginRight: 20,
+    marginLeft: 20,
+  },
+
+  find_match: {
+    width: 100,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginLeft: 290,
+  },
+
+  // headertext: {
+  //   backgroundColor: '#97C9F7',
+  //   text: {
+  //     color: 'white',
+  //   },
+  // },
+  textStyle: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 15,
+    // resizeMode: 'contain',
+  },
+  textTop: {
+    marginTop: 20,
+    width: 100,
+  },
+  textTop2: {
+    marginTop: 20,
+    width: 150,
+  },
+  textToplong: {
+    marginTop: 20,
+    width: 180,
+  },
+  textStyleblack: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 15,
+    // fontFamily: '',
+    // fontWeight: 100,
+  },
+
+  img: {
+    width: 100,
+    height: 100,
+    // resizeMode: 'contain',
+    // flex: 1,
+    // tintColor: '#e6e6e6',
+  },
+  selectedimg: {
+    width: 100,
+    height: 100,
+    tintColor: '#e6e6e6',
+  },
+  checkbox: {
+    alignSelf: 'center',
+  },
 });
 
 export default MatchScreen;
