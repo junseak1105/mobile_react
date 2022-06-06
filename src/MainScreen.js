@@ -363,7 +363,7 @@ const MainScreen = props => {
                       : data.Mon.class
                   }
                   color={
-                    data.Mon.class == ''
+                    data.Mon.class == '공강'
                       ? '#052F66'
                       : data.Mon.class == 'comp'
                       ? '#B31A09'
@@ -384,7 +384,7 @@ const MainScreen = props => {
                       : data.Tue.class
                   }
                   color={
-                    data.Tue.class == ''
+                    data.Tue.class == '공강'
                       ? '#052F66'
                       : data.Tue.class == 'comp'
                       ? '#B31A09'
@@ -405,7 +405,7 @@ const MainScreen = props => {
                       : data.Wed.class
                   }
                   color={
-                    data.Wed.class == ''
+                    data.Wed.class == '공강'
                       ? '#052F66'
                       : data.Wed.class == 'comp'
                       ? '#B31A09'
@@ -426,7 +426,7 @@ const MainScreen = props => {
                       : data.Thu.class
                   }
                   color={
-                    data.Thu.class == ''
+                    data.Thu.class == '공강'
                       ? '#052F66'
                       : data.Thu.class == 'comp'
                       ? '#B31A09'
@@ -447,7 +447,7 @@ const MainScreen = props => {
                       : data.Fri.class
                   }
                   color={
-                    data.Fri.class == ''
+                    data.Fri.class == '공강'
                       ? '#052F66'
                       : data.Fri.class == 'comp'
                       ? '#B31A09'
