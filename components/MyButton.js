@@ -1,19 +1,24 @@
-import React from "react";
-import { TouchableOpacity, Text } from "react-native";
+import React from 'react';
+import {View, Pressable, Text} from 'react-native';
 
-const MyButton = () => {
+const MyButton = props => {
   return (
-    <TouchableOpacity
+    <Pressable
       style={{
-        backgroundColor: "#4B778D",
-        padding: 16,
-        margin: 10,
-        borderRadius: 8,
+        backgroundColor: props.Color,
+        width: '100%',
+        height: '100%',
       }}
-      onPress={() => alert("Click!")}
-    >
-      <Text style={{ fontSize: 10, color: "white" }}>My Button</Text>
-    </TouchableOpacity>
+      onPress={() => setModal(props.hour, props.status, props.day)}>
+      <Text
+        numberOfLines={5} ellipsizeMode="tail"
+        style={{
+          fontSize: 10,
+          color: 'white',  
+        }}>
+        {props.text_param}
+      </Text>
+    </Pressable>
   );
 };
 

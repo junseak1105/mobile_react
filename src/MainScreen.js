@@ -7,6 +7,7 @@ import {
   Modal,
   Pressable,
   Alert,
+  Touchable,
 } from 'react-native';
 import {DataTable, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +15,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 // import {useTailwind, tailwind} from 'tailwind-rn';
 import {style as tw} from 'tailwind-react-native-classnames';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import MyButton from '../components/MyButton';
 
 const MainScreen = props => {
   // const tailwind = useTailwind(); 안됨
@@ -45,12 +48,12 @@ const MainScreen = props => {
     //localstorage userid getdata
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
-      gettimetable(result); 
-    });//받아오는 함수 실행
+      gettimetable(result);
+    }); //받아오는 함수 실행
   }, [isFocused]);
 
   //타임테이블 가져오기
-  const gettimetable = async (userid) => {
+  const gettimetable = async userid => {
     try {
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/get_timetable.php?userid=' + userid,
@@ -285,6 +288,50 @@ const MainScreen = props => {
       </View>
     );
   };
+  //datacell title
+  const Datacell_title = props => {
+    return (
+      <DataTable.Title
+        style={{
+          justifyContent: 'center',
+        }}>
+        {props.text}
+      </DataTable.Title>
+    );
+  };
+  //datacell 내용
+  const Datacell_content = props => {
+    return (
+      <DataTable.Cell
+        style={{
+          flexDirection: 'row',  
+          backgroundColor: props.text_param == '공강'
+          ? '#052F66'
+          : props.text_param == '완료'
+          ? '#B31A09'
+          : props.text_param == '대기'
+          ? '#ffb224'
+          : 'black',
+          borderRadius: 2,
+          margin: 2,
+          alignContent: 'center',
+          justifyContent: 'center',
+        }}>
+        <Pressable
+          onPress={() => setModal(props.hour, props.status, props.day)}>
+          <Text
+            style={{
+              flex: 1,
+              fontSize: 10,
+              color: 'white',
+              flexShrink: 1,
+            }}>
+            {props.text_param}
+          </Text>
+        </Pressable>
+      </DataTable.Cell>
+    );
+  };
   //=======================컴포넌트 모음 끝======================
 
   //=======================매칭 기능 시작========================
@@ -341,122 +388,53 @@ const MainScreen = props => {
       <Text style={styles.title}>My Schedule</Text>
       <DataTable>
         <DataTable.Header>
-          <DataTable.Title></DataTable.Title>
-          <DataTable.Title>Mon</DataTable.Title>
-          <DataTable.Title>Tue</DataTable.Title>
-          <DataTable.Title>Wed</DataTable.Title>
-          <DataTable.Title>Thu</DataTable.Title>
-          <DataTable.Title>Fri</DataTable.Title>
+          <Datacell_title text="" />
+          <Datacell_title text="Mon" />
+          <Datacell_title text="Tue" />
+          <Datacell_title text="Wed" />
+          <Datacell_title text="Thu" />
+          <Datacell_title text="Fri" />
         </DataTable.Header>
         {Timetable.map(data => {
           return (
             <DataTable.Row>
-              <DataTable.Cell>{data.hour}</DataTable.Cell>
-              <DataTable.Cell>
-                <Button
-                  onPress={() => setModal(data.hour, data.Mon.status, 'Mon')}
-                  title={
-                    data.Mon.class == 'comp'
-                      ? '완료'
-                      : data.Mon.class == 'Wait'
-                      ? '대기'
-                      : data.Mon.class
-                  }
-                  color={
-                    data.Mon.class == '공강'
-                      ? '#052F66'
-                      : data.Mon.class == 'comp'
-                      ? '#B31A09'
-                      : data.Mon.class == 'Wait'
-                      ? '#ffb224'
-                      : 'black'
-                  }
-                />
+              <DataTable.Cell
+                style={{
+                  alignContent: 'center',
+                  justifyContent: 'center',
+                }}>
+                {data.hour}
               </DataTable.Cell>
-              <DataTable.Cell>
-                <Button
-                  onPress={() => setModal(data.hour, data.Tue.status, 'Tue')}
-                  title={
-                    data.Tue.class == 'comp'
-                      ? '완료'
-                      : data.Tue.class == 'Wait'
-                      ? '대기'
-                      : data.Tue.class
-                  }
-                  color={
-                    data.Tue.class == '공강'
-                      ? '#052F66'
-                      : data.Tue.class == 'comp'
-                      ? '#B31A09'
-                      : data.Tue.class == 'Wait'
-                      ? '#ffb224'
-                      : 'black'
-                  }
-                />
-              </DataTable.Cell>
-              <DataTable.Cell>
-                <Button
-                  onPress={() => setModal(data.hour, data.Wed.status, 'Wed')}
-                  title={
-                    data.Wed.class == 'comp'
-                      ? '완료'
-                      : data.Wed.class == 'Wait'
-                      ? '대기'
-                      : data.Wed.class
-                  }
-                  color={
-                    data.Wed.class == '공강'
-                      ? '#052F66'
-                      : data.Wed.class == 'comp'
-                      ? '#B31A09'
-                      : data.Wed.class == 'Wait'
-                      ? '#ffb224'
-                      : 'black'
-                  }
-                />
-              </DataTable.Cell>
-              <DataTable.Cell>
-                <Button
-                  onPress={() => setModal(data.hour, data.Thu.status, 'Thu')}
-                  title={
-                    data.Thu.class == 'comp'
-                      ? '완료'
-                      : data.Thu.class == 'Wait'
-                      ? '대기'
-                      : data.Thu.class
-                  }
-                  color={
-                    data.Thu.class == '공강'
-                      ? '#052F66'
-                      : data.Thu.class == 'comp'
-                      ? '#B31A09'
-                      : data.Thu.class == 'Wait'
-                      ? '#ffb224'
-                      : 'black'
-                  }
-                />
-              </DataTable.Cell>
-              <DataTable.Cell>
-                <Button
-                  onPress={() => setModal(data.hour, data.Fri.status, 'Fri')}
-                  title={
-                    data.Fri.class == 'comp'
-                      ? '완료'
-                      : data.Fri.class == 'Wait'
-                      ? '대기'
-                      : data.Fri.class
-                  }
-                  color={
-                    data.Fri.class == '공강'
-                      ? '#052F66'
-                      : data.Fri.class == 'comp'
-                      ? '#B31A09'
-                      : data.Fri.class == 'Wait'
-                      ? '#ffb224'
-                      : 'black'
-                  }
-                />
-              </DataTable.Cell>
+              <Datacell_content
+                hour={data.hour}
+                status={data.Mon.status}
+                day="Mon"
+                text_param={data.Mon.class}
+              />
+              <Datacell_content
+                hour={data.hour}
+                status={data.Tue.status}
+                day="Tue"
+                text_param={data.Tue.class}
+              />
+              <Datacell_content
+                hour={data.hour}
+                status={data.Wed.status}
+                day="Wed"
+                text_param={data.Wed.class}
+              />
+              <Datacell_content
+                hour={data.hour}
+                status={data.Thu.status}
+                day="Thu"
+                text_param={data.Thu.class}
+              />
+              <Datacell_content
+                hour={data.hour}
+                status={data.Fri.status}
+                day="Fri"
+                text_param={data.Fri.class}
+              />
             </DataTable.Row>
           );
         })}
