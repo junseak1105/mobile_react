@@ -87,7 +87,7 @@ const MatchScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -176,7 +176,7 @@ const MatchScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -201,7 +201,7 @@ const MatchScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
     setModalVisible(!modalVisible);
   };
@@ -222,7 +222,7 @@ const MatchScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
     setModalVisible(!modalVisible);
   };
@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
   modalsmall: {
     backgroundColor: 'white',
     marginTop: 65,
-    marginbuttom: 50,
+    marginBottom: 50,
     marginLeft: 10,
     width: 200,
     height: 200,
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
   modalmedium: {
     backgroundColor: 'white',
     marginTop: 60,
-    marginbuttom: 50,
+    marginBottom: 50,
     marginLeft: 10,
     width: 240,
     height: 250,
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
   modalbig: {
     backgroundColor: 'white',
     marginTop: 60,
-    marginbuttom: 50,
+    marginBottom: 50,
     marginLeft: 10,
     width: 300,
     height: 420,
