@@ -21,7 +21,7 @@ const ChatScreen = ({route, navigation}) => {
   }, []);
 
   const chat_input = async () => {
-    let now= new Date();
+    let now = new Date();
     try {
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/chat_input.php?userID=' +
@@ -45,20 +45,22 @@ const ChatScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
   const chat_fetch = async () => {
-      console.log('http://jhk.n-e.kr:80/chat_fetch.php?userID=' +
-      token +
-      '&user1_id=' +
-      user1_id +
-      '&user2_id=' +
-      user2_id +
-      '&selected_hour=' +
-      param_hour +
-      '&selected_day=' +
-      param_day,);
+    console.log(
+      'http://jhk.n-e.kr:80/chat_fetch.php?userID=' +
+        token +
+        '&user1_id=' +
+        user1_id +
+        '&user2_id=' +
+        user2_id +
+        '&selected_hour=' +
+        param_hour +
+        '&selected_day=' +
+        param_day,
+    );
     try {
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/chat_fetch.php?userID=' +
@@ -79,7 +81,7 @@ const ChatScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
   //   const onSend = useCallback((messages = []) => {

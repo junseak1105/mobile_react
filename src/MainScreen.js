@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-
 import {
   View,
   Text,
@@ -61,7 +60,7 @@ const MainScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -114,7 +113,7 @@ const MainScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
   //====================수업  기능 끝=========================
@@ -161,12 +160,14 @@ const MainScreen = props => {
     } else if (modalstatus == 1) {
       //매칭 대기
       return (
-        <View style={{backgroundColor: 'grey'}}>
-          <Text>{modaltext}</Text>
+        <View style={styles.modalsmall}>
+          <Text style={[styles.textStyleblack, styles.textTop]}>
+            {modaltext}
+          </Text>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpen]}
             onPress={() => after_match('match_cancel_nomatch')}>
-            <Text>매칭 취소</Text>
+            <Text style={styles.textStyle}>매칭 취소</Text>
           </Pressable>
           <Pressable
             style={[styles.button, styles.buttonClose]}
@@ -178,8 +179,10 @@ const MainScreen = props => {
     } else if (modalstatus == 2) {
       //매칭 수락 대기중(신청자)
       return (
-        <View style={{backgroundColor: 'grey'}}>
-          <Text>{modaltext}</Text>
+        <View style={styles.modalsmall}>
+          <Text style={[styles.textStyleblack, styles.textTop]}>
+            {modaltext}
+          </Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
             onPress={() => after_match('match_cancel')}>
@@ -195,8 +198,10 @@ const MainScreen = props => {
     } else if (modalstatus == 3) {
       //매칭 수락 대기 중(피신청자)
       return (
-        <View style={{backgroundColor: 'grey'}}>
-          <Text>{modaltext}</Text>
+        <View style={styles.modalsmall}>
+          <Text style={[styles.textStyleblack, styles.textTop]}>
+            {modaltext}
+          </Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
             onPress={() => after_match('match_accept')}>
@@ -226,7 +231,7 @@ const MainScreen = props => {
           {/* <Text>{user1_id}</Text> */}
           {/* <Text>{user2_id}</Text> */}
           <Text style={[styles.textStyleblack, styles.mt7, styles.mb]}>
-            상대방과 채팅 가능합니다
+            상대방과 채팅 하실래요?
           </Text>
           <Pressable
             style={[styles.buttonOpen, styles.button]}
@@ -305,7 +310,7 @@ const MainScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
   //매칭 대상자 가져오기
@@ -325,9 +330,10 @@ const MainScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
+
   //=======================매칭 기능 끝========================
 
   return (
@@ -349,36 +355,106 @@ const MainScreen = props => {
               <DataTable.Cell>
                 <Button
                   onPress={() => setModal(data.hour, data.Mon.status, 'Mon')}
-                  title={data.Mon.class}
-                  color={data.Mon.class == '공강' ? '#052F66' : 'black'}
+                  title={
+                    data.Mon.class == 'comp'
+                      ? '완료'
+                      : data.Mon.class == 'Wait'
+                      ? '대기'
+                      : data.Mon.class
+                  }
+                  color={
+                    data.Mon.class == '공강'
+                      ? '#052F66'
+                      : data.Mon.class == 'comp'
+                      ? '#B31A09'
+                      : data.Mon.class == 'Wait'
+                      ? '#ffb224'
+                      : 'black'
+                  }
                 />
               </DataTable.Cell>
               <DataTable.Cell>
                 <Button
                   onPress={() => setModal(data.hour, data.Tue.status, 'Tue')}
-                  title={data.Tue.class}
-                  color={data.Tue.class == '공강' ? '#052F66' : 'black'}
+                  title={
+                    data.Tue.class == 'comp'
+                      ? '완료'
+                      : data.Tue.class == 'Wait'
+                      ? '대기'
+                      : data.Tue.class
+                  }
+                  color={
+                    data.Tue.class == '공강'
+                      ? '#052F66'
+                      : data.Tue.class == 'comp'
+                      ? '#B31A09'
+                      : data.Tue.class == 'Wait'
+                      ? '#ffb224'
+                      : 'black'
+                  }
                 />
               </DataTable.Cell>
               <DataTable.Cell>
                 <Button
                   onPress={() => setModal(data.hour, data.Wed.status, 'Wed')}
-                  title={data.Wed.class}
-                  color={data.Wed.class == '공강' ? '#052F66' : 'black'}
+                  title={
+                    data.Wed.class == 'comp'
+                      ? '완료'
+                      : data.Wed.class == 'Wait'
+                      ? '대기'
+                      : data.Wed.class
+                  }
+                  color={
+                    data.Wed.class == '공강'
+                      ? '#052F66'
+                      : data.Wed.class == 'comp'
+                      ? '#B31A09'
+                      : data.Wed.class == 'Wait'
+                      ? '#ffb224'
+                      : 'black'
+                  }
                 />
               </DataTable.Cell>
               <DataTable.Cell>
                 <Button
                   onPress={() => setModal(data.hour, data.Thu.status, 'Thu')}
-                  title={data.Thu.class}
-                  color={data.Thu.class == '공강' ? '#052F66' : 'black'}
+                  title={
+                    data.Thu.class == 'comp'
+                      ? '완료'
+                      : data.Thu.class == 'Wait'
+                      ? '대기'
+                      : data.Thu.class
+                  }
+                  color={
+                    data.Thu.class == '공강'
+                      ? '#052F66'
+                      : data.Thu.class == 'comp'
+                      ? '#B31A09'
+                      : data.Thu.class == 'Wait'
+                      ? '#ffb224'
+                      : 'black'
+                  }
                 />
               </DataTable.Cell>
               <DataTable.Cell>
                 <Button
                   onPress={() => setModal(data.hour, data.Fri.status, 'Fri')}
-                  title={data.Fri.class}
-                  color={data.Fri.class == '공강' ? '#052F66' : 'black'}
+                  title={
+                    data.Fri.class == 'comp'
+                      ? '완료'
+                      : data.Fri.class == 'Wait'
+                      ? '대기'
+                      : data.Fri.class
+                  }
+                  color={
+                    data.Fri.class == '공강'
+                      ? '#052F66'
+                      : data.Fri.class == 'comp'
+                      ? '#B31A09'
+                      : data.Fri.class == 'Wait'
+                      ? '#ffb224'
+                      : 'black'
+                  }
                 />
               </DataTable.Cell>
             </DataTable.Row>
@@ -483,7 +559,7 @@ const styles = StyleSheet.create({
   },
   textTopbuttom: {
     marginTop: 5,
-    marginButtom: 5,
+    marginBottom: 5,
   },
 
   buttonOpen: {
@@ -575,7 +651,7 @@ const styles = StyleSheet.create({
   modal: {
     backgroundColor: 'white',
     marginTop: 50,
-    marginbuttom: 50,
+    marginBottom: 50,
     marginLeft: 10,
     width: 250,
     alignItems: 'center',
@@ -586,7 +662,7 @@ const styles = StyleSheet.create({
   modalsmall: {
     backgroundColor: 'white',
     marginTop: 65,
-    marginbuttom: 50,
+    marginBottom: 50,
     marginLeft: 10,
     width: 200,
     height: 200,
@@ -598,7 +674,7 @@ const styles = StyleSheet.create({
   modalmedium: {
     backgroundColor: 'white',
     marginTop: 60,
-    marginbuttom: 50,
+    marginBottom: 50,
     marginLeft: 10,
     width: 230,
     height: 220,
@@ -610,7 +686,7 @@ const styles = StyleSheet.create({
   modalbig: {
     backgroundColor: 'white',
     marginTop: 60,
-    marginbuttom: 50,
+    marginBottom: 50,
     marginLeft: 10,
     width: 250,
     height: 160,

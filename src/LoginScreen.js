@@ -50,7 +50,7 @@ const LoginScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
   //db접속끝

@@ -31,7 +31,7 @@ const RegisterScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
   //db접속끝
@@ -81,7 +81,7 @@ const RegisterScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
   //db접속끝
