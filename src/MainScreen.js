@@ -330,35 +330,44 @@ const MainScreen = props => {
   //datacell 내용
   const Datacell_content = props => {
     return (
-      <TouchableOpacity
+      <DataTable.Cell
         style={{
-          flex: 1,
+          flexDirection: 'row',
           backgroundColor:
-              props.text_param == '공강'
-                ? '#FAFFFC'
-                : props.text_param == '완료'
-                ? '#B31A09'
-                : props.text_param == '대기'
-                ? '#ffb224'
-                : 'black',
-            borderRadius: 2,
-            margin: 2,
-            justifyContent: 'center',
-            width: '100%',
-        }}
-        onPress={() => setModal(props.hour, props.status, props.day)}>
-        <Text
-          numberOfLines={2}
-          textBreakStrategy="simple"
-          style={{
-            fontSize: 12,
-            justifyContent: "center",
-            alignItems: "center",
-            color: props.text_param == '공강' ? 'black' : '#FAFFFC',
-          }}>
-          {props.text_param}
-        </Text>
-      </TouchableOpacity>
+            props.text_param == '공강'
+              ? '#FAFFFC'
+              : props.text_param == '완료'
+              ? '#B31A09'
+              : props.text_param == '대기'
+              ? '#ffb224'
+              : 'black',
+          borderRadius: 2,
+          margin: 2,
+          width: '20%',
+          flex: 1,
+          flexWrap: 'wrap',
+          alignContent: 'center',
+          justifyContent: 'center',
+        }}>
+        <Pressable
+          onPress={() => setModal(props.hour, props.status, props.day)}>
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={{
+              width: 60,
+              fontSize: 12,
+              color: props.text_param == '공강' ? 'black' : '#FAFFFC',
+              // flexShrink: 1,
+              // flexWrap: 'wrap',
+              textAlign: 'center',
+            }}>
+            {/* (numberOfLines=={1}) ?(' */}
+            {props.text_param}
+            {/* '):() */}
+          </Text>
+        </Pressable>
+      </DataTable.Cell>
     );
   };
   //로그인,아웃
