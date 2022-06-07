@@ -7,7 +7,7 @@ import {
   Modal,
   Pressable,
   Alert,
-  Touchable,
+  TouchableOpacity,
 } from 'react-native';
 import {DataTable, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -305,36 +305,35 @@ const MainScreen = props => {
   //datacell 내용
   const Datacell_content = props => {
     return (
-      <DataTable.Cell
+      <TouchableOpacity
         style={{
-          flexDirection: 'row',
+          flex: 1,
           backgroundColor:
-            props.text_param == '공강'
-              ? '#FAFFFC'
-              : props.text_param == '완료'
-              ? '#B31A09'
-              : props.text_param == '대기'
-              ? '#ffb224'
-              : 'black',
-          borderRadius: 2,
-          margin: 2, // ver 22
-          alignContent: 'center',
-          justifyContent: 'center',
-          width: '20%',
-        }}>
-        <Pressable
-          onPress={() => setModal(props.hour, props.status, props.day)}>
-          <Text
-            style={{
-              flex: 1,
-              fontSize: 10.5,
-              color: props.text_param == '공강' ? 'black' : '#FAFFFC',
-              flexShrink: 1,
-            }}>
-            {props.text_param}
-          </Text>
-        </Pressable>
-      </DataTable.Cell>
+              props.text_param == '공강'
+                ? '#FAFFFC'
+                : props.text_param == '완료'
+                ? '#B31A09'
+                : props.text_param == '대기'
+                ? '#ffb224'
+                : 'black',
+            borderRadius: 2,
+            margin: 2,
+            justifyContent: 'center',
+            width: '100%',
+        }}
+        onPress={() => setModal(props.hour, props.status, props.day)}>
+        <Text
+          numberOfLines={3}
+          textBreakStrategy="simple"
+          style={{
+            fontSize: 12,
+            justifyContent: "center",
+            alignItems: "center",
+            color: props.text_param == '공강' ? 'black' : '#FAFFFC',
+          }}>
+          {props.text_param}
+        </Text>
+      </TouchableOpacity>
     );
   };
   //로그인,아웃
@@ -431,7 +430,7 @@ const MainScreen = props => {
         </DataTable.Header>
         {Timetable.map(data => {
           return (
-            <DataTable.Row style={{height: '12%'}}>
+            <DataTable.Row style={{height: '12%', flexDirection: 'row'}}>
               <View style={{width: '5%'}}>
                 <DataTable.Cell
                   style={{
