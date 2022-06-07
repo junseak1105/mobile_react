@@ -214,7 +214,7 @@ const MainScreen = props => {
             {modaltext}
           </Text>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpen]}
             onPress={() => after_match('match_cancel')}>
             <Text style={styles.textStyle}>매칭 취소</Text>
           </Pressable>
@@ -295,7 +295,7 @@ const MainScreen = props => {
   };
   //수업 입력 창
   const Modal_view_class = () => {
-    const [temp,settemp] = useState("");
+    const [temp, settemp] = useState('');
     return (
       <View style={styles.modalbig}>
         <Text style={styles.textTopbuttom}>{classname}</Text>
@@ -473,7 +473,9 @@ const MainScreen = props => {
         </DataTable.Header>
         {Timetable.map(data => {
           return (
-            <DataTable.Row key = {data.key} style={{height: '12%', flexDirection: 'row'}}>
+            <DataTable.Row
+              key={data.key}
+              style={{height: '12%', flexDirection: 'row'}}>
               <View style={{width: '5%'}}>
                 <DataTable.Cell
                   style={{
@@ -600,11 +602,6 @@ const styles = StyleSheet.create({
     elevation: 0,
     width: 500,
   },
-  buttonOpenTop: {
-    backgroundColor: 'black',
-    marginTop: 20,
-    width: 100,
-  },
   textTop: {
     marginTop: 20,
     width: 100,
@@ -622,28 +619,32 @@ const styles = StyleSheet.create({
   buttonOpen: {
     backgroundColor: 'black',
     marginTop: 10,
-    width: 100,
+    width: '70%',
+  },
+  buttonOpenTop: {
+    backgroundColor: 'black',
+    marginTop: 20,
+    width: '70%',
   },
   buttonClose: {
     backgroundColor: 'black',
     marginTop: 30,
-    marginRight: 15,
     alignSelf: 'flex-end',
-    width: 50,
+    width: '30%',
   },
   buttonClosemrsmall: {
     backgroundColor: 'black',
-    marginTop: 20,
-    marginRight: 5,
+    // marginTop: 20,
     alignSelf: 'flex-end',
-    width: 50,
+    width: '30%',
+    margin: 10,
   },
   buttonClosemt: {
     backgroundColor: 'black',
-    marginTop: 5,
-    marginRight: 15,
+    marginTop: 10,
     alignSelf: 'flex-end',
-    width: 50,
+    width: '30%',
+    marginBottom: 10,
   },
   buttonCloselong: {
     backgroundColor: 'black',
@@ -664,7 +665,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 
-  // 추가
   row: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -677,7 +677,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 15,
     marginBottom: 10,
-    marginLeft: 100,
   },
   mr: {
     marginRight: 5,
@@ -722,11 +721,14 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     marginLeft: 10,
     width: '50%',
-    height: '48%',
+    height: '58%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
-    borderWidth: 3,
+    borderWidth: 2,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   modalmedium: {
     backgroundColor: '#FAFFFC',
@@ -734,11 +736,14 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     marginLeft: 10,
     width: '55%',
-    height: '51%',
+    height: '55%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
     borderWidth: 3,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   modalbig: {
     backgroundColor: '#FAFFFC',
@@ -746,11 +751,14 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     marginLeft: 10,
     width: '60%',
-    height: '44%',
+    height: '50%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
+    flexWrap: 'wrap',
     borderWidth: 3,
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   textStyle: {
     textAlign: 'center',

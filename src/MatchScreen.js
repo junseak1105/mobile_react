@@ -311,7 +311,7 @@ const MatchScreen = ({route, navigation}) => {
             style={{
               backgroundColor: 'black',
               padding: 16,
-              margin: 5,
+              margin: 10,
               borderRadius: 8,
             }}
             onPress={() => find_match()}>
@@ -344,7 +344,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAFFFC',
   },
 
-  //modal css start
   centeredView: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -383,26 +382,28 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: 'black',
-    marginTop: 10,
-    marginRight: 15,
+    marginTop: 5,
+    marginBottom: 10,
     alignSelf: 'flex-end',
-    width: 50,
+    width: '30%',
   },
   buttonClose2: {
     backgroundColor: 'black',
-    marginTop: 0,
-    marginRight: 15,
+    marginTop: 5,
+    marginBottom: 10,
     alignSelf: 'flex-end',
-    width: 50,
+    width: '20%',
   },
   buttonOpenTop: {
     backgroundColor: 'black',
     marginTop: 30,
-    width: 100,
+    marginBottom: 10,
+    width: '70%',
   },
   buttonOpenTop2: {
     backgroundColor: 'black',
-    width: 100,
+    width: '70%',
+    marginBottom: 10,
   },
   modalText: {
     marginBottom: 15,
@@ -410,7 +411,6 @@ const styles = StyleSheet.create({
   },
   //modal css end
 
-  // 추가
   screen: {
     flex: 1,
     backgroundColor: '#FAFFFC',
@@ -438,6 +438,9 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderRadius: 18,
     borderWidth: 3,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   modalbig: {
     backgroundColor: '#FAFFFC',
@@ -445,11 +448,14 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     marginLeft: 10,
     width: '75%', //300,
-    height: '73%', //420,
+    height: '75%', //420,
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
     borderWidth: 3,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   minibox: {
     // marginLeft: 10,
@@ -509,12 +515,6 @@ const styles = StyleSheet.create({
     marginLeft: 290,
   },
 
-  // headertext: {
-  //   backgroundColor: '#97C9F7',
-  //   text: {
-  //     color: '#FAFFFC',
-  //   },
-  // },
   textStyle: {
     textAlign: 'center',
     color: '#FAFFFC',
