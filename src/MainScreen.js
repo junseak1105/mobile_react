@@ -15,8 +15,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 // import {useTailwind, tailwind} from 'tailwind-rn';
 import {style as tw} from 'tailwind-react-native-classnames';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import MyButton from '../components/MyButton';
 
 const MainScreen = props => {
   // const tailwind = useTailwind(); 안됨
@@ -43,14 +41,14 @@ const MainScreen = props => {
   //수업 등록 여부 저장
   const [class_result, setclassresult] = useState([]);
   //로그인 버튼 상태
-  const [loginout,setloginout] =useState(false);
+  const [loginout, setloginout] = useState(false);
 
   //페이지 로딩 함수
   useEffect(() => {
     //localstorage userid getdata
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
-      result != "" ? setloginout(true) : setloginout(false);
+      result != '' ? setloginout(true) : setloginout(false);
       gettimetable(result);
     }); //받아오는 함수 실행
   }, [isFocused]);
@@ -298,6 +296,7 @@ const MainScreen = props => {
       <DataTable.Title
         style={{
           justifyContent: 'center',
+          textAlign: 'center',
         }}>
         {props.text}
       </DataTable.Title>
@@ -308,26 +307,28 @@ const MainScreen = props => {
     return (
       <DataTable.Cell
         style={{
-          flexDirection: 'row',  
-          backgroundColor: props.text_param == '공강'
-          ? '#052F66'
-          : props.text_param == '완료'
-          ? '#B31A09'
-          : props.text_param == '대기'
-          ? '#ffb224'
-          : 'black',
+          flexDirection: 'row',
+          backgroundColor:
+            props.text_param == '공강'
+              ? '#FAFFFC'
+              : props.text_param == '완료'
+              ? '#B31A09'
+              : props.text_param == '대기'
+              ? '#ffb224'
+              : 'black',
           borderRadius: 2,
-          margin: 2,
+          margin: 2, // ver 22
           alignContent: 'center',
           justifyContent: 'center',
+          width: '20%',
         }}>
         <Pressable
           onPress={() => setModal(props.hour, props.status, props.day)}>
           <Text
             style={{
               flex: 1,
-              fontSize: 10,
-              color: 'white',
+              fontSize: 10.5,
+              color: props.text_param == '공강' ? 'black' : '#FAFFFC',
               flexShrink: 1,
             }}>
             {props.text_param}
@@ -337,21 +338,21 @@ const MainScreen = props => {
     );
   };
   //로그인,아웃
-  const Loginout = ()=>{
-    if(!loginout){
-      return(
-      <Button
-        onPress={() => props.navigation.navigate('LoginScreen')}
-        title="로그인"
-        color="black"
-      />
+  const Loginout = () => {
+    if (!loginout) {
+      return (
+        <Button
+          onPress={() => props.navigation.navigate('LoginScreen')}
+          title="로그인"
+          color="black"
+        />
       );
-    }else{
-      return(
+    } else {
+      return (
         <Button onPress={() => [logout()]} title="로그아웃" color="black" />
       );
-    };
-  }
+    }
+  };
   //=======================컴포넌트 모음 끝======================
 
   //=======================매칭 기능 시작========================
@@ -405,26 +406,42 @@ const MainScreen = props => {
 
   return (
     <View style={styles.screen}>
+      {/* <View style={[{flex: 1}]}></View> */}
       <Text style={styles.title}>My Schedule</Text>
-      <DataTable>
-        <DataTable.Header>
-          <Datacell_title text="" />
-          <Datacell_title text="Mon" />
-          <Datacell_title text="Tue" />
-          <Datacell_title text="Wed" />
-          <Datacell_title text="Thu" />
-          <Datacell_title text="Fri" />
+      <DataTable style={[{width: '100%', height: '76%'}]}>
+        <DataTable.Header style={[{height: 45}]}>
+          <View style={[{width: '5%'}]}>
+            <Datacell_title text="" />
+          </View>
+          <View style={[{width: '19%'}]}>
+            <Datacell_title text="Mon" />
+          </View>
+          <View style={[{width: '19%'}]}>
+            <Datacell_title text="Tue" />
+          </View>
+          <View style={[{width: '19%'}]}>
+            <Datacell_title text="Wed" />
+          </View>
+          <View style={[{width: '19%'}]}>
+            <Datacell_title text="Thu" />
+          </View>
+          <View style={[{width: '19%'}]}>
+            <Datacell_title text="Fri" />
+          </View>
         </DataTable.Header>
         {Timetable.map(data => {
           return (
-            <DataTable.Row>
-              <DataTable.Cell
-                style={{
-                  alignContent: 'center',
-                  justifyContent: 'center',
-                }}>
-                {data.hour}
-              </DataTable.Cell>
+            <DataTable.Row style={{height: '12%'}}>
+              <View style={{width: '5%'}}>
+                <DataTable.Cell
+                  style={{
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                  }}>
+                  {data.hour}
+                </DataTable.Cell>
+              </View>
               <Datacell_content
                 hour={data.hour}
                 status={data.Mon.status}
@@ -459,8 +476,8 @@ const MainScreen = props => {
           );
         })}
       </DataTable>
-      <View style={[styles.ml, styles.mt15, styles.alignend]}>
-        <Loginout/>
+      <View style={[styles.mt15, styles.alignend]}>
+        <Loginout />
       </View>
       <View style={styles.centeredView}>
         <Modal
@@ -499,6 +516,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#97C9F7',
   },
+  title: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#FAFFFC',
+    fontStyle: 'italic',
+    marginTop: 10,
+  },
+
   //modal css start
   centeredView: {
     justifyContent: 'center',
@@ -507,7 +532,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#FAFFFC',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
@@ -591,8 +616,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   classinput: {
-    width: 200,
-    height: 20,
+    width: 180,
+    height: 25,
     paddingVertical: 10,
     paddingHorizontal: 10,
   },
@@ -617,7 +642,7 @@ const styles = StyleSheet.create({
   },
   alignend: {
     alignSelf: 'flex-end',
-    marginRight: 35,
+    marginRight: 18,
   },
   ml: {
     marginLeft: 5,
@@ -632,54 +657,54 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   mt15: {
-    marginTop: 15,
+    marginTop: 32,
   },
   mb: {
     marginBottom: 5,
   },
 
   modal: {
-    backgroundColor: 'white',
+    backgroundColor: '#FAFFFC',
     marginTop: 50,
     marginBottom: 50,
     marginLeft: 10,
-    width: 250,
+    width: '58%', // 250
     alignItems: 'center',
     height: 10,
     borderWidth: 3,
   },
 
   modalsmall: {
-    backgroundColor: 'white',
-    marginTop: 65,
+    backgroundColor: '#FAFFFC',
+    marginTop: 50,
     marginBottom: 50,
     marginLeft: 10,
-    width: 200,
-    height: 200,
+    width: '50%',
+    height: '48%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
     borderWidth: 3,
   },
   modalmedium: {
-    backgroundColor: 'white',
-    marginTop: 60,
+    backgroundColor: '#FAFFFC',
+    marginTop: 55,
     marginBottom: 50,
     marginLeft: 10,
-    width: 230,
-    height: 220,
+    width: '55%',
+    height: '51%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
     borderWidth: 3,
   },
   modalbig: {
-    backgroundColor: 'white',
+    backgroundColor: '#FAFFFC',
     marginTop: 60,
     marginBottom: 50,
     marginLeft: 10,
-    width: 250,
-    height: 160,
+    width: '60%',
+    height: '44%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
@@ -687,7 +712,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     textAlign: 'center',
-    color: 'white',
+    color: '#FAFFFC',
   },
   textStyleblack: {
     textAlign: 'center',
@@ -695,12 +720,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: '',
     // fontWeight: 20,
-  },
-  title: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#FAFFFC',
-    fontStyle: 'italic',
   },
 
   weektitle: {
