@@ -29,9 +29,10 @@ const MainScreen = props => {
   const [modalstatus, setmodalstatus] = useState();
   const [modalday, setmodalday] = useState();
 
-  //매칭된 두 아이디 식별용
+  //매칭된 두 아이디 식별용, 매칭 리스트 뽑기
   const [user1_id, setuser1_id] = useState();
   const [user2_id, setuser2_id] = useState();
+  const [match_select_list, setmatch_select_list] = useState();
 
   //팝업창 수업 넣기
   const [modalclassVisible, setModalclassVisible] = useState(false);
@@ -225,12 +226,20 @@ const MainScreen = props => {
         </View>
       );
     } else if (modalstatus == 3) {
+      get_matchID();
       //매칭 수락 대기 중(피신청자)
       return (
         <View style={styles.modalsmall}>
           <Text style={[styles.textStyleblack, styles.textTop]}>
-            {modaltext}
+            {user1_id}님으로부터
           </Text>
+          <Text style={[styles.textStyleblack]}>{modaltext}하였습니다!</Text>
+          {/* <Text>{user1_id}</Text> */}
+          {/* <Text>{user2_id}</Text> */}
+          <Text style={[styles.textStyleblack, styles.mt7, styles.mb]}>
+            수락하시겠습니까?
+          </Text>
+          <Text>{match_select_list}</Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
             onPress={() => after_match('match_accept')}>
@@ -428,13 +437,13 @@ const MainScreen = props => {
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setuser1_id(json_match.results[0].user1_id);
       setuser2_id(json_match.results[0].user2_id);
+      setmatch_select_list(json_match.resuts[0].select_favor);
     } catch (error) {
       console.error(error);
     } finally {
       // setLoading(false);
     }
   };
-
   //=======================매칭 기능 끝========================
 
   return (

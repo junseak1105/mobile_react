@@ -10,7 +10,7 @@
     $selected_day = $_GET['selected_day'];
     $select_time = $selected_day.$selected_hour;
     
-    $sql = "select user1_id,user2_id from match_pending where (user1_id = '$userID' or user2_id ='$userID') and select_time = '$select_time';";
+    $sql = "select user1_id,user2_id,(select select_favor_list from match_table where userID=(select user1_id from match_pending where user2_id ='$userID') and select_time = '$select_time')as select_favor from match_pending where (user1_id = '$userID' or user2_id ='$userID') and select_time = '$select_time';";
    
     $result_set = mysqli_query($conn, $sql);
 
