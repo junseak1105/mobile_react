@@ -42,12 +42,15 @@ const MainScreen = props => {
   const [classname, setclassname] = useState();
   //수업 등록 여부 저장
   const [class_result, setclassresult] = useState([]);
+  //로그인 버튼 상태
+  const [loginout,setloginout] =useState(false);
 
   //페이지 로딩 함수
   useEffect(() => {
     //localstorage userid getdata
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
+      result != "" ? setloginout(true) : setloginout(false);
       gettimetable(result);
     }); //받아오는 함수 실행
   }, [isFocused]);
@@ -71,6 +74,7 @@ const MainScreen = props => {
   const logout = () => {
     AsyncStorage.setItem('token', '', () => {
       console.log('로그아웃');
+      setloginout(false);
     });
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
@@ -332,6 +336,22 @@ const MainScreen = props => {
       </DataTable.Cell>
     );
   };
+  //로그인,아웃
+  const Loginout = ()=>{
+    if(!loginout){
+      return(
+      <Button
+        onPress={() => props.navigation.navigate('LoginScreen')}
+        title="로그인"
+        color="black"
+      />
+      );
+    }else{
+      return(
+        <Button onPress={() => [logout()]} title="로그아웃" color="black" />
+      );
+    };
+  }
   //=======================컴포넌트 모음 끝======================
 
   //=======================매칭 기능 시작========================
@@ -440,15 +460,7 @@ const MainScreen = props => {
         })}
       </DataTable>
       <View style={[styles.ml, styles.mt15, styles.alignend]}>
-        {token == '' ? (
-          <Button
-            onPress={() => props.navigation.navigate('LoginScreen')}
-            title="로그인"
-            color="black"
-          />
-        ) : (
-          <Button onPress={() => [logout()]} title="로그아웃" color="black" />
-        )}
+        <Loginout/>
       </View>
       <View style={styles.centeredView}>
         <Modal
