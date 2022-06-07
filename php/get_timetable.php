@@ -11,10 +11,11 @@ $userID = $_GET['userid'];
 $sql = "SELECT * from user_timetable where userID = '$userID';";
 
 $result_set = mysqli_query($conn, $sql);
-
+$i = 1;
 while ($result = mysqli_fetch_array($result_set)) {
     //array_push($arr, $result);
     $temp_arr = array(
+        "key" => 'key'.$i,
         "hour"=> $result["hour"],
         "Mon"=> array('class' => explode(',',$result["Mon"])[0],'status' => explode(',',$result["Mon"])[1]),
         "Tue"=> array('class' => explode(',',$result["Tue"])[0],'status' => explode(',',$result["Tue"])[1]),
@@ -23,6 +24,7 @@ while ($result = mysqli_fetch_array($result_set)) {
         "Fri"=> array('class' => explode(',',$result["Fri"])[0],'status' => explode(',',$result["Fri"])[1])
     );
     array_push($data,$temp_arr);
+    $i++;
 }
 echo json_encode(array('results' => $data));
 ?>
