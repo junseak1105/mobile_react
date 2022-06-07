@@ -20,7 +20,9 @@ const MyStack = createNativeStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <MyStack.Navigator>
+      <MyStack.Navigator
+        screenOptions={{ headerShown: false }}
+      >
         <MyStack.Screen name="MainScreen" component={MainScreen} />
         <MyStack.Screen name="MatchScreen" component={MatchScreen} />
         <MyStack.Screen name="LoginScreen" component={LoginScreen} />
