@@ -7,14 +7,12 @@ import {
   Modal,
   Pressable,
   Alert,
-  Touchable,
+  TouchableOpacity,
 } from 'react-native';
 import {DataTable, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-// import {useTailwind, tailwind} from 'tailwind-rn';
-import {style as tw} from 'tailwind-react-native-classnames';
 
 const MainScreen = props => {
   // const tailwind = useTailwind(); 안됨
@@ -77,7 +75,7 @@ const MainScreen = props => {
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
     });
-    gettimetable();
+    gettimetable('');
   };
 
   //기본 팝업창 open 기능
@@ -99,7 +97,7 @@ const MainScreen = props => {
     setModalclassVisible(!modalclassVisible);
   };
   //수업 입력 기능
-  const insert_class_db = async () => {
+  const insert_class_db = async text => {
     try {
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/insert_class.php?userID=' +
@@ -109,12 +107,33 @@ const MainScreen = props => {
           '&selected_day=' +
           modalday +
           '&classname=' +
-          classname,
+          text,
       ); //1 CURL로 연결(php)
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setclassresult(json_match.results); //3 const배열에다가 저장
       setModalclassVisible(!modalclassVisible);
-      gettimetable();
+      gettimetable(token);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      // setLoading(false);
+    }
+  };
+  //수업 입력 기능
+  const delete_class = async () => {
+    try {
+      const response_table = await fetch(
+        'http://jhk.n-e.kr:80/delete_class.php?userID=' +
+          token +
+          '&selected_hour=' +
+          modalhour +
+          '&selected_day=' +
+          modalday,
+      ); //1 CURL로 연결(php)
+      const json_match = await response_table.json(); //2 json 받아온거 저장
+      setclassresult(json_match.results); //3 const배열에다가 저장
+      setModalVisible(!modalVisible);
+      gettimetable(token);
     } catch (error) {
       console.error(error);
     } finally {
@@ -154,6 +173,11 @@ const MainScreen = props => {
             style={[styles.button, styles.buttonOpen]}
             onPress={() => insert_class()}>
             <Text style={styles.textStyle}>수업 등록</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonOpen]}
+            onPress={() => delete_class()}>
+            <Text style={styles.textStyle}>수업 삭제</Text>
           </Pressable>
           <Pressable
             style={[styles.button, styles.buttonClose]}
@@ -261,7 +285,8 @@ const MainScreen = props => {
     }
   };
   //수업 입력 창
-  const Modal_view_class = props => {
+  const Modal_view_class = () => {
+    const [temp,settemp] = useState("");
     return (
       <View style={styles.modalbig}>
         <Text style={styles.textTopbuttom}>{classname}</Text>
@@ -269,16 +294,16 @@ const MainScreen = props => {
           <TextInput
             style={styles.classinput}
             placeholder={'수업명 입력'}
-            defaultValue={classname}
+            defaultValue={temp}
             autoCapitalize="none"
             placeholderTextColor="black"
-            onChangeText={val => setclassname(val)}
+            onChangeText={text => settemp(text)}
           />
         </SafeAreaView>
         <View style={styles.rowend}>
           <Pressable
             style={[styles.button, styles.buttonClosemrsmall]}
-            onPress={() => insert_class_db()}>
+            onPress={() => insert_class_db(temp)}>
             <Text style={styles.textStyle}>등록</Text>
           </Pressable>
           <Pressable
@@ -305,44 +330,35 @@ const MainScreen = props => {
   //datacell 내용
   const Datacell_content = props => {
     return (
-      <DataTable.Cell
+      <TouchableOpacity
         style={{
-          flexDirection: 'row',
-          backgroundColor:
-            props.text_param == '공강'
-              ? '#FAFFFC'
-              : props.text_param == '완료'
-              ? '#B31A09'
-              : props.text_param == '대기'
-              ? '#ffb224'
-              : 'black',
-          borderRadius: 2,
-          margin: 2,
-          width: '20%',
           flex: 1,
-          flexWrap: 'wrap',
-          alignContent: 'center',
-          justifyContent: 'center',
-        }}>
-        <Pressable
-          onPress={() => setModal(props.hour, props.status, props.day)}>
-          <Text
-            numberOfLines={2}
-            ellipsizeMode="tail"
-            style={{
-              width: 60,
-              fontSize: 12,
-              color: props.text_param == '공강' ? 'black' : '#FAFFFC',
-              // flexShrink: 1,
-              // flexWrap: 'wrap',
-              textAlign: 'center',
-            }}>
-            {/* (numberOfLines=={1}) ?(' */}
-            {props.text_param}
-            {/* '):() */}
-          </Text>
-        </Pressable>
-      </DataTable.Cell>
+          backgroundColor:
+              props.text_param == '공강'
+                ? '#FAFFFC'
+                : props.text_param == '완료'
+                ? '#B31A09'
+                : props.text_param == '대기'
+                ? '#ffb224'
+                : 'black',
+            borderRadius: 2,
+            margin: 2,
+            justifyContent: 'center',
+            width: '100%',
+        }}
+        onPress={() => setModal(props.hour, props.status, props.day)}>
+        <Text
+          numberOfLines={2}
+          textBreakStrategy="simple"
+          style={{
+            fontSize: 12,
+            justifyContent: "center",
+            alignItems: "center",
+            color: props.text_param == '공강' ? 'black' : '#FAFFFC',
+          }}>
+          {props.text_param}
+        </Text>
+      </TouchableOpacity>
     );
   };
   //로그인,아웃
@@ -382,7 +398,7 @@ const MainScreen = props => {
       ); //1 CURL로 연결(php)
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setclassresult(json_match.results); //3 const배열에다가 저장
-      gettimetable();
+      gettimetable(token);
     } catch (error) {
       console.error(error);
     } finally {
@@ -439,7 +455,7 @@ const MainScreen = props => {
         </DataTable.Header>
         {Timetable.map(data => {
           return (
-            <DataTable.Row style={{height: '12%'}}>
+            <DataTable.Row key = {data.key} style={{height: '12%', flexDirection: 'row'}}>
               <View style={{width: '5%'}}>
                 <DataTable.Cell
                   style={{
