@@ -87,7 +87,7 @@ const MainScreen = props => {
     if (status == 0) setmodaltext('매칭 신청 or 수업 입력');
     if (status == 1) setmodaltext('매칭 대기 중');
     if (status == 2) setmodaltext('매칭 수락 대기중');
-    if (status == 3) setmodaltext('매칭 신청 도착');
+    if (status == 3) setmodaltext('매칭 신청이 도착');
     if (status == 4) setmodaltext('매칭 성공');
     setModalVisible(!modalVisible);
   };
@@ -229,24 +229,42 @@ const MainScreen = props => {
       get_matchID();
       //매칭 수락 대기 중(피신청자)
       return (
-        <View style={styles.modalsmall}>
-          <Text style={[styles.textStyleblack, styles.textTop]}>
-            {user1_id}님으로부터
-          </Text>
+        <View style={styles.modalms}>
           <Text style={[styles.textStyleblack]}>{modaltext}하였습니다!</Text>
           {/* <Text>{user1_id}</Text> */}
           {/* <Text>{user2_id}</Text> */}
-          <Text style={[styles.textStyleblack, styles.mt7, styles.mb]}>
+          <Text style={[styles.textStyleblack, styles.mt7, styles.mb15]}>
             수락하시겠습니까?
           </Text>
-          <Text>{match_select_list}</Text>
+
+          <View style={styles.minibox}>
+            <View style={styles.boxtext}>
+              <Text style={styles.boxtexttop}>매칭 상대 정보 {'\n'}</Text>
+              <Text style={[styles.boxtext]}>
+                매칭 상대는 {user1_id}입니다 {'\n'}
+              </Text>
+              <Text style={[styles.boxtext]}>상대의 체크 문항은</Text>
+              <View
+                style={{
+                  flexWrap: 'wrap',
+                  alignContent: 'center',
+                  justifyContent: 'center',
+                  marginLeft: 15,
+                  marginRight: 15,
+                }}>
+                <Text style={styles.boxtext}>{match_select_list}</Text>
+              </View>
+              <Text style={[styles.boxtext]}>입니다</Text>
+            </View>
+          </View>
+
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpen]}
             onPress={() => after_match('match_accept')}>
             <Text style={styles.textStyle}>수락</Text>
           </Pressable>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpen]}
             onPress={() => after_match('match_refuse')}>
             <Text style={styles.textStyle}>거절</Text>
           </Pressable>
@@ -606,11 +624,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 100,
   },
+  textnomargin: {
+    width: 100,
+  },
   textTop: {
     marginTop: 20,
     marginBottom: 20,
     width: 100,
   },
+
   textTopbuttom: {
     marginTop: 5,
     marginBottom: 5,
@@ -703,6 +725,12 @@ const styles = StyleSheet.create({
   mb: {
     marginBottom: 5,
   },
+  mb10: {
+    marginBottom: 10,
+  },
+  mb15: {
+    marginBottom: 15,
+  },
 
   modal: {
     backgroundColor: '#FAFFFC',
@@ -722,6 +750,21 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: '50%',
     height: '58%',
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+    borderWidth: 2,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  modalms: {
+    backgroundColor: '#FAFFFC',
+    marginTop: 50,
+    marginBottom: 50,
+    marginLeft: 10,
+    width: '75%',
+    height: '83%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
@@ -771,12 +814,51 @@ const styles = StyleSheet.create({
     fontFamily: '',
     // fontWeight: 20,
   },
+  textStyleblack2: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 14,
+    fontFamily: '',
+    // fontWeight: 20,
+    flexShrink: 1,
+  },
 
   weektitle: {
     fontSize: 2,
     textAlign: 'center',
   },
   smalltitle: {textAlign: 'center', fontsize: 20, color: 'black'},
+  minibox: {
+    width: '90%',
+    height: '40%',
+    alignItems: 'center',
+    borderColor: 'black',
+    borderWidth: 3,
+    marginBottom: 8,
+    borderStyle: 'dashed',
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    textAlign: 'center',
+  },
+  boxtexttop: {
+    color: 'black',
+    fontSize: 14,
+    // fontFamily: '',
+    // fontWeight: 100,
+    marginTop: 5,
+    // marginBottom: 15,
+    width: '100%',
+    textAlign: 'center',
+  },
+  boxtext: {
+    color: 'black',
+    fontSize: 14,
+    // fontFamily: '',
+    // fontWeight: 100,
+    // margin: 10,
+    width: '100%',
+    textAlign: 'center',
+  },
 });
 
 export default MainScreen;
