@@ -15,8 +15,8 @@ const RegisterScreen = props => {
   //성별 드롭다운
   const [open_sex, setOpensex] = useState(false);
   const [items_sex, setItemssex] = useState([
-    {label: '남자', value: 'M'},
-    {label: '여자', value: 'F'},
+    {label: '남자', value: 'Male'},
+    {label: '여자', value: 'Female'},
   ]);
   const [open_school, setOpenschool] = useState(false);
   const [items_school, setItemsschool] = useState([]);
