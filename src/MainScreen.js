@@ -99,7 +99,7 @@ const MainScreen = props => {
     setModalclassVisible(!modalclassVisible);
   };
   //수업 입력 기능
-  const insert_class_db = async () => {
+  const insert_class_db = async (text) => {
     try {
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/insert_class.php?userID=' +
@@ -109,18 +109,41 @@ const MainScreen = props => {
           '&selected_day=' +
           modalday +
           '&classname=' +
-          classname,
+          text,
       ); //1 CURL로 연결(php)
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setclassresult(json_match.results); //3 const배열에다가 저장
       setModalclassVisible(!modalclassVisible);
-      gettimetable();
+      gettimetable(token);
     } catch (error) {
       console.error(error);
     } finally {
       // setLoading(false);
     }
   };
+  
+  //수업 입력 기능
+  const delete_class = async () => {
+    try {
+      const response_table = await fetch(
+        'http://jhk.n-e.kr:80/delete_class.php?userID=' +
+          token +
+          '&selected_hour=' +
+          modalhour +
+          '&selected_day=' +
+          modalday,
+      ); //1 CURL로 연결(php)
+      const json_match = await response_table.json(); //2 json 받아온거 저장
+      setclassresult(json_match.results); //3 const배열에다가 저장
+      setModalclassVisible(!modalclassVisible);
+      gettimetable(token);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      // setLoading(false);
+    }
+  };
+
   //====================수업  기능 끝=========================
 
   //=====================컴포넌트 모음 시작======================
@@ -154,6 +177,11 @@ const MainScreen = props => {
             style={[styles.button, styles.buttonOpen]}
             onPress={() => insert_class()}>
             <Text style={styles.textStyle}>수업 등록</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.buttonOpen]}
+            onPress={() => delete_class()}>
+            <Text style={styles.textStyle}>수업 삭제</Text>
           </Pressable>
           <Pressable
             style={[styles.button, styles.buttonClose]}
@@ -261,7 +289,8 @@ const MainScreen = props => {
     }
   };
   //수업 입력 창
-  const Modal_view_class = props => {
+  const Modal_view_class = () => {
+    const [temp,settemp] = useState("");
     return (
       <View style={styles.modalbig}>
         <Text style={styles.textTopbuttom}>{classname}</Text>
@@ -269,16 +298,16 @@ const MainScreen = props => {
           <TextInput
             style={styles.classinput}
             placeholder={'수업명 입력'}
-            defaultValue={classname}
+            defaultValue={temp}
             autoCapitalize="none"
             placeholderTextColor="black"
-            onChangeText={val => setclassname(val)}
+            onChangeText={text => settemp(text)}
           />
         </SafeAreaView>
         <View style={styles.rowend}>
           <Pressable
             style={[styles.button, styles.buttonClosemrsmall]}
-            onPress={() => insert_class_db()}>
+            onPress={() => insert_class_db(temp)}>
             <Text style={styles.textStyle}>등록</Text>
           </Pressable>
           <Pressable
