@@ -77,7 +77,7 @@ const MainScreen = props => {
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
     });
-    gettimetable(token);
+    gettimetable("");
   };
 
   //기본 팝업창 open 기능

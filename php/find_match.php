@@ -18,14 +18,14 @@
     $match_idx = ""; //매칭된 idx 저장용
 
     //매칭 신청 내용 등록
-    $query = "INSERT INTO match_table(userID,select_time,select_favor_sex,select_favor_list)
-    select '$userID','$select_time','$select_sex','$select_list' from dual 
+    $query = "INSERT INTO match_table(userID,select_time,select_favor_sex,select_favor_list,school_code)
+    select '$userID','$select_time','$select_sex','$select_list',(select school_code from member where userID='$user_ID') from dual 
     WHERE NOT EXISTS(SELECT userID,select_time FROM match_table WHERE userID='$userID' and select_time = '$select_time')";
     $statement = mysqli_prepare($conn, $query);
     mysqli_stmt_execute($statement);
     
     //매칭 일치 사례 판별
-    $sqlwhere = "where select_favor_list = '$select_list' and userID != '$userID' and pending !='N' ";
+    $sqlwhere = "where select_favor_list = '$select_list' and userID != '$userID' and pending !='N' and school_code = (select school_code from member where userID='$user_ID')";
     $query = "SELECT (IF(EXISTS(SELECT * FROM match_table $sqlwhere),'true', 'false')) as result";
 	$data = $conn->query($query)->fetch_array();
     
