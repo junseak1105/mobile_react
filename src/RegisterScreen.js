@@ -71,12 +71,15 @@ const RegisterScreen = props => {
           sex,
       ); //1 CURL로 연결(php)
       const json_table = await response_table.json(); //2 json 받아온거 저장
-      setreturnMsg(json_table.results); //3 const배열에다가 저장
-      if (returnMsg[0].returnMsg == 'success') {
-        alert('가입 완료');
-        props.navigation.navigate('LoginScreen');
-      } else {
-        alert('중복된 아이디입니다');
+      {
+        json_table.results.map(data => {
+          if (data.returnMsg == 'success') {
+            alert('가입 완료');
+            props.navigation.navigate('LoginScreen');
+          } else {
+            alert('중복된 아이디입니다');
+          }
+        });
       }
     } catch (error) {
       console.error(error);
