@@ -93,7 +93,7 @@ const RegisterScreen = props => {
         placeholder="아이디"
         autoCapitalize="none"
         defaultValue={userid}
-        placeholderTextColor="white"
+        placeholderTextColor="#FAFFFC"
         onChangeText={val => setUserid(val)}
       />
       <TextInput
@@ -101,7 +101,7 @@ const RegisterScreen = props => {
         placeholder="이름"
         autoCapitalize="none"
         defaultValue={username}
-        placeholderTextColor="white"
+        placeholderTextColor="#FAFFFC"
         onChangeText={val => setUsername(val)}
       />
       <TextInput
@@ -110,7 +110,7 @@ const RegisterScreen = props => {
         secureTextEntry={true}
         defaultValue={password}
         autoCapitalize="none"
-        placeholderTextColor="white"
+        placeholderTextColor="#FAFFFC"
         onChangeText={val => setPasswd(val)}
       />
 
@@ -118,7 +118,7 @@ const RegisterScreen = props => {
         style={styles.inputsecond}
         placeholder="성별"
         placeholderStyle={{
-          color: 'white',
+          color: '#FAFFFC',
           fontWeight: 'bold',
           fontSize: 16,
         }}
@@ -136,7 +136,7 @@ const RegisterScreen = props => {
         searchPlaceholder="학교"
         placeholder="학교선택"
         placeholderStyle={{
-          color: 'white',
+          color: '#FAFFFC',
           fontWeight: 'bold',
           fontSize: 16,
         }}
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#97C9F7',
     margin: 10,
     padding: 8,
-    color: 'white',
+    color: '#FAFFFC',
     borderRadius: 0,
     fontSize: 18,
     // fontWeight: '500',
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 55,
     padding: 8,
-    color: 'white',
+    color: '#FAFFFC',
     borderRadius: 0,
     fontSize: 18,
   },
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     marginBottom: 70,
     marginLeft: 55,
     padding: 8,
-    color: 'white',
+    color: '#FAFFFC',
     borderRadius: 0,
     fontSize: 18,
   },

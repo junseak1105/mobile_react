@@ -62,7 +62,7 @@ const LoginScreen = props => {
         style={styles.input}
         placeholder="아이디"
         autoCapitalize="none"
-        placeholderTextColor="white"
+        placeholderTextColor="#FAFFFC"
         onChangeText={val => setUserid(val)}
       />
       <TextInput
@@ -70,7 +70,7 @@ const LoginScreen = props => {
         placeholder="비밀번호"
         secureTextEntry={true}
         autoCapitalize="none"
-        placeholderTextColor="white"
+        placeholderTextColor="#FAFFFC"
         onChangeText={val => setPasswd(val)}
       />
       <View style={styles.alignend}>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#97C9F7',
     margin: 10,
     padding: 8,
-    color: 'white',
+    color: '#FAFFFC',
     borderRadius: 0,
     fontSize: 18,
     // fontWeight: '500',

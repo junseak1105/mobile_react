@@ -11,10 +11,11 @@ const MyButton = props => {
       }}
       onPress={() => setModal(props.hour, props.status, props.day)}>
       <Text
-        numberOfLines={5} ellipsizeMode="tail"
+        numberOfLines={5}
+        ellipsizeMode="tail"
         style={{
           fontSize: 10,
-          color: 'white',  
+          color: '#FAFFFC',
         }}>
         {props.text_param}
       </Text>
