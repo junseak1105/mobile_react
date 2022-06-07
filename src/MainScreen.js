@@ -7,7 +7,7 @@ import {
   Modal,
   Pressable,
   Alert,
-  TouchableOpacity,
+  Touchable,
 } from 'react-native';
 import {DataTable, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -77,7 +77,7 @@ const MainScreen = props => {
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
     });
-    gettimetable("");
+    gettimetable();
   };
 
   //기본 팝업창 open 기능
@@ -99,7 +99,7 @@ const MainScreen = props => {
     setModalclassVisible(!modalclassVisible);
   };
   //수업 입력 기능
-  const insert_class_db = async (text) => {
+  const insert_class_db = async () => {
     try {
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/insert_class.php?userID=' +
@@ -109,41 +109,18 @@ const MainScreen = props => {
           '&selected_day=' +
           modalday +
           '&classname=' +
-          text,
+          classname,
       ); //1 CURL로 연결(php)
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setclassresult(json_match.results); //3 const배열에다가 저장
       setModalclassVisible(!modalclassVisible);
-      gettimetable(token);
+      gettimetable();
     } catch (error) {
       console.error(error);
     } finally {
       // setLoading(false);
     }
   };
-  
-  //수업 입력 기능
-  const delete_class = async () => {
-    try {
-      const response_table = await fetch(
-        'http://jhk.n-e.kr:80/delete_class.php?userID=' +
-          token +
-          '&selected_hour=' +
-          modalhour +
-          '&selected_day=' +
-          modalday,
-      ); //1 CURL로 연결(php)
-      const json_match = await response_table.json(); //2 json 받아온거 저장
-      setclassresult(json_match.results); //3 const배열에다가 저장
-      setModalVisible(!modalVisible)
-      gettimetable(token);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      // setLoading(false);
-    }
-  };
-
   //====================수업  기능 끝=========================
 
   //=====================컴포넌트 모음 시작======================
@@ -177,11 +154,6 @@ const MainScreen = props => {
             style={[styles.button, styles.buttonOpen]}
             onPress={() => insert_class()}>
             <Text style={styles.textStyle}>수업 등록</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.button, styles.buttonOpen]}
-            onPress={() => delete_class()}>
-            <Text style={styles.textStyle}>수업 삭제</Text>
           </Pressable>
           <Pressable
             style={[styles.button, styles.buttonClose]}
@@ -289,8 +261,7 @@ const MainScreen = props => {
     }
   };
   //수업 입력 창
-  const Modal_view_class = () => {
-    const [temp,settemp] = useState("");
+  const Modal_view_class = props => {
     return (
       <View style={styles.modalbig}>
         <Text style={styles.textTopbuttom}>{classname}</Text>
@@ -298,16 +269,16 @@ const MainScreen = props => {
           <TextInput
             style={styles.classinput}
             placeholder={'수업명 입력'}
-            defaultValue={temp}
+            defaultValue={classname}
             autoCapitalize="none"
             placeholderTextColor="black"
-            onChangeText={text => settemp(text)}
+            onChangeText={val => setclassname(val)}
           />
         </SafeAreaView>
         <View style={styles.rowend}>
           <Pressable
             style={[styles.button, styles.buttonClosemrsmall]}
-            onPress={() => insert_class_db(temp)}>
+            onPress={() => insert_class_db()}>
             <Text style={styles.textStyle}>등록</Text>
           </Pressable>
           <Pressable
@@ -334,35 +305,44 @@ const MainScreen = props => {
   //datacell 내용
   const Datacell_content = props => {
     return (
-      <TouchableOpacity
+      <DataTable.Cell
         style={{
-          flex: 1,
+          flexDirection: 'row',
           backgroundColor:
-              props.text_param == '공강'
-                ? '#FAFFFC'
-                : props.text_param == '완료'
-                ? '#B31A09'
-                : props.text_param == '대기'
-                ? '#ffb224'
-                : 'black',
-            borderRadius: 2,
-            margin: 2,
-            justifyContent: 'center',
-            width: '100%',
-        }}
-        onPress={() => setModal(props.hour, props.status, props.day)}>
-        <Text
-          numberOfLines={3}
-          textBreakStrategy="simple"
-          style={{
-            fontSize: 12,
-            justifyContent: "center",
-            alignItems: "center",
-            color: props.text_param == '공강' ? 'black' : '#FAFFFC',
-          }}>
-          {props.text_param}
-        </Text>
-      </TouchableOpacity>
+            props.text_param == '공강'
+              ? '#FAFFFC'
+              : props.text_param == '완료'
+              ? '#B31A09'
+              : props.text_param == '대기'
+              ? '#ffb224'
+              : 'black',
+          borderRadius: 2,
+          margin: 2,
+          width: '20%',
+          flex: 1,
+          flexWrap: 'wrap',
+          alignContent: 'center',
+          justifyContent: 'center',
+        }}>
+        <Pressable
+          onPress={() => setModal(props.hour, props.status, props.day)}>
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={{
+              width: 60,
+              fontSize: 12,
+              color: props.text_param == '공강' ? 'black' : '#FAFFFC',
+              // flexShrink: 1,
+              // flexWrap: 'wrap',
+              textAlign: 'center',
+            }}>
+            {/* (numberOfLines=={1}) ?(' */}
+            {props.text_param}
+            {/* '):() */}
+          </Text>
+        </Pressable>
+      </DataTable.Cell>
     );
   };
   //로그인,아웃
@@ -402,7 +382,7 @@ const MainScreen = props => {
       ); //1 CURL로 연결(php)
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setclassresult(json_match.results); //3 const배열에다가 저장
-      gettimetable(token);
+      gettimetable();
     } catch (error) {
       console.error(error);
     } finally {
@@ -459,7 +439,7 @@ const MainScreen = props => {
         </DataTable.Header>
         {Timetable.map(data => {
           return (
-            <DataTable.Row key = {data.key} style={{height: '12%', flexDirection: 'row'}}>
+            <DataTable.Row style={{height: '12%'}}>
               <View style={{width: '5%'}}>
                 <DataTable.Cell
                   style={{
