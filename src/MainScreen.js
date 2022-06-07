@@ -8,6 +8,7 @@ import {
   Pressable,
   Alert,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import {DataTable, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,6 +42,12 @@ const MainScreen = props => {
   const [class_result, setclassresult] = useState([]);
   //로그인 버튼 상태
   const [loginout, setloginout] = useState(false);
+
+  //시간표 & 마이페이지
+  const [mypageing, setMypageing] = useState(true);
+  const timetable = () => setMypageing(false);
+  const mypage = () => setMypageing(true);
+  const mydata = ['아이디', '비밀번호', '이름', '학년', '학교', '성별'];
 
   //페이지 로딩 함수
   useEffect(() => {
@@ -327,7 +334,7 @@ const MainScreen = props => {
             onChangeText={text => settemp(text)}
           />
         </SafeAreaView>
-        <View style={styles.rowend}>
+        <View style={styles.row}>
           <Pressable
             style={[styles.button, styles.buttonClosemrsmall]}
             onPress={() => insert_class_db(temp)}>
@@ -409,9 +416,7 @@ const MainScreen = props => {
         />
       );
     } else {
-      return (
-        <Button onPress={() => [logout()]} title="로그아웃" color="black" />
-      );
+      return null;
     }
   };
   //=======================컴포넌트 모음 끝======================
@@ -467,107 +472,153 @@ const MainScreen = props => {
 
   return (
     <View style={styles.screen}>
-      {/* <View style={[{flex: 1}]}></View> */}
-      <Text style={styles.title}>My Schedule</Text>
-      <DataTable style={[{width: '100%', height: '76%'}]}>
-        <DataTable.Header style={[{height: 45}]}>
-          <View style={[{width: '5%'}]}>
-            <Datacell_title text="" />
-          </View>
-          <View style={[{width: '19%'}]}>
-            <Datacell_title text="Mon" />
-          </View>
-          <View style={[{width: '19%'}]}>
-            <Datacell_title text="Tue" />
-          </View>
-          <View style={[{width: '19%'}]}>
-            <Datacell_title text="Wed" />
-          </View>
-          <View style={[{width: '19%'}]}>
-            <Datacell_title text="Thu" />
-          </View>
-          <View style={[{width: '19%'}]}>
-            <Datacell_title text="Fri" />
-          </View>
-        </DataTable.Header>
-        {Timetable.map(data => {
-          return (
-            <DataTable.Row
-              key={data.key}
-              style={{height: '12%', flexDirection: 'row'}}>
-              <View style={{width: '5%'}}>
-                <DataTable.Cell
-                  style={{
-                    alignContent: 'center',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                  }}>
-                  {data.hour}
-                </DataTable.Cell>
+      <View style={styles.header}>
+        <TouchableOpacity hitSlop={20} onPress={timetable}>
+          <Text
+            style={{
+              ...styles.title,
+              color: mypageing ? '#E6F5FF' : '#FAFFFC',
+              opacity: mypageing ? 2 : 100,
+            }}>
+            My Schedule
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity hitSlop={20} onPress={mypage}>
+          <Text
+            style={{
+              ...styles.title,
+              color: mypageing ? '#FAFFFC' : '#E6F5FF',
+              opacity: mypageing ? 100 : 2,
+            }}>
+            My Page
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {!mypageing ? (
+        <>
+          <DataTable style={[{width: '100%', height: '80%'}]}>
+            {/* 76 */}
+            <DataTable.Header style={[{height: 45}]}>
+              <View style={[{width: '5%'}]}>
+                <Datacell_title text="" />
               </View>
-              <Datacell_content
-                hour={data.hour}
-                status={data.Mon.status}
-                day="Mon"
-                text_param={data.Mon.class}
-              />
-              <Datacell_content
-                hour={data.hour}
-                status={data.Tue.status}
-                day="Tue"
-                text_param={data.Tue.class}
-              />
-              <Datacell_content
-                hour={data.hour}
-                status={data.Wed.status}
-                day="Wed"
-                text_param={data.Wed.class}
-              />
-              <Datacell_content
-                hour={data.hour}
-                status={data.Thu.status}
-                day="Thu"
-                text_param={data.Thu.class}
-              />
-              <Datacell_content
-                hour={data.hour}
-                status={data.Fri.status}
-                day="Fri"
-                text_param={data.Fri.class}
-              />
-            </DataTable.Row>
-          );
-        })}
-      </DataTable>
-      <View style={[styles.mt15, styles.alignend]}>
-        <Loginout />
-      </View>
-      <View style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            //Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <Modal_view />
+              <View style={[{width: '19%'}]}>
+                <Datacell_title text="Mon" />
+              </View>
+              <View style={[{width: '19%'}]}>
+                <Datacell_title text="Tue" />
+              </View>
+              <View style={[{width: '19%'}]}>
+                <Datacell_title text="Wed" />
+              </View>
+              <View style={[{width: '19%'}]}>
+                <Datacell_title text="Thu" />
+              </View>
+              <View style={[{width: '19%'}]}>
+                <Datacell_title text="Fri" />
+              </View>
+            </DataTable.Header>
+            {Timetable.map(data => {
+              return (
+                <DataTable.Row
+                  key={data.key}
+                  style={{height: '12%', flexDirection: 'row'}}>
+                  <View style={{width: '5%'}}>
+                    <DataTable.Cell
+                      style={{
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                      }}>
+                      {data.hour}
+                    </DataTable.Cell>
+                  </View>
+                  <Datacell_content
+                    hour={data.hour}
+                    status={data.Mon.status}
+                    day="Mon"
+                    text_param={data.Mon.class}
+                  />
+                  <Datacell_content
+                    hour={data.hour}
+                    status={data.Tue.status}
+                    day="Tue"
+                    text_param={data.Tue.class}
+                  />
+                  <Datacell_content
+                    hour={data.hour}
+                    status={data.Wed.status}
+                    day="Wed"
+                    text_param={data.Wed.class}
+                  />
+                  <Datacell_content
+                    hour={data.hour}
+                    status={data.Thu.status}
+                    day="Thu"
+                    text_param={data.Thu.class}
+                  />
+                  <Datacell_content
+                    hour={data.hour}
+                    status={data.Fri.status}
+                    day="Fri"
+                    text_param={data.Fri.class}
+                  />
+                </DataTable.Row>
+              );
+            })}
+          </DataTable>
+          <View style={[styles.mt15, styles.alignend]}>
+            <Loginout />
           </View>
-        </Modal>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalclassVisible}
-          onRequestClose={() => {
-            //Alert.alert('Modal has been closed.');
-            setModalclassVisible(!modalclassVisible);
-          }}>
           <View style={styles.centeredView}>
-            <Modal_view_class />
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                //Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+              }}>
+              <View style={styles.centeredView}>
+                <Modal_view />
+              </View>
+            </Modal>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalclassVisible}
+              onRequestClose={() => {
+                //Alert.alert('Modal has been closed.');
+                setModalclassVisible(!modalclassVisible);
+              }}>
+              <View style={styles.centeredView}>
+                <Modal_view_class />
+              </View>
+            </Modal>
           </View>
-        </Modal>
-      </View>
+        </>
+      ) : (
+        <View style={styles.centeredView}>
+          <FlatList
+            style={{marginBottom: 30}}
+            data={mydata}
+            renderItem={obj => {
+              return (
+                <View style={styles.mypagerow}>
+                  <View style={styles.mypagetext}>
+                    <Text style={styles.textStyleblackbig}>{obj.item}</Text>
+                  </View>
+                  <View style={styles.mypagetext}>
+                    <Text>시험용</Text>
+                  </View>
+                </View>
+              );
+            }}></FlatList>
+          <View style={{...styles.buttonClosemrsmall, marginRight: 15}}>
+            <Button onPress={() => [logout()]} title="로그아웃" color="black" />
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -576,15 +627,21 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
     backgroundColor: '#97C9F7',
   },
   title: {
     fontSize: 25,
     fontWeight: 'bold',
     color: '#FAFFFC',
-    fontStyle: 'italic',
-    marginTop: 10,
+    // fontStyle: 'italic',
+  },
+  header: {
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginTop: 20,
+    marginBottom: 8,
+    height: '5%',
   },
 
   //modal css start
@@ -695,9 +752,31 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  rowend: {
+  mypagerow: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    marginTop: 15,
+    marginBottom: 10,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+  },
+
+  mypagetext: {
+    width: '50%',
+    alignItems: 'center',
+  },
+  mypagetextname: {
+    width: '40%',
+    alignItems: 'center',
+  },
+
+  mypagetextcon: {
+    width: '60%',
+    alignItems: 'center',
+  },
+
+  rowcenter: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginTop: 15,
     marginBottom: 10,
   },
@@ -795,7 +874,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     marginLeft: 10,
     width: '60%',
-    height: '50%',
+    height: '60%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
@@ -822,6 +901,13 @@ const styles = StyleSheet.create({
     fontFamily: '',
     // fontWeight: 20,
     flexShrink: 1,
+  },
+  textStyleblackbig: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 16,
+    fontFamily: '',
+    // fontWeight: 20,
   },
 
   weektitle: {
