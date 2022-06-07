@@ -377,6 +377,7 @@ const MainScreen = props => {
           justifyContent: 'center',
         }}>
         <Pressable
+          hitSlop={{top: 28, bottom: 28, left: 10, right: 10}}
           onPress={() => setModal(props.hour, props.status, props.day)}>
           <Text
             numberOfLines={2}
