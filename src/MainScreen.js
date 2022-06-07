@@ -437,7 +437,7 @@ const MainScreen = props => {
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setuser1_id(json_match.results[0].user1_id);
       setuser2_id(json_match.results[0].user2_id);
-      setmatch_select_list(json_match.resuts[0].select_favor);
+      setmatch_select_list(json_match.results[0].select_favor);
     } catch (error) {
       console.error(error);
     } finally {
