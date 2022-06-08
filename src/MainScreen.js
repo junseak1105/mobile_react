@@ -8,7 +8,6 @@ import {
   Pressable,
   Alert,
   TouchableOpacity,
-  FlatList,
 } from 'react-native';
 import {DataTable, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -47,7 +46,9 @@ const MainScreen = props => {
   const [mypageing, setMypageing] = useState(true);
   const timetable = () => setMypageing(false);
   const mypage = () => setMypageing(true);
-  const mydata = ['아이디', '비밀번호', '이름', '학년', '학교', '성별'];
+  const mytitle = ['아이디', '비밀번호', '이름', '학년', '학교', '성별'];
+  const [mydata, setMydata] = useState([]);
+  let list = ['userID', 'userPW', 'userName', 'school_code', 'sex'];
 
   //페이지 로딩 함수
   useEffect(() => {
@@ -56,6 +57,8 @@ const MainScreen = props => {
       settoken(result);
       result != '' ? setloginout(true) : setloginout(false);
       gettimetable(result);
+      getmypage(token);
+      getobject();
     }); //받아오는 함수 실행
   }, [isFocused]);
 
@@ -71,6 +74,30 @@ const MainScreen = props => {
       console.error(error);
     } finally {
       // setLoading(false);
+    }
+  };
+
+  // 마이페이지
+  const getmypage = async userid => {
+    try {
+      const response_mydata = await fetch(
+        'http://jhk.n-e.kr:80/mypage.php?userID=' + userid,
+      ); //1 CURL로 연결(php)
+      const json_mydata = await response_mydata.json(); //2 json 받아온거 저장
+      setMydata(json_mydata.results); //3 const배열에다가 저장
+    } catch (error) {
+      console.error(error);
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  const getobject = () => {
+    for (var key in mydata) {
+      console.log('key: ' + key + ' / ' + mydata[key]);
+      // for (var data in key) {
+      //   console.log('key: ' + key + ' / ' + key[data]);
+      // }
     }
   };
 
@@ -148,6 +175,60 @@ const MainScreen = props => {
       // setLoading(false);
     }
   };
+
+  // const Mypagedata = props => {
+  //   let list = ['userID', 'userPW', 'userName', 'school_code', 'sex'];
+
+  //       <FlatList
+  //         style={{marginBottom: 30}}
+  //         data={[mydata]}
+  //         renderItem={obj.map(data => {
+  //           <View style={styles.mypagerow}>
+  //           <View style={styles.mypagetext}>
+  //             <Text style={styles.textStyleblackbig}>{data.list}</Text>
+  //           </View>
+  //         </View>;
+  //       })}>
+  //       </FlatList>
+  //     }
+
+  //   // if (props.data == mytitle) {
+  //   //   return (
+  //   //     <FlatList
+  //   //       style={{marginBottom: 30}}
+  //   //       data={[mytitle]}
+  //   //       renderItem={obj => {
+  //   //         return (
+  //   //           <View style={styles.mypagerow}>
+  //   //             <View style={styles.mypagetext}>
+  //   //               <Text style={styles.textStyleblackbig}>{obj.item}</Text>
+  //   //             </View>
+  //   //           </View>
+  //   //         );
+  //   //       }}></FlatList>
+  //   //   );
+  //   // } else if (props.data == mydata) {
+  //   //   return (
+  //   //     <>
+  //   //       <FlatList
+  //   //         style={{marginBottom: 30}}
+  //   //         data={[mydata]}
+  //   //         renderItem={obj => {
+  //   //           return (
+  //   //             <View style={styles.mypagerow}>
+  //   //               <View style={styles.mypagetext}>
+  //   //                 <Text style={styles.textStyleblackbig}>{obj.item}</Text>
+  //   //               </View>
+  //   //             </View>
+  //   //           );
+  //   //         }}></FlatList>
+  //   //       <View style={{...styles.buttonClosemrsmall, marginRight: 15}}>
+  //   //         <Button onPress={() => [logout()]} title="로그아웃" color="black" />
+  //   //       </View>
+  //   //     </>
+  //   //   );
+  //   // }
+  // };
   //====================수업  기능 끝=========================
 
   //=====================컴포넌트 모음 시작======================
@@ -405,6 +486,44 @@ const MainScreen = props => {
       </DataTable.Cell>
     );
   };
+
+  const Tablecotent_mypage = () => {
+    mydata.map(data => {
+      return (
+        <>
+          <DataTable.Row key={data.key}>
+            <Datacell_title text="아이디"></Datacell_title>
+            <Datacell_title text={data.userID}></Datacell_title>
+          </DataTable.Row>
+
+          <DataTable.Row key={data.key}>
+            <Datacell_title text="비밀번호"></Datacell_title>
+            <Datacell_title text={data.userPW}></Datacell_title>
+          </DataTable.Row>
+
+          <DataTable.Row key={data.key}>
+            <Datacell_title text="이름"></Datacell_title>
+            <Datacell_title text={data.userName}></Datacell_title>
+          </DataTable.Row>
+
+          <DataTable.Row key={data.key}>
+            <Datacell_title text="대학교"></Datacell_title>
+            <Datacell_title text={data.school_code}></Datacell_title>
+          </DataTable.Row>
+
+          <DataTable.Row key={data.key}>
+            <Datacell_title text="성별"></Datacell_title>
+            {data.sex == 'Female' ? (
+              <Datacell_title text="여성"></Datacell_title>
+            ) : (
+              <Datacell_title text="남성"></Datacell_title>
+            )}
+          </DataTable.Row>
+        </>
+      );
+    });
+  };
+
   //로그인,아웃
   const Loginout = () => {
     if (!loginout) {
@@ -419,6 +538,9 @@ const MainScreen = props => {
       return null;
     }
   };
+
+  const please = () => {};
+
   //=======================컴포넌트 모음 끝======================
 
   //=======================매칭 기능 시작========================
@@ -468,6 +590,7 @@ const MainScreen = props => {
       // setLoading(false);
     }
   };
+
   //=======================매칭 기능 끝========================
 
   return (
@@ -598,24 +721,20 @@ const MainScreen = props => {
           </View>
         </>
       ) : (
-        <View style={styles.centeredView}>
-          <FlatList
-            style={{marginBottom: 30}}
-            data={mydata}
-            renderItem={obj => {
-              return (
-                <View style={styles.mypagerow}>
-                  <View style={styles.mypagetext}>
-                    <Text style={styles.textStyleblackbig}>{obj.item}</Text>
-                  </View>
-                  <View style={styles.mypagetext}>
-                    <Text>시험용</Text>
-                  </View>
-                </View>
-              );
-            }}></FlatList>
-          <View style={{...styles.buttonClosemrsmall, marginRight: 15}}>
-            <Button onPress={() => [logout()]} title="로그아웃" color="black" />
+        <View>
+          <View style={{...styles.centeredView}}>
+            <DataTable style={styles.mypageoutline}>
+              <Tablecotent_mypage />
+            </DataTable>
+          </View>
+          <View style={{height: '10%'}}>
+            <View style={{...styles.buttonClosemrsmall, marginRight: 15}}>
+              <Button
+                onPress={() => [logout()]}
+                title="로그아웃"
+                color="black"
+              />
+            </View>
           </View>
         </View>
       )}
@@ -883,6 +1002,14 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
   },
+
+  mypageoutline: {
+    width: '100%',
+    height: '70%',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+
   textStyle: {
     textAlign: 'center',
     color: '#FAFFFC',
