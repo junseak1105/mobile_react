@@ -8,6 +8,7 @@ import {
   Pressable,
   Alert,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import {DataTable, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,6 +42,12 @@ const MainScreen = props => {
   const [class_result, setclassresult] = useState([]);
   //로그인 버튼 상태
   const [loginout, setloginout] = useState(false);
+
+  //시간표 & 마이페이지
+  const [mypageing, setMypageing] = useState(true);
+  const timetable = () => setMypageing(false);
+  const mypage = () => setMypageing(true);
+  const mydata = ['아이디', '비밀번호', '이름', '학년', '학교', '성별'];
 
   //페이지 로딩 함수
   useEffect(() => {
@@ -87,7 +94,7 @@ const MainScreen = props => {
     if (status == 0) setmodaltext('매칭 신청 or 수업 입력');
     if (status == 1) setmodaltext('매칭 대기 중');
     if (status == 2) setmodaltext('매칭 수락 대기중');
-    if (status == 3) setmodaltext('매칭 신청 도착');
+    if (status == 3) setmodaltext('매칭 신청이 도착');
     if (status == 4) setmodaltext('매칭 성공');
     setModalVisible(!modalVisible);
   };
@@ -214,7 +221,7 @@ const MainScreen = props => {
             {modaltext}
           </Text>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpen]}
             onPress={() => after_match('match_cancel')}>
             <Text style={styles.textStyle}>매칭 취소</Text>
           </Pressable>
@@ -229,24 +236,42 @@ const MainScreen = props => {
       get_matchID();
       //매칭 수락 대기 중(피신청자)
       return (
-        <View style={styles.modalsmall}>
-          <Text style={[styles.textStyleblack, styles.textTop]}>
-            {user1_id}님으로부터
-          </Text>
+        <View style={styles.modalms}>
           <Text style={[styles.textStyleblack]}>{modaltext}하였습니다!</Text>
           {/* <Text>{user1_id}</Text> */}
           {/* <Text>{user2_id}</Text> */}
-          <Text style={[styles.textStyleblack, styles.mt7, styles.mb]}>
+          <Text style={[styles.textStyleblack, styles.mt7, styles.mb15]}>
             수락하시겠습니까?
           </Text>
-          <Text>{match_select_list}</Text>
+
+          <View style={styles.minibox}>
+            <View style={styles.boxtext}>
+              <Text style={styles.boxtexttop}>매칭 상대 정보 {'\n'}</Text>
+              <Text style={[styles.boxtext]}>
+                매칭 상대는 {user1_id}입니다 {'\n'}
+              </Text>
+              <Text style={[styles.boxtext]}>상대의 체크 문항은</Text>
+              <View
+                style={{
+                  flexWrap: 'wrap',
+                  alignContent: 'center',
+                  justifyContent: 'center',
+                  marginLeft: 15,
+                  marginRight: 15,
+                }}>
+                <Text style={styles.boxtext}>{match_select_list}</Text>
+              </View>
+              <Text style={[styles.boxtext]}>입니다</Text>
+            </View>
+          </View>
+
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpen]}
             onPress={() => after_match('match_accept')}>
             <Text style={styles.textStyle}>수락</Text>
           </Pressable>
           <Pressable
-            style={[styles.button, styles.buttonClose]}
+            style={[styles.button, styles.buttonOpen]}
             onPress={() => after_match('match_refuse')}>
             <Text style={styles.textStyle}>거절</Text>
           </Pressable>
@@ -295,7 +320,7 @@ const MainScreen = props => {
   };
   //수업 입력 창
   const Modal_view_class = () => {
-    const [temp,settemp] = useState("");
+    const [temp, settemp] = useState('');
     return (
       <View style={styles.modalbig}>
         <Text style={styles.textTopbuttom}>{classname}</Text>
@@ -309,7 +334,7 @@ const MainScreen = props => {
             onChangeText={text => settemp(text)}
           />
         </SafeAreaView>
-        <View style={styles.rowend}>
+        <View style={styles.row}>
           <Pressable
             style={[styles.button, styles.buttonClosemrsmall]}
             onPress={() => insert_class_db(temp)}>
@@ -359,6 +384,7 @@ const MainScreen = props => {
           justifyContent: 'center',
         }}>
         <Pressable
+          hitSlop={{top: 28, bottom: 28, left: 10, right: 10}}
           onPress={() => setModal(props.hour, props.status, props.day)}>
           <Text
             numberOfLines={2}
@@ -390,9 +416,7 @@ const MainScreen = props => {
         />
       );
     } else {
-      return (
-        <Button onPress={() => [logout()]} title="로그아웃" color="black" />
-      );
+      return null;
     }
   };
   //=======================컴포넌트 모음 끝======================
@@ -437,7 +461,7 @@ const MainScreen = props => {
       const json_match = await response_table.json(); //2 json 받아온거 저장
       setuser1_id(json_match.results[0].user1_id);
       setuser2_id(json_match.results[0].user2_id);
-      setmatch_select_list(json_match.resuts[0].select_favor);
+      setmatch_select_list(json_match.results[0].select_favor);
     } catch (error) {
       console.error(error);
     } finally {
@@ -448,105 +472,153 @@ const MainScreen = props => {
 
   return (
     <View style={styles.screen}>
-      {/* <View style={[{flex: 1}]}></View> */}
-      <Text style={styles.title}>My Schedule</Text>
-      <DataTable style={[{width: '100%', height: '76%'}]}>
-        <DataTable.Header style={[{height: 45}]}>
-          <View style={[{width: '5%'}]}>
-            <Datacell_title text="" />
-          </View>
-          <View style={[{width: '19%'}]}>
-            <Datacell_title text="Mon" />
-          </View>
-          <View style={[{width: '19%'}]}>
-            <Datacell_title text="Tue" />
-          </View>
-          <View style={[{width: '19%'}]}>
-            <Datacell_title text="Wed" />
-          </View>
-          <View style={[{width: '19%'}]}>
-            <Datacell_title text="Thu" />
-          </View>
-          <View style={[{width: '19%'}]}>
-            <Datacell_title text="Fri" />
-          </View>
-        </DataTable.Header>
-        {Timetable.map(data => {
-          return (
-            <DataTable.Row key = {data.key} style={{height: '12%', flexDirection: 'row'}}>
-              <View style={{width: '5%'}}>
-                <DataTable.Cell
-                  style={{
-                    alignContent: 'center',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                  }}>
-                  {data.hour}
-                </DataTable.Cell>
+      <View style={styles.header}>
+        <TouchableOpacity hitSlop={20} onPress={timetable}>
+          <Text
+            style={{
+              ...styles.title,
+              color: mypageing ? '#E6F5FF' : '#FAFFFC',
+              opacity: mypageing ? 2 : 100,
+            }}>
+            My Schedule
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity hitSlop={20} onPress={mypage}>
+          <Text
+            style={{
+              ...styles.title,
+              color: mypageing ? '#FAFFFC' : '#E6F5FF',
+              opacity: mypageing ? 100 : 2,
+            }}>
+            My Page
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {!mypageing ? (
+        <>
+          <DataTable style={[{width: '100%', height: '80%'}]}>
+            {/* 76 */}
+            <DataTable.Header style={[{height: 45}]}>
+              <View style={[{width: '5%'}]}>
+                <Datacell_title text="" />
               </View>
-              <Datacell_content
-                hour={data.hour}
-                status={data.Mon.status}
-                day="Mon"
-                text_param={data.Mon.class}
-              />
-              <Datacell_content
-                hour={data.hour}
-                status={data.Tue.status}
-                day="Tue"
-                text_param={data.Tue.class}
-              />
-              <Datacell_content
-                hour={data.hour}
-                status={data.Wed.status}
-                day="Wed"
-                text_param={data.Wed.class}
-              />
-              <Datacell_content
-                hour={data.hour}
-                status={data.Thu.status}
-                day="Thu"
-                text_param={data.Thu.class}
-              />
-              <Datacell_content
-                hour={data.hour}
-                status={data.Fri.status}
-                day="Fri"
-                text_param={data.Fri.class}
-              />
-            </DataTable.Row>
-          );
-        })}
-      </DataTable>
-      <View style={[styles.mt15, styles.alignend]}>
-        <Loginout />
-      </View>
-      <View style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            //Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <Modal_view />
+              <View style={[{width: '19%'}]}>
+                <Datacell_title text="Mon" />
+              </View>
+              <View style={[{width: '19%'}]}>
+                <Datacell_title text="Tue" />
+              </View>
+              <View style={[{width: '19%'}]}>
+                <Datacell_title text="Wed" />
+              </View>
+              <View style={[{width: '19%'}]}>
+                <Datacell_title text="Thu" />
+              </View>
+              <View style={[{width: '19%'}]}>
+                <Datacell_title text="Fri" />
+              </View>
+            </DataTable.Header>
+            {Timetable.map(data => {
+              return (
+                <DataTable.Row
+                  key={data.key}
+                  style={{height: '12%', flexDirection: 'row'}}>
+                  <View style={{width: '5%'}}>
+                    <DataTable.Cell
+                      style={{
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                      }}>
+                      {data.hour}
+                    </DataTable.Cell>
+                  </View>
+                  <Datacell_content
+                    hour={data.hour}
+                    status={data.Mon.status}
+                    day="Mon"
+                    text_param={data.Mon.class}
+                  />
+                  <Datacell_content
+                    hour={data.hour}
+                    status={data.Tue.status}
+                    day="Tue"
+                    text_param={data.Tue.class}
+                  />
+                  <Datacell_content
+                    hour={data.hour}
+                    status={data.Wed.status}
+                    day="Wed"
+                    text_param={data.Wed.class}
+                  />
+                  <Datacell_content
+                    hour={data.hour}
+                    status={data.Thu.status}
+                    day="Thu"
+                    text_param={data.Thu.class}
+                  />
+                  <Datacell_content
+                    hour={data.hour}
+                    status={data.Fri.status}
+                    day="Fri"
+                    text_param={data.Fri.class}
+                  />
+                </DataTable.Row>
+              );
+            })}
+          </DataTable>
+          <View style={[styles.mt15, styles.alignend]}>
+            <Loginout />
           </View>
-        </Modal>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalclassVisible}
-          onRequestClose={() => {
-            //Alert.alert('Modal has been closed.');
-            setModalclassVisible(!modalclassVisible);
-          }}>
           <View style={styles.centeredView}>
-            <Modal_view_class />
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                //Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+              }}>
+              <View style={styles.centeredView}>
+                <Modal_view />
+              </View>
+            </Modal>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalclassVisible}
+              onRequestClose={() => {
+                //Alert.alert('Modal has been closed.');
+                setModalclassVisible(!modalclassVisible);
+              }}>
+              <View style={styles.centeredView}>
+                <Modal_view_class />
+              </View>
+            </Modal>
           </View>
-        </Modal>
-      </View>
+        </>
+      ) : (
+        <View style={styles.centeredView}>
+          <FlatList
+            style={{marginBottom: 30}}
+            data={mydata}
+            renderItem={obj => {
+              return (
+                <View style={styles.mypagerow}>
+                  <View style={styles.mypagetext}>
+                    <Text style={styles.textStyleblackbig}>{obj.item}</Text>
+                  </View>
+                  <View style={styles.mypagetext}>
+                    <Text>시험용</Text>
+                  </View>
+                </View>
+              );
+            }}></FlatList>
+          <View style={{...styles.buttonClosemrsmall, marginRight: 15}}>
+            <Button onPress={() => [logout()]} title="로그아웃" color="black" />
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -555,15 +627,21 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
     backgroundColor: '#97C9F7',
   },
   title: {
     fontSize: 25,
     fontWeight: 'bold',
     color: '#FAFFFC',
-    fontStyle: 'italic',
-    marginTop: 10,
+    // fontStyle: 'italic',
+  },
+  header: {
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginTop: 20,
+    marginBottom: 8,
+    height: '5%',
   },
 
   //modal css start
@@ -600,13 +678,11 @@ const styles = StyleSheet.create({
     elevation: 0,
     width: 500,
   },
-  buttonOpenTop: {
-    backgroundColor: 'black',
+  textTop: {
     marginTop: 20,
     width: 100,
   },
-  textTop: {
-    marginTop: 20,
+  textnomargin: {
     width: 100,
   },
   textTop: {
@@ -614,6 +690,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: 100,
   },
+
   textTopbuttom: {
     marginTop: 5,
     marginBottom: 5,
@@ -622,28 +699,32 @@ const styles = StyleSheet.create({
   buttonOpen: {
     backgroundColor: 'black',
     marginTop: 10,
-    width: 100,
+    width: '70%',
+  },
+  buttonOpenTop: {
+    backgroundColor: 'black',
+    marginTop: 20,
+    width: '70%',
   },
   buttonClose: {
     backgroundColor: 'black',
     marginTop: 30,
-    marginRight: 15,
     alignSelf: 'flex-end',
-    width: 50,
+    width: '30%',
   },
   buttonClosemrsmall: {
     backgroundColor: 'black',
-    marginTop: 20,
-    marginRight: 5,
+    // marginTop: 20,
     alignSelf: 'flex-end',
-    width: 50,
+    width: '30%',
+    margin: 10,
   },
   buttonClosemt: {
     backgroundColor: 'black',
-    marginTop: 5,
-    marginRight: 15,
+    marginTop: 10,
     alignSelf: 'flex-end',
-    width: 50,
+    width: '30%',
+    marginBottom: 10,
   },
   buttonCloselong: {
     backgroundColor: 'black',
@@ -664,7 +745,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 
-  // 추가
   row: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -672,12 +752,33 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  rowend: {
+  mypagerow: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
     marginTop: 15,
     marginBottom: 10,
-    marginLeft: 100,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+  },
+
+  mypagetext: {
+    width: '50%',
+    alignItems: 'center',
+  },
+  mypagetextname: {
+    width: '40%',
+    alignItems: 'center',
+  },
+
+  mypagetextcon: {
+    width: '60%',
+    alignItems: 'center',
+  },
+
+  rowcenter: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 15,
+    marginBottom: 10,
   },
   mr: {
     marginRight: 5,
@@ -704,6 +805,12 @@ const styles = StyleSheet.create({
   mb: {
     marginBottom: 5,
   },
+  mb10: {
+    marginBottom: 10,
+  },
+  mb15: {
+    marginBottom: 15,
+  },
 
   modal: {
     backgroundColor: '#FAFFFC',
@@ -722,11 +829,29 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     marginLeft: 10,
     width: '50%',
-    height: '48%',
+    height: '58%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
-    borderWidth: 3,
+    borderWidth: 2,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  modalms: {
+    backgroundColor: '#FAFFFC',
+    marginTop: 50,
+    marginBottom: 50,
+    marginLeft: 10,
+    width: '75%',
+    height: '83%',
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 18,
+    borderWidth: 2,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   modalmedium: {
     backgroundColor: '#FAFFFC',
@@ -734,11 +859,14 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     marginLeft: 10,
     width: '55%',
-    height: '51%',
+    height: '55%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
     borderWidth: 3,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   modalbig: {
     backgroundColor: '#FAFFFC',
@@ -746,11 +874,14 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     marginLeft: 10,
     width: '60%',
-    height: '44%',
+    height: '60%',
     alignItems: 'center',
     borderColor: 'black',
     borderRadius: 18,
+    flexWrap: 'wrap',
     borderWidth: 3,
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   textStyle: {
     textAlign: 'center',
@@ -763,12 +894,58 @@ const styles = StyleSheet.create({
     fontFamily: '',
     // fontWeight: 20,
   },
+  textStyleblack2: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 14,
+    fontFamily: '',
+    // fontWeight: 20,
+    flexShrink: 1,
+  },
+  textStyleblackbig: {
+    textAlign: 'center',
+    color: 'black',
+    fontSize: 16,
+    fontFamily: '',
+    // fontWeight: 20,
+  },
 
   weektitle: {
     fontSize: 2,
     textAlign: 'center',
   },
   smalltitle: {textAlign: 'center', fontsize: 20, color: 'black'},
+  minibox: {
+    width: '90%',
+    height: '40%',
+    alignItems: 'center',
+    borderColor: 'black',
+    borderWidth: 3,
+    marginBottom: 8,
+    borderStyle: 'dashed',
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    textAlign: 'center',
+  },
+  boxtexttop: {
+    color: 'black',
+    fontSize: 14,
+    // fontFamily: '',
+    // fontWeight: 100,
+    marginTop: 5,
+    // marginBottom: 15,
+    width: '100%',
+    textAlign: 'center',
+  },
+  boxtext: {
+    color: 'black',
+    fontSize: 14,
+    // fontFamily: '',
+    // fontWeight: 100,
+    // margin: 10,
+    width: '100%',
+    textAlign: 'center',
+  },
 });
 
 export default MainScreen;
