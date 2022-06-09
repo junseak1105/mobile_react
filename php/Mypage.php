@@ -18,9 +18,19 @@ $userID = $_GET["userID"];
 $sql = "SELECT * FROM member where userID = '$userID';";
 
 $result_set = mysqli_query($conn, $sql);
+$i = 1;
 
 while ($result = mysqli_fetch_array($result_set)) {
+
+     $temp_arr = array(
+        "key" => 'key'.$i,
+        "userID" => $result["userID"],
+        "userName" => $result["userName"],
+        "school_code" => $result["school_code"],
+        "sex" => $result["sex"],
+    );
     array_push($arr, $result);
+     $i++;
 }
 
 $responseJson = json_encode(array('results' => $arr),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);

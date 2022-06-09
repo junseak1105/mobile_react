@@ -8,11 +8,16 @@ import {
   Pressable,
   Alert,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import {DataTable, TextInput} from 'react-native-paper';
+import {DataTable, TextInput, Card, List} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+import gender1 from './images/gender1.png';
+import id from './images/id.png';
+import id1 from './images/id1.png';
+import university from './images/university.png';
 
 const MainScreen = props => {
   // const tailwind = useTailwind(); 안됨
@@ -43,7 +48,7 @@ const MainScreen = props => {
   const [loginout, setloginout] = useState(false);
 
   //시간표 & 마이페이지
-  const [mypageing, setMypageing] = useState(true);
+  const [mypageing, setMypageing] = useState(false);
   const timetable = () => setMypageing(false);
   const mypage = () => setMypageing(true);
   const mytitle = ['아이디', '비밀번호', '이름', '학년', '학교', '성별'];
@@ -57,8 +62,9 @@ const MainScreen = props => {
       settoken(result);
       result != '' ? setloginout(true) : setloginout(false);
       gettimetable(result);
-      getmypage(token);
-      getobject();
+      getmypage(result);
+      mypage(); // 빠른 이동 위함
+      timetable(); // 빠른 이동 위함
     }); //받아오는 함수 실행
   }, [isFocused]);
 
@@ -95,9 +101,6 @@ const MainScreen = props => {
   const getobject = () => {
     for (var key in mydata) {
       console.log('key: ' + key + ' / ' + mydata[key]);
-      // for (var data in key) {
-      //   console.log('key: ' + key + ' / ' + key[data]);
-      // }
     }
   };
 
@@ -176,60 +179,22 @@ const MainScreen = props => {
     }
   };
 
-  // const Mypagedata = props => {
-  //   let list = ['userID', 'userPW', 'userName', 'school_code', 'sex'];
-
-  //       <FlatList
-  //         style={{marginBottom: 30}}
-  //         data={[mydata]}
-  //         renderItem={obj.map(data => {
-  //           <View style={styles.mypagerow}>
-  //           <View style={styles.mypagetext}>
-  //             <Text style={styles.textStyleblackbig}>{data.list}</Text>
-  //           </View>
-  //         </View>;
-  //       })}>
-  //       </FlatList>
-  //     }
-
-  //   // if (props.data == mytitle) {
-  //   //   return (
-  //   //     <FlatList
-  //   //       style={{marginBottom: 30}}
-  //   //       data={[mytitle]}
-  //   //       renderItem={obj => {
-  //   //         return (
-  //   //           <View style={styles.mypagerow}>
-  //   //             <View style={styles.mypagetext}>
-  //   //               <Text style={styles.textStyleblackbig}>{obj.item}</Text>
-  //   //             </View>
-  //   //           </View>
-  //   //         );
-  //   //       }}></FlatList>
-  //   //   );
-  //   // } else if (props.data == mydata) {
-  //   //   return (
-  //   //     <>
-  //   //       <FlatList
-  //   //         style={{marginBottom: 30}}
-  //   //         data={[mydata]}
-  //   //         renderItem={obj => {
-  //   //           return (
-  //   //             <View style={styles.mypagerow}>
-  //   //               <View style={styles.mypagetext}>
-  //   //                 <Text style={styles.textStyleblackbig}>{obj.item}</Text>
-  //   //               </View>
-  //   //             </View>
-  //   //           );
-  //   //         }}></FlatList>
-  //   //       <View style={{...styles.buttonClosemrsmall, marginRight: 15}}>
-  //   //         <Button onPress={() => [logout()]} title="로그아웃" color="black" />
-  //   //       </View>
-  //   //     </>
-  //   //   );
-  //   // }
-  // };
   //====================수업  기능 끝=========================
+
+  // 마이페이지 로그아웃 시 정보 없어지기
+  const getmypagelogout = async userid => {
+    try {
+      const response_mydata = await fetch(
+        'http://jhk.n-e.kr:80/mypage.php?userID=' + userid,
+      ); //1 CURL로 연결(php)
+      const json_mydata = await response_mydata.json(); //2 json 받아온거 저장
+      setMydata(json_mydata.results); //3 const배열에다가 저장
+    } catch (error) {
+      console.error(error);
+    } finally {
+      // setLoading(false);
+    }
+  };
 
   //=====================컴포넌트 모음 시작======================
 
@@ -437,8 +402,9 @@ const MainScreen = props => {
         style={{
           justifyContent: 'center',
           textAlign: 'center',
+          ...styles.textStyleblack,
         }}>
-        {props.text}
+        <Text styele={styles.textStyleblack}>{props.text}</Text>
       </DataTable.Title>
     );
   };
@@ -487,41 +453,21 @@ const MainScreen = props => {
     );
   };
 
-  const Tablecotent_mypage = () => {
-    mydata.map(data => {
-      return (
-        <>
-          <DataTable.Row key={data.key}>
-            <Datacell_title text="아이디"></Datacell_title>
-            <Datacell_title text={data.userID}></Datacell_title>
-          </DataTable.Row>
-
-          <DataTable.Row key={data.key}>
-            <Datacell_title text="비밀번호"></Datacell_title>
-            <Datacell_title text={data.userPW}></Datacell_title>
-          </DataTable.Row>
-
-          <DataTable.Row key={data.key}>
-            <Datacell_title text="이름"></Datacell_title>
-            <Datacell_title text={data.userName}></Datacell_title>
-          </DataTable.Row>
-
-          <DataTable.Row key={data.key}>
-            <Datacell_title text="대학교"></Datacell_title>
-            <Datacell_title text={data.school_code}></Datacell_title>
-          </DataTable.Row>
-
-          <DataTable.Row key={data.key}>
-            <Datacell_title text="성별"></Datacell_title>
-            {data.sex == 'Female' ? (
-              <Datacell_title text="여성"></Datacell_title>
-            ) : (
-              <Datacell_title text="남성"></Datacell_title>
-            )}
-          </DataTable.Row>
-        </>
-      );
-    });
+  // 마이페이지
+  const Datacell_mypage = props => {
+    return (
+      <>
+        <DataTable.Cell
+          style={{
+            margin: 2,
+            flexWrap: 'wrap',
+            alignContent: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text style={styles.mypagetext}>{props.content2}</Text>
+        </DataTable.Cell>
+      </>
+    );
   };
 
   //로그인,아웃
@@ -721,22 +667,112 @@ const MainScreen = props => {
           </View>
         </>
       ) : (
-        <View>
-          <View style={{...styles.centeredView}}>
-            <DataTable style={styles.mypageoutline}>
-              <Tablecotent_mypage />
+        <>
+          <View style={{...styles.centeredViewmypage}}>
+            <DataTable
+              headerLabelStyle={{color: 'white'}}
+              style={{...styles.mypageoutline}}>
+              {/* 76 */}
+              {mydata.map(data => {
+                return (
+                  <>
+                    <View style={{alignContent: 'center'}}>
+                      <DataTable.Row key={data.key} style={styles.mypagerow}>
+                        <Image style={{...styles.selectedimg}} source={id} />
+                        <Datacell_mypage
+                          content2={data.userID}></Datacell_mypage>
+                      </DataTable.Row>
+                    </View>
+
+                    <DataTable.Row key={data.key} style={styles.mypagerow}>
+                      <Image style={{...styles.selectedimg}} source={id1} />
+                      <Datacell_mypage
+                        content1="이름"
+                        content2={data.userName}></Datacell_mypage>
+                    </DataTable.Row>
+
+                    <DataTable.Row key={data.key} style={styles.mypagerow}>
+                      <Image
+                        style={{...styles.selectedimg}}
+                        source={university}
+                      />
+                      <Datacell_mypage
+                        content1="대학교"
+                        content2={data.school_code}></Datacell_mypage>
+                    </DataTable.Row>
+
+                    <DataTable.Row key={data.key} style={styles.mypagerow}>
+                      <Image style={{...styles.selectedimg}} source={gender1} />
+                      {data.sex == 'Female' ? (
+                        <Datacell_mypage
+                          content1="성별"
+                          content2="여성"></Datacell_mypage>
+                      ) : (
+                        <Datacell_mypage
+                          content1="성별"
+                          content2="남성"></Datacell_mypage>
+                      )}
+                    </DataTable.Row>
+                  </>
+                );
+              })}
+              {/* <Datacell_mypage /> */}
+              {/* {mydata.map(data => {
+      return (
+        <>
+          <DataTable.Row key={data.key}>
+            <DataTable.Cell>아이디</DataTable.Cell>
+            <DataTable.Cell>{data.userID}</DataTable.Cell>
+          </DataTable.Row>
+
+          <DataTable.Row key={data.key}>
+            <DataTable.Cell>비밀번호</DataTable.Cell>
+            <DataTable.Cell>{data.userPW}</DataTable.Cell>
+          </DataTable.Row>
+
+          <DataTable.Row key={data.key}>
+            <DataTable.Cell>이름</DataTable.Cell>
+            <DataTable.Cell>{data.userName}</DataTable.Cell>
+          </DataTable.Row>
+
+          <DataTable.Row key={data.key}>
+            <DataTable.Cell>대학교</DataTable.Cell>
+            <DataTable.Cell>{data.school_code}</DataTable.Cell>
+          </DataTable.Row>
+
+          <DataTable.Row key={data.key}>
+            <DataTable.Cell>성별</DataTable.Cell>
+            {data.sex == 'Female' ? (
+              <DataTable.Cell>여성</DataTable.Cell>
+            ) : (
+              <DataTable.Cell>남성</DataTable.Cell>
+            )}
+          </DataTable.Row>
+        </>
+      );
+    })} */}
             </DataTable>
           </View>
-          <View style={{height: '10%'}}>
-            <View style={{...styles.buttonClosemrsmall, marginRight: 15}}>
+          <View
+            style={{
+              ...styles.buttonClosemrsmall,
+              ...styles.mr15,
+            }}>
+            {token == '' ? (
+              <Button
+                onPress={() => props.navigation.navigate('LoginScreen')}
+                title="로그인"
+                color="black"
+              />
+            ) : (
               <Button
                 onPress={() => [logout()]}
                 title="로그아웃"
                 color="black"
               />
-            </View>
+            )}
           </View>
-        </View>
+        </>
       )}
     </View>
   );
@@ -768,6 +804,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
+  },
+  centeredViewmypage: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '60%',
+    margin: 20,
+    alignItems: 'center',
+    borderColor: 'white',
+    borderWidth: 10,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
+    //borderRadius: 20,
   },
   modalView: {
     margin: 20,
@@ -871,28 +920,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  mypagerow: {
-    flexDirection: 'row',
-    marginTop: 15,
-    marginBottom: 10,
-    flexWrap: 'wrap',
-    alignContent: 'center',
-  },
-
-  mypagetext: {
-    width: '50%',
-    alignItems: 'center',
-  },
-  mypagetextname: {
-    width: '40%',
-    alignItems: 'center',
-  },
-
-  mypagetextcon: {
-    width: '60%',
-    alignItems: 'center',
-  },
-
   rowcenter: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -901,6 +928,9 @@ const styles = StyleSheet.create({
   },
   mr: {
     marginRight: 5,
+  },
+  mr15: {
+    marginRight: 15,
   },
   alignend: {
     alignSelf: 'flex-end',
@@ -1010,6 +1040,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+  mypagerow: {
+    margin: 20,
+    borderBottomWidth: 6,
+    borderBottomColor: 'white',
+  },
+
   textStyle: {
     textAlign: 'center',
     color: '#FAFFFC',
@@ -1035,6 +1071,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: '',
     // fontWeight: 20,
+  },
+  mypagetextbig: {
+    width: 60,
+    fontSize: 18,
+    color: 'black',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+
+  mypagetext: {
+    width: 60,
+    fontSize: 16,
+    color: 'black',
+    textAlign: 'center',
   },
 
   weektitle: {
@@ -1072,6 +1122,11 @@ const styles = StyleSheet.create({
     // margin: 10,
     width: '100%',
     textAlign: 'center',
+  },
+  selectedimg: {
+    width: 40,
+    height: 40,
+    // tintColor: '#e6e6e6',/
   },
 });
 
