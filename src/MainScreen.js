@@ -564,106 +564,112 @@ const MainScreen = props => {
           </Text>
         </TouchableOpacity>
       </View>
+
       {!mypageing ? (
         <>
-          <DataTable style={[{width: '100%', height: '80%'}]}>
-            {/* 76 */}
-            <DataTable.Header style={[{height: 45}]}>
-              <View style={[{width: '5%'}]}>
-                <Datacell_title text="" />
-              </View>
-              <View style={[{width: '19%'}]}>
-                <Datacell_title text="Mon" />
-              </View>
-              <View style={[{width: '19%'}]}>
-                <Datacell_title text="Tue" />
-              </View>
-              <View style={[{width: '19%'}]}>
-                <Datacell_title text="Wed" />
-              </View>
-              <View style={[{width: '19%'}]}>
-                <Datacell_title text="Thu" />
-              </View>
-              <View style={[{width: '19%'}]}>
-                <Datacell_title text="Fri" />
-              </View>
-            </DataTable.Header>
-            {Timetable.map(data => {
-              return (
-                <DataTable.Row
-                  key={data.key}
-                  style={{height: '12%', flexDirection: 'row'}}>
-                  <View style={{width: '5%'}}>
-                    <DataTable.Cell
-                      style={{
-                        alignContent: 'center',
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                      }}>
-                      {data.hour}
-                    </DataTable.Cell>
+          {loginout ? (
+            <>
+              <DataTable style={[{width: '100%', height: '80%'}]}>
+                {/* 76 */}
+                <DataTable.Header style={[{height: 45}]}>
+                  <View style={[{width: '5%'}]}>
+                    <Datacell_title text="" />
                   </View>
-                  <Datacell_content
-                    hour={data.hour}
-                    status={data.Mon.status}
-                    day="Mon"
-                    text_param={data.Mon.class}
-                  />
-                  <Datacell_content
-                    hour={data.hour}
-                    status={data.Tue.status}
-                    day="Tue"
-                    text_param={data.Tue.class}
-                  />
-                  <Datacell_content
-                    hour={data.hour}
-                    status={data.Wed.status}
-                    day="Wed"
-                    text_param={data.Wed.class}
-                  />
-                  <Datacell_content
-                    hour={data.hour}
-                    status={data.Thu.status}
-                    day="Thu"
-                    text_param={data.Thu.class}
-                  />
-                  <Datacell_content
-                    hour={data.hour}
-                    status={data.Fri.status}
-                    day="Fri"
-                    text_param={data.Fri.class}
-                  />
-                </DataTable.Row>
-              );
-            })}
-          </DataTable>
-
-          <View style={styles.centeredView}>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                //Alert.alert('Modal has been closed.');
-                setModalVisible(!modalVisible);
-              }}>
+                  <View style={[{width: '19%'}]}>
+                    <Datacell_title text="Mon" />
+                  </View>
+                  <View style={[{width: '19%'}]}>
+                    <Datacell_title text="Tue" />
+                  </View>
+                  <View style={[{width: '19%'}]}>
+                    <Datacell_title text="Wed" />
+                  </View>
+                  <View style={[{width: '19%'}]}>
+                    <Datacell_title text="Thu" />
+                  </View>
+                  <View style={[{width: '19%'}]}>
+                    <Datacell_title text="Fri" />
+                  </View>
+                </DataTable.Header>
+                {Timetable.map(data => {
+                  return (
+                    <DataTable.Row
+                      key={data.key}
+                      style={{height: '12%', flexDirection: 'row'}}>
+                      <View style={{width: '5%'}}>
+                        <DataTable.Cell
+                          style={{
+                            alignContent: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                          }}>
+                          {data.hour}
+                        </DataTable.Cell>
+                      </View>
+                      <Datacell_content
+                        hour={data.hour}
+                        status={data.Mon.status}
+                        day="Mon"
+                        text_param={data.Mon.class}
+                      />
+                      <Datacell_content
+                        hour={data.hour}
+                        status={data.Tue.status}
+                        day="Tue"
+                        text_param={data.Tue.class}
+                      />
+                      <Datacell_content
+                        hour={data.hour}
+                        status={data.Wed.status}
+                        day="Wed"
+                        text_param={data.Wed.class}
+                      />
+                      <Datacell_content
+                        hour={data.hour}
+                        status={data.Thu.status}
+                        day="Thu"
+                        text_param={data.Thu.class}
+                      />
+                      <Datacell_content
+                        hour={data.hour}
+                        status={data.Fri.status}
+                        day="Fri"
+                        text_param={data.Fri.class}
+                      />
+                    </DataTable.Row>
+                  );
+                })}
+              </DataTable>
               <View style={styles.centeredView}>
-                <Modal_view />
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalVisible}
+                  onRequestClose={() => {
+                    //Alert.alert('Modal has been closed.');
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <View style={styles.centeredView}>
+                    <Modal_view />
+                  </View>
+                </Modal>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalclassVisible}
+                  onRequestClose={() => {
+                    //Alert.alert('Modal has been closed.');
+                    setModalclassVisible(!modalclassVisible);
+                  }}>
+                  <View style={styles.centeredView}>
+                    <Modal_view_class />
+                  </View>
+                </Modal>
               </View>
-            </Modal>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalclassVisible}
-              onRequestClose={() => {
-                //Alert.alert('Modal has been closed.');
-                setModalclassVisible(!modalclassVisible);
-              }}>
-              <View style={styles.centeredView}>
-                <Modal_view_class />
-              </View>
-            </Modal>
-          </View>
+            </>
+          ) : (
+            <View style={{...styles.centeredViewmypageno}}></View>
+          )}
         </>
       ) : (
         <>

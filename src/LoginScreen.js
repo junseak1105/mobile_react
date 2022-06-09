@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Button, StyleSheet, TextInput} from 'react-native';
+import {View, Text, Button, StyleSheet, TextInput, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+import schedule from './images/schedule.png';
 
 const LoginScreen = props => {
   const isFocused = useIsFocused();
@@ -40,10 +41,10 @@ const LoginScreen = props => {
               settoken(result);
               //alert(token);
             });
-            alert('로그인 성공');
+            alert('안녕하세요');
             props.navigation.navigate('MainScreen');
           } else {
-            alert('로그인 실패');
+            alert('아이디 혹은 비밀번호를 확인해주세요');
           }
         });
       }
@@ -58,6 +59,7 @@ const LoginScreen = props => {
   return (
     <View style={styles.screen}>
       {/* <Text style={styles.textStyleblack}>로그인</Text> */}
+      <Image style={styles.selectedimg} source={schedule} />
       <TextInput
         style={styles.input}
         placeholder="아이디"
@@ -154,6 +156,10 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginRight: 58,
     marginTop: 10,
+  },
+  selectedimg: {
+    width: 110,
+    height: 110,
   },
 });
 
