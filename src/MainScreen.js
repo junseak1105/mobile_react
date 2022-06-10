@@ -215,12 +215,13 @@ const MainScreen = props => {
           {/* <Text>{modaltext}</Text> */}
           <Pressable
             style={[styles.button, styles.buttonOpenTop]}
-            onPress={() =>
+            onPress={() =>[
               props.navigation.navigate('MatchScreen', {
                 param_hour: modalhour,
                 param_day: modalday,
                 param_status: modalstatus,
-              })
+              }),
+              setModalVisible(!modalVisible)]
             }>
             <Text style={styles.textStyle}>매칭 신청</Text>
           </Pressable>
