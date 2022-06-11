@@ -215,14 +215,14 @@ const MainScreen = props => {
           {/* <Text>{modaltext}</Text> */}
           <Pressable
             style={[styles.button, styles.buttonOpenTop]}
-            onPress={() =>[
+            onPress={() => [
               props.navigation.navigate('MatchScreen', {
                 param_hour: modalhour,
                 param_day: modalday,
                 param_status: modalstatus,
               }),
-              setModalVisible(!modalVisible)]
-            }>
+              setModalVisible(!modalVisible),
+            ]}>
             <Text style={styles.textStyle}>매칭 신청</Text>
           </Pressable>
           <Pressable
@@ -346,15 +346,16 @@ const MainScreen = props => {
           </Text>
           <Pressable
             style={[styles.buttonOpen, styles.button]}
-            onPress={() =>
+            onPress={() => [
               props.navigation.navigate('ChatScreen', {
                 param_hour: modalhour,
                 param_day: modalday,
                 user1_id: user1_id,
                 user2_id: user2_id,
                 token: token,
-              })
-            }>
+              }),
+              setModalVisible(!modalVisible),
+            ]}>
             <Text style={styles.textStyle}>채팅 시작</Text>
           </Pressable>
           <Pressable
