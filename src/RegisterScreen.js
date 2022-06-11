@@ -1,8 +1,18 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Button, StyleSheet, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  TextInput,
+  Image,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {executeNativeBackPress} from 'react-native-screens';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+import back from './images/back.png';
 
 const RegisterScreen = props => {
   const [returnMsg, setreturnMsg] = useState([]);
@@ -155,11 +165,15 @@ const RegisterScreen = props => {
         {/* <Text>Register</Text> */}
       </View>
       <View style={styles.alignend}>
-        <Button
+        <TouchableWithoutFeedback
+          onPress={() => props.navigation.navigate('LoginScreen')}>
+          <Image style={styles.selectedimg} source={back} />
+        </TouchableWithoutFeedback>
+        {/* <Button
           onPress={() => props.navigation.navigate('LoginScreen')}
           title="로그인하러 가기"
           color="black"
-        />
+        /> */}
       </View>
     </View>
   );
@@ -179,7 +193,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#97C9F7',
     margin: 10,
     padding: 8,
-    color: '#FAFFFC',
+    color: 'black',
     borderRadius: 0,
     fontSize: 18,
     // fontWeight: '500',
@@ -235,6 +249,11 @@ const styles = StyleSheet.create({
   },
   mt15: {
     marginTop: 15,
+  },
+  selectedimg: {
+    width: 55,
+    height: 55,
+    // tintColor: '#e6e6e6',/
   },
 });
 
