@@ -60,11 +60,12 @@ const MainScreen = props => {
     //localstorage userid getdata
     AsyncStorage.getItem('token', (err, result) => {
       settoken(result);
-      result != '' ? setloginout(true) : setloginout(false);
+      result != null ? setloginout(true) : setloginout(false);
       gettimetable(result);
       getmypage(result);
       mypage(); // 빠른 이동 위함
       timetable(); // 빠른 이동 위함
+      console.log(token);
     }); //받아오는 함수 실행
   }, [isFocused]);
 
@@ -214,13 +215,14 @@ const MainScreen = props => {
           {/* <Text>{modaltext}</Text> */}
           <Pressable
             style={[styles.button, styles.buttonOpenTop]}
-            onPress={() =>
+            onPress={() => [
               props.navigation.navigate('MatchScreen', {
                 param_hour: modalhour,
                 param_day: modalday,
                 param_status: modalstatus,
-              })
-            }>
+              }),
+              setModalVisible(!modalVisible),
+            ]}>
             <Text style={styles.textStyle}>매칭 신청</Text>
           </Pressable>
           <Pressable
@@ -344,15 +346,16 @@ const MainScreen = props => {
           </Text>
           <Pressable
             style={[styles.buttonOpen, styles.button]}
-            onPress={() =>
+            onPress={() => [
               props.navigation.navigate('ChatScreen', {
                 param_hour: modalhour,
                 param_day: modalday,
                 user1_id: user1_id,
                 user2_id: user2_id,
                 token: token,
-              })
-            }>
+              }),
+              setModalVisible(!modalVisible),
+            ]}>
             <Text style={styles.textStyle}>채팅 시작</Text>
           </Pressable>
           <Pressable
@@ -481,11 +484,11 @@ const MainScreen = props => {
         />
       );
     } else {
-      return null;
+      return (
+        <Button onPress={() => [logout()]} title="로그아웃" color="black" />
+      );
     }
   };
-
-  const please = () => {};
 
   //=======================컴포넌트 모음 끝======================
 
@@ -563,214 +566,178 @@ const MainScreen = props => {
           </Text>
         </TouchableOpacity>
       </View>
+
       {!mypageing ? (
         <>
-          <DataTable style={[{width: '100%', height: '80%'}]}>
-            {/* 76 */}
-            <DataTable.Header style={[{height: 45}]}>
-              <View style={[{width: '5%'}]}>
-                <Datacell_title text="" />
-              </View>
-              <View style={[{width: '19%'}]}>
-                <Datacell_title text="Mon" />
-              </View>
-              <View style={[{width: '19%'}]}>
-                <Datacell_title text="Tue" />
-              </View>
-              <View style={[{width: '19%'}]}>
-                <Datacell_title text="Wed" />
-              </View>
-              <View style={[{width: '19%'}]}>
-                <Datacell_title text="Thu" />
-              </View>
-              <View style={[{width: '19%'}]}>
-                <Datacell_title text="Fri" />
-              </View>
-            </DataTable.Header>
-            {Timetable.map(data => {
-              return (
-                <DataTable.Row
-                  key={data.key}
-                  style={{height: '12%', flexDirection: 'row'}}>
-                  <View style={{width: '5%'}}>
-                    <DataTable.Cell
-                      style={{
-                        alignContent: 'center',
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                      }}>
-                      {data.hour}
-                    </DataTable.Cell>
+          {loginout ? (
+            <>
+              <DataTable style={[{width: '100%', height: '80%'}]}>
+                {/* 76 */}
+                <DataTable.Header style={[{height: 45}]}>
+                  <View style={[{width: '5%'}]}>
+                    <Datacell_title text="" />
                   </View>
-                  <Datacell_content
-                    hour={data.hour}
-                    status={data.Mon.status}
-                    day="Mon"
-                    text_param={data.Mon.class}
-                  />
-                  <Datacell_content
-                    hour={data.hour}
-                    status={data.Tue.status}
-                    day="Tue"
-                    text_param={data.Tue.class}
-                  />
-                  <Datacell_content
-                    hour={data.hour}
-                    status={data.Wed.status}
-                    day="Wed"
-                    text_param={data.Wed.class}
-                  />
-                  <Datacell_content
-                    hour={data.hour}
-                    status={data.Thu.status}
-                    day="Thu"
-                    text_param={data.Thu.class}
-                  />
-                  <Datacell_content
-                    hour={data.hour}
-                    status={data.Fri.status}
-                    day="Fri"
-                    text_param={data.Fri.class}
-                  />
-                </DataTable.Row>
-              );
-            })}
-          </DataTable>
-          <View style={[styles.mt15, styles.alignend]}>
-            <Loginout />
-          </View>
-          <View style={styles.centeredView}>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                //Alert.alert('Modal has been closed.');
-                setModalVisible(!modalVisible);
-              }}>
+                  <View style={[{width: '19%'}]}>
+                    <Datacell_title text="Mon" />
+                  </View>
+                  <View style={[{width: '19%'}]}>
+                    <Datacell_title text="Tue" />
+                  </View>
+                  <View style={[{width: '19%'}]}>
+                    <Datacell_title text="Wed" />
+                  </View>
+                  <View style={[{width: '19%'}]}>
+                    <Datacell_title text="Thu" />
+                  </View>
+                  <View style={[{width: '19%'}]}>
+                    <Datacell_title text="Fri" />
+                  </View>
+                </DataTable.Header>
+                {Timetable.map(data => {
+                  return (
+                    <DataTable.Row
+                      key={data.key}
+                      style={{height: '12%', flexDirection: 'row'}}>
+                      <View style={{width: '5%'}}>
+                        <DataTable.Cell
+                          style={{
+                            alignContent: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                          }}>
+                          {data.hour}
+                        </DataTable.Cell>
+                      </View>
+                      <Datacell_content
+                        hour={data.hour}
+                        status={data.Mon.status}
+                        day="Mon"
+                        text_param={data.Mon.class}
+                      />
+                      <Datacell_content
+                        hour={data.hour}
+                        status={data.Tue.status}
+                        day="Tue"
+                        text_param={data.Tue.class}
+                      />
+                      <Datacell_content
+                        hour={data.hour}
+                        status={data.Wed.status}
+                        day="Wed"
+                        text_param={data.Wed.class}
+                      />
+                      <Datacell_content
+                        hour={data.hour}
+                        status={data.Thu.status}
+                        day="Thu"
+                        text_param={data.Thu.class}
+                      />
+                      <Datacell_content
+                        hour={data.hour}
+                        status={data.Fri.status}
+                        day="Fri"
+                        text_param={data.Fri.class}
+                      />
+                    </DataTable.Row>
+                  );
+                })}
+              </DataTable>
               <View style={styles.centeredView}>
-                <Modal_view />
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalVisible}
+                  onRequestClose={() => {
+                    //Alert.alert('Modal has been closed.');
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <View style={styles.centeredView}>
+                    <Modal_view />
+                  </View>
+                </Modal>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalclassVisible}
+                  onRequestClose={() => {
+                    //Alert.alert('Modal has been closed.');
+                    setModalclassVisible(!modalclassVisible);
+                  }}>
+                  <View style={styles.centeredView}>
+                    <Modal_view_class />
+                  </View>
+                </Modal>
               </View>
-            </Modal>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalclassVisible}
-              onRequestClose={() => {
-                //Alert.alert('Modal has been closed.');
-                setModalclassVisible(!modalclassVisible);
-              }}>
-              <View style={styles.centeredView}>
-                <Modal_view_class />
-              </View>
-            </Modal>
-          </View>
+            </>
+          ) : (
+            <View style={{...styles.centeredViewmypageno}}></View>
+          )}
         </>
       ) : (
         <>
-          <View style={{...styles.centeredViewmypage}}>
-            <DataTable
-              headerLabelStyle={{color: 'white'}}
-              style={{...styles.mypageoutline}}>
-              {/* 76 */}
-              {mydata.map(data => {
-                return (
-                  <>
-                    <View style={{alignContent: 'center'}}>
+          {loginout ? (
+            <View style={{...styles.centeredViewmypage}}>
+              <DataTable
+                headerLabelStyle={{color: 'white'}}
+                style={{...styles.mypageoutline}}>
+                {/* 76 */}
+                {mydata.map(data => {
+                  return (
+                    <>
+                      <View style={{alignContent: 'center'}}>
+                        <DataTable.Row key={data.key} style={styles.mypagerow}>
+                          <Image style={{...styles.selectedimg}} source={id} />
+                          <Datacell_mypage
+                            content2={data.userID}></Datacell_mypage>
+                        </DataTable.Row>
+                      </View>
+
                       <DataTable.Row key={data.key} style={styles.mypagerow}>
-                        <Image style={{...styles.selectedimg}} source={id} />
+                        <Image style={{...styles.selectedimg}} source={id1} />
                         <Datacell_mypage
-                          content2={data.userID}></Datacell_mypage>
+                          content1="이름"
+                          content2={data.userName}></Datacell_mypage>
                       </DataTable.Row>
-                    </View>
 
-                    <DataTable.Row key={data.key} style={styles.mypagerow}>
-                      <Image style={{...styles.selectedimg}} source={id1} />
-                      <Datacell_mypage
-                        content1="이름"
-                        content2={data.userName}></Datacell_mypage>
-                    </DataTable.Row>
-
-                    <DataTable.Row key={data.key} style={styles.mypagerow}>
-                      <Image
-                        style={{...styles.selectedimg}}
-                        source={university}
-                      />
-                      <Datacell_mypage
-                        content1="대학교"
-                        content2={data.school_code}></Datacell_mypage>
-                    </DataTable.Row>
-
-                    <DataTable.Row key={data.key} style={styles.mypagerow}>
-                      <Image style={{...styles.selectedimg}} source={gender1} />
-                      {data.sex == 'Female' ? (
+                      <DataTable.Row key={data.key} style={styles.mypagerow}>
+                        <Image
+                          style={{...styles.selectedimg}}
+                          source={university}
+                        />
                         <Datacell_mypage
-                          content1="성별"
-                          content2="여성"></Datacell_mypage>
-                      ) : (
-                        <Datacell_mypage
-                          content1="성별"
-                          content2="남성"></Datacell_mypage>
-                      )}
-                    </DataTable.Row>
-                  </>
-                );
-              })}
-              {/* <Datacell_mypage /> */}
-              {/* {mydata.map(data => {
-      return (
-        <>
-          <DataTable.Row key={data.key}>
-            <DataTable.Cell>아이디</DataTable.Cell>
-            <DataTable.Cell>{data.userID}</DataTable.Cell>
-          </DataTable.Row>
+                          content1="대학교"
+                          content2={data.school_code}></Datacell_mypage>
+                      </DataTable.Row>
 
-          <DataTable.Row key={data.key}>
-            <DataTable.Cell>비밀번호</DataTable.Cell>
-            <DataTable.Cell>{data.userPW}</DataTable.Cell>
-          </DataTable.Row>
-
-          <DataTable.Row key={data.key}>
-            <DataTable.Cell>이름</DataTable.Cell>
-            <DataTable.Cell>{data.userName}</DataTable.Cell>
-          </DataTable.Row>
-
-          <DataTable.Row key={data.key}>
-            <DataTable.Cell>대학교</DataTable.Cell>
-            <DataTable.Cell>{data.school_code}</DataTable.Cell>
-          </DataTable.Row>
-
-          <DataTable.Row key={data.key}>
-            <DataTable.Cell>성별</DataTable.Cell>
-            {data.sex == 'Female' ? (
-              <DataTable.Cell>여성</DataTable.Cell>
-            ) : (
-              <DataTable.Cell>남성</DataTable.Cell>
-            )}
-          </DataTable.Row>
-        </>
-      );
-    })} */}
-            </DataTable>
-          </View>
+                      <DataTable.Row key={data.key} style={styles.mypagerow}>
+                        <Image
+                          style={{...styles.selectedimg}}
+                          source={gender1}
+                        />
+                        {data.sex == 'Female' ? (
+                          <Datacell_mypage
+                            content1="성별"
+                            content2="여성"></Datacell_mypage>
+                        ) : (
+                          <Datacell_mypage
+                            content1="성별"
+                            content2="남성"></Datacell_mypage>
+                        )}
+                      </DataTable.Row>
+                    </>
+                  );
+                })}
+              </DataTable>
+            </View>
+          ) : (
+            <View style={{...styles.centeredViewmypageno}}></View>
+          )}
           <View
             style={{
               ...styles.buttonClosemrsmall,
               ...styles.mr15,
             }}>
-            {token == '' ? (
-              <Button
-                onPress={() => props.navigation.navigate('LoginScreen')}
-                title="로그인"
-                color="black"
-              />
-            ) : (
-              <Button
-                onPress={() => [logout()]}
-                title="로그아웃"
-                color="black"
-              />
-            )}
+            <Loginout />
           </View>
         </>
       )}
@@ -813,6 +780,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: 'white',
     borderWidth: 10,
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'center',
+    //borderRadius: 20,
+  },
+  centeredViewmypageno: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '60%',
+    margin: 20,
+    alignItems: 'center',
+    // borderColor: 'white',
+    // borderWidth: 10,
     flexWrap: 'wrap',
     alignContent: 'center',
     justifyContent: 'center',
