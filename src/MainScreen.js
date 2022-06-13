@@ -42,6 +42,7 @@ const MainScreen = props => {
   //팝업창 수업 넣기
   const [modalclassVisible, setModalclassVisible] = useState(false);
   const [classname, setclassname] = useState();
+
   //수업 등록 여부 저장
   const [class_result, setclassresult] = useState([]);
   //로그인 버튼 상태
@@ -422,8 +423,12 @@ const MainScreen = props => {
               ? '#FAFFFC'
               : props.text_param == '완료'
               ? '#B31A09'
-              : props.text_param == '대기'
+              : props.text_param == '매칭 대기'
               ? '#ffb224'
+              : props.text_param == '수락 대기'
+              ? '#09C542'
+              : props.text_param == '매칭 확인'
+              ? '#1F6E3A'
               : 'black',
           borderRadius: 2,
           margin: 2,

@@ -21,7 +21,7 @@
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         include("db.php");
-        $sql = "update user_timetable set $selected_day='신청 확인,3' where (userID = '$match_userid') and hour = '$selected_hour';"; //대상자 유저 테이블 수락대기로 설정
+        $sql = "update user_timetable set $selected_day='매칭 확인,3' where (userID = '$match_userid') and hour = '$selected_hour';"; //대상자 유저 테이블 수락대기로 설정
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         include("db.php");
