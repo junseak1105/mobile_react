@@ -13,15 +13,15 @@
     $select_time = $selected_day.$selected_hour;
     
     if($matched_param == "nomatch"){ //매치 없을 시 
-        $sql = "update user_timetable set $selected_day='대기,1' where userID = '$userID' and hour = '$selected_hour';"; //단순 대기
+        $sql = "update user_timetable set $selected_day='매칭 대기,1' where userID = '$userID' and hour = '$selected_hour';"; //단순 대기
         mysqli_query($conn,$sql);
         mysqli_close($conn);
     }else if($matched_param == "matched"){//매치 있을 시, 신청/수락대기 상태로 변경
-        $sql = "update user_timetable set $selected_day='대기,2' where (userID = '$userID' or userID = '$match_userid') and hour = '$selected_hour';"; //신청자 유저 테이블 신청보냄으로 설정
+        $sql = "update user_timetable set $selected_day='수락 대기,2' where (userID = '$userID' or userID = '$match_userid') and hour = '$selected_hour';"; //신청자 유저 테이블 신청보냄으로 설정
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         include("db.php");
-        $sql = "update user_timetable set $selected_day='대기,3' where (userID = '$match_userid') and hour = '$selected_hour';"; //대상자 유저 테이블 수락대기로 설정
+        $sql = "update user_timetable set $selected_day='신청 확인,3' where (userID = '$match_userid') and hour = '$selected_hour';"; //대상자 유저 테이블 수락대기로 설정
         mysqli_query($conn,$sql);
         mysqli_close($conn);
         include("db.php");

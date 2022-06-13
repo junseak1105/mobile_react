@@ -10,7 +10,13 @@
     $select_time = $selected_day.$selected_hour;
     $selected_status = $_GET['selected_status'];
     $select_sex = $_GET['selected_sex'];
-    $select_list = $_GET['selected_food'].','.$_GET['selected_hobby'];
+    if(isset($_GET['selected_food'])&&$_GET['selected_hobby']==''){
+        $select_list = $_GET['selected_food'];
+    }else if(isset($_GET['selected_hobby'])&&$_GET['selected_food']==''){
+        $select_list = $_GET['selected_hobby'];
+    }else{
+        $select_list = $_GET['selected_food'].','.$_GET['selected_hobby'];
+    }
     
     $sqlwhere = "";
     $select_list_arr = explode(',',$select_list);
@@ -25,7 +31,7 @@
     mysqli_stmt_execute($statement);
     
     //매칭 일치 사례 판별
-    $sqlwhere = "where select_favor_list = '$select_list' and userSex = '$select_sex' and select_favor_sex = (select sex from member where userID = '$userID') and userID != '$userID' and pending !='N' ";
+    $sqlwhere = "where select_favor_list = '$select_list' and userSex = '$select_sex' and select_favor_sex = (select sex from member where userID = '$userID') and userID != '$userID' and pending !='N' and select_time = '$select_time' ";
     $query = "SELECT (IF(EXISTS(SELECT * FROM match_table $sqlwhere),'true', 'false')) as result";
 	$data = $conn->query($query)->fetch_array();
     
@@ -42,7 +48,7 @@
                 $sqlwhere = $sqlwhere.")";
             }
         }
-        $sqlwhere = $sqlwhere." and userID != '$userID'";
+        $sqlwhere = $sqlwhere." and userID != '$userID' and select_time = '$select_time'";
         $query = "select count(*) as count,ifnull(idx,0) as idx ,ifnull(userID,'none') as userID,ifnull(select_favor_list,'none') as select_favor_list,ifnull(select_time,'none') as select_time from match_table $sqlwhere ORDER BY RAND() LIMIT 0, 1"; //최상단 1명 검색(랜덤x)
         //echo $query;
         $data = $conn->query($query)->fetch_array();
