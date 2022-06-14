@@ -56,6 +56,8 @@ const MainScreen = props => {
   const [mydata, setMydata] = useState([]);
   let list = ['userID', 'userPW', 'userName', 'school_code', 'sex'];
 
+  const [loading, setLoading] = useState(false); // clean up
+
   //페이지 로딩 함수
   useEffect(() => {
     //localstorage userid getdata

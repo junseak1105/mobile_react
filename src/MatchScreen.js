@@ -52,10 +52,11 @@ const MatchScreen = ({route, navigation}) => {
   const [selectedman, setselectedman] = useState(true);
   const [selectedwoman, setselectedwoman] = useState(false);
   //카테고리 받아온 값 저장
-  const [isLoading, setLoading] = useState(true);
   const [fa_hobby, sethobbyData] = useState([]);
   const [fa_food, setfoodData] = useState([]);
   const [fa_sex, setsexData] = useState([]);
+
+  const [loading, setLoading] = useState(false); // clean up
 
   //페이지 로딩 함수
   useEffect(() => {
@@ -69,6 +70,7 @@ const MatchScreen = ({route, navigation}) => {
   //카테고리 가져오기
   const getcategory = async () => {
     try {
+      setLoading(true);
       const response_food = await fetch(
         'http://jhk.n-e.kr:80/get_category.php?table=favor_ca&co_code=fa_food',
       ); //1 CURL로 연결(php)
@@ -87,7 +89,7 @@ const MatchScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -154,6 +156,7 @@ const MatchScreen = ({route, navigation}) => {
     let selected_hobby = selectedHobby.toString();
 
     try {
+      setLoading(true);
       const response_match = await fetch(
         'http://jhk.n-e.kr:80/find_match.php?userID=' +
           token +
@@ -176,13 +179,14 @@ const MatchScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
   //매칭 설정, 대상없을 시 matched = nomatch, 있을 시 matched= matched
   const setmatch = async param => {
     try {
+      setLoading(true);
       const response_match = await fetch(
         'http://jhk.n-e.kr:80/set_match.php?userID=' +
           token +
@@ -201,7 +205,7 @@ const MatchScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
     setModalVisible(!modalVisible);
   };
@@ -209,6 +213,7 @@ const MatchScreen = ({route, navigation}) => {
   //매칭 클릭 이후 취소 시 매칭 데이터 삭제
   const cancelmatch = async () => {
     try {
+      setLoading(true);
       const response_match = await fetch(
         'http://jhk.n-e.kr:80/cancel_match.php?userID=' +
           token +
@@ -222,7 +227,7 @@ const MatchScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
     setModalVisible(!modalVisible);
   };
