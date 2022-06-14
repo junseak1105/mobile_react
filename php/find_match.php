@@ -36,7 +36,7 @@
 	$data = $conn->query($query)->fetch_array();
     
     if($data['result'] == 'true'){ //정확한 매치
-        $query = "select count(*) as count,ifnull(idx,0) as idx ,ifnull(userID,'none') as userID from match_table $sqlwhere limit 1";
+        $query = "select count(*) as count,ifnull(idx,0) as idx ,ifnull(userID,'none') as userID from match_table $sqlwhere ORDER BY RAND() LIMIT 0, 1";
         $data = $conn->query($query)->fetch_array();
     }else{ //차선책(선택사항 중 하나라도 맞을 시)
         $sqlwhere = "where userSex = '$select_sex' and select_favor_sex = (select sex from member where userID = '$userID') and ( ";
@@ -49,7 +49,7 @@
             }
         }
         $sqlwhere = $sqlwhere." and userID != '$userID' and select_time = '$select_time'";
-        $query = "select count(*) as count,ifnull(idx,0) as idx ,ifnull(userID,'none') as userID,ifnull(select_favor_list,'none') as select_favor_list,ifnull(select_time,'none') as select_time from match_table $sqlwhere ORDER BY RAND() LIMIT 0, 1"; //최상단 1명 검색(랜덤x)
+        $query = "select count(*) as count,ifnull(idx,0) as idx ,ifnull(userID,'none') as userID,ifnull(select_favor_list,'none') as select_favor_list,ifnull(select_time,'none') as select_time from match_table $sqlwhere ORDER BY RAND() LIMIT 0, 1";
         //echo $query;
         $data = $conn->query($query)->fetch_array();
     }
