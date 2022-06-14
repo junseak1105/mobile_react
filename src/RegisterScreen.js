@@ -19,6 +19,7 @@ const RegisterScreen = props => {
   const [username, setUsername] = useState('');
   const [userid, setUserid] = useState('');
   const [password, setPasswd] = useState('');
+  const [passwordchk, setpasswordchk] = useState('');
   const [school, setSchool] = useState('');
   const [sex, setSex] = useState('');
 
@@ -58,6 +59,9 @@ const RegisterScreen = props => {
       alert('아이디를 입력하세요');
       return;
     } else if (username == '') {
+      alert('이름을 입력하세요');
+      return;
+    } else if (password == '') {
       alert('비밀번호를 입력하세요');
       return;
     } else if (school == '') {
@@ -65,6 +69,9 @@ const RegisterScreen = props => {
       return;
     } else if (sex == '') {
       alert('성별을 선택하세요');
+      return;
+    } else if (password != passwordchk){
+      alert('비밀번호가 서로 일치하지 않습니다');
       return;
     }
     try {
@@ -126,7 +133,15 @@ const RegisterScreen = props => {
         placeholderTextColor="#FAFFFC"
         onChangeText={val => setPasswd(val)}
       />
-
+      <TextInput
+        style={styles.input}
+        placeholder="비밀번호확인"
+        secureTextEntry={true}
+        defaultValue={passwordchk}
+        autoCapitalize="none"
+        placeholderTextColor="#FAFFFC"
+        onChangeText={val => setpasswordchk(val)}
+      />
       <DropDownPicker
         style={styles.inputsecond}
         placeholder="성별"
