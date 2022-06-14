@@ -56,6 +56,8 @@ const MainScreen = props => {
   const [mydata, setMydata] = useState([]);
   let list = ['userID', 'userPW', 'userName', 'school_code', 'sex'];
 
+  const [loading, setLoading] = useState(false); // clean up
+
   //페이지 로딩 함수
   useEffect(() => {
     //localstorage userid getdata
@@ -73,6 +75,7 @@ const MainScreen = props => {
   //타임테이블 가져오기
   const gettimetable = async userid => {
     try {
+      setLoading(true);
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/get_timetable.php?userid=' + userid,
       ); //1 CURL로 연결(php)
@@ -81,13 +84,14 @@ const MainScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
   // 마이페이지
   const getmypage = async userid => {
     try {
+      setLoading(true);
       const response_mydata = await fetch(
         'http://jhk.n-e.kr:80/mypage.php?userID=' + userid,
       ); //1 CURL로 연결(php)
@@ -96,7 +100,7 @@ const MainScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -186,6 +190,7 @@ const MainScreen = props => {
   // 마이페이지 로그아웃 시 정보 없어지기
   const getmypagelogout = async userid => {
     try {
+      setLoading(true);
       const response_mydata = await fetch(
         'http://jhk.n-e.kr:80/mypage.php?userID=' + userid,
       ); //1 CURL로 연결(php)
@@ -194,7 +199,7 @@ const MainScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -504,6 +509,7 @@ const MainScreen = props => {
     setModalVisible(false);
     setModalclassVisible(false);
     try {
+      setLoading(true);
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/after_match.php?userID=' +
           token +
@@ -520,12 +526,13 @@ const MainScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
   //매칭 대상자 가져오기
   const get_matchID = async () => {
     try {
+      setLoading(true);
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/get_matchID.php?userID=' +
           token +
@@ -541,7 +548,7 @@ const MainScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 

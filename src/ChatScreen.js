@@ -15,12 +15,14 @@ const ChatScreen = ({route, navigation}) => {
   const param_day = route.params.param_day;
   //results
   const [returnMsg, setreturnMsg] = useState([]);
+  const [loading, setLoading] = useState(false); // clean up
 
   useEffect(() => {
     chat_fetch();
   }, []);
 
   const chat_input = async () => {
+    setLoading(true);
     let now = new Date();
     try {
       const response_table = await fetch(
@@ -81,7 +83,7 @@ const ChatScreen = ({route, navigation}) => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
   //   const onSend = useCallback((messages = []) => {

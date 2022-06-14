@@ -34,6 +34,7 @@ const RegisterScreen = props => {
 
   const getschool = async () => {
     try {
+      setLoading(true);
       const response_school = await fetch(
         'http://jhk.n-e.kr:80/get_school.php',
       );
@@ -42,11 +43,12 @@ const RegisterScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
   //db접속끝
 
+  const [loading, setLoading] = useState(false); // clean up
   const isFocused = useIsFocused();
   useEffect(() => {
     getschool(); //받아오는 함수 실행
@@ -55,6 +57,7 @@ const RegisterScreen = props => {
 
   //db접속
   const Register = async () => {
+    setLoading(true);
     if (userid == '') {
       alert('아이디를 입력하세요');
       return;
@@ -70,7 +73,7 @@ const RegisterScreen = props => {
     } else if (sex == '') {
       alert('성별을 선택하세요');
       return;
-    } else if (password != passwordchk){
+    } else if (password != passwordchk) {
       alert('비밀번호가 서로 일치하지 않습니다');
       return;
     }
@@ -101,7 +104,7 @@ const RegisterScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
   //db접속끝

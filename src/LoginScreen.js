@@ -6,6 +6,7 @@ import schedule from './images/schedule.png';
 
 const LoginScreen = props => {
   const isFocused = useIsFocused();
+  const [loading, setLoading] = useState(false); // clean up
   useEffect(() => {
     //localstorage userid getdata
     AsyncStorage.getItem('token', (err, result) => {
@@ -23,6 +24,7 @@ const LoginScreen = props => {
   //db접속
   const Login = async () => {
     try {
+      setLoading(true);
       const response_table = await fetch(
         'http://jhk.n-e.kr:80/Login.php?userid=' +
           userid +
@@ -51,7 +53,7 @@ const LoginScreen = props => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
   //db접속끝
